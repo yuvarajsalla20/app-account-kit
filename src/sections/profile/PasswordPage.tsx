@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { useLook } from '../../context';
+import { useLook } from '../../look';
 import type { ActionRunner } from '../../hooks/useAction';
 import { MIN_PASSWORD, passwordProblem } from '../../logic/password';
 import type { PasswordProps } from '../../types';
@@ -26,15 +26,15 @@ export function PasswordPage({ onChange, minLength = MIN_PASSWORD, action, onDon
     const ok = await action.run('password', () => onChange(current, next), (e) => action.describe(e, strings.couldNot(strings.savePassword.toLowerCase())));
     if (ok) {
       onDone();
-      action.setNote(strings.passwordChanged);
+      action.setNote(strings.passwordChanged, true);
     }
   };
 
   return (
     <View style={{ gap: 14 }}>
-      <Field label={strings.currentPassword} value={current} onChangeText={setCurrent} secureTextEntry autoComplete="current-password" autoCapitalize="none" />
-      <Field label={strings.newPassword} value={next} onChangeText={setNext} secureTextEntry autoComplete="new-password" autoCapitalize="none" />
-      <Field label={strings.confirmPassword} value={confirm} onChangeText={setConfirm} secureTextEntry autoComplete="new-password" autoCapitalize="none" onSubmitEditing={save} returnKeyType="done" />
+      <Field label={strings.currentPassword} value={current} onChangeText={setCurrent} secureTextEntry autoComplete="current-password" textContentType="password" autoCapitalize="none" />
+      <Field label={strings.newPassword} value={next} onChangeText={setNext} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" />
+      <Field label={strings.confirmPassword} value={confirm} onChangeText={setConfirm} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" onSubmitEditing={save} returnKeyType="done" />
       <Button variant="solid" label={strings.savePassword} onPress={save} busy={action.busy} disabled={!current || !next || !confirm} />
     </View>
   );

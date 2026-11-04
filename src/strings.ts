@@ -41,6 +41,10 @@ export interface AccountStrings {
   /** "Could not save the nickname. Try again." */
   couldNot: (action: string) => string;
   saveNickname: string;
+  nicknameSaved: string;
+  signOutAction: string;
+  openLink: string;
+  photoInvalid: string;
   savePhoto: string;
   download: string;
   shareApp: string;
@@ -92,6 +96,10 @@ export const DEFAULT_STRINGS: AccountStrings = {
   keepAccount: 'Keep my account',
   couldNot: (action) => `Could not ${action}. Try again.`,
   saveNickname: 'save the nickname',
+  nicknameSaved: 'Nickname saved.',
+  signOutAction: 'sign out',
+  openLink: 'open the link',
+  photoInvalid: 'That photo cannot be used. Try another one.',
   savePhoto: 'save the photo',
   download: 'create the file',
   shareApp: 'share the app',

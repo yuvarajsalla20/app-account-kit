@@ -1,8 +1,9 @@
 import { Linking, Platform, Share } from 'react-native';
-import { useLook } from '../context';
+import { useLook } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
 import { supportMailUrl } from '../logic/mail';
 import { KIT_VERSION } from '../kit';
+import { isHttps } from '../logic/links';
 import { canRate, reviewUrl, reviewWebUrl } from '../logic/rate';
 import { buildShareMessage, canShare } from '../logic/share';
 import type { AboutProps } from '../types';
@@ -46,7 +47,14 @@ export function AboutSection({ appName, version, privacyUrl, supportEmail, share
           }}
         />
       ) : null}
-      <SettingRow icon="shield" tint={theme.tints.privacy} label={strings.privacy} onPress={() => Linking.openURL(privacyUrl).catch(() => undefined)} />
+      <SettingRow
+        icon="shield"
+        tint={theme.tints.privacy}
+        label={strings.privacy}
+        onPress={() => {
+          action.run('privacy', () => (isHttps(privacyUrl) ? Linking.openURL(privacyUrl) : Promise.reject(new Error('not-https'))).then(() => undefined), () => strings.couldNot(strings.openLink));
+        }}
+      />
       <SettingRow icon="mail" tint={theme.tints.support} label={strings.contactSupport} onPress={contact} />
       <SettingRow last={!kits} icon="info" tint={theme.tints.version} label={strings.version} value={version.label} />
       {kits ? <SettingRow last icon="package" tint={theme.tints.version} label={strings.kits} value={kits} /> : null}

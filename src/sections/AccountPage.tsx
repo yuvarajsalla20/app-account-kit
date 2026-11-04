@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { useLook } from '../context';
+import { useLook } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
 import type { ActionsProps, NicknameProps, PasswordProps, PhotoProps, ProfileInfo } from '../types';
 import { SettingsGroup, STACK } from '../ui/Group';
@@ -16,10 +16,12 @@ interface Props extends Pick<ActionsProps, 'onDeleteAccount' | 'confirmsWithPass
   password?: PasswordProps;
   action: ActionRunner;
   onOpenPassword: () => void;
+  /** Called when the delete panel opens, so the page can scroll it into view. */
+  onReveal?: () => void;
 }
 
 /** Picture and name, the nickname and Change password in one card, then Delete account. */
-export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, onDeleteAccount, confirmsWithPassword }: Props) {
+export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, onDeleteAccount, confirmsWithPassword, onReveal }: Props) {
   const { theme, strings } = useLook();
   return (
     <View style={STACK}>
@@ -28,7 +30,7 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
         <NicknameRow saved={profile.name} {...nickname} action={action} />
         {password && profile.email ? <SettingRow last icon="key" tint={theme.tints.password} label={strings.changePassword} onPress={onOpenPassword} /> : null}
       </SettingsGroup>
-      <DeleteAccount onDeleteAccount={onDeleteAccount} confirmsWithPassword={confirmsWithPassword} action={action} />
+      <DeleteAccount onDeleteAccount={onDeleteAccount} confirmsWithPassword={confirmsWithPassword} action={action} onReveal={onReveal} />
     </View>
   );
 }

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { BackHandler, Keyboard, ScrollView, View } from 'react-native';
-import { AccountProvider, useLook, useStyles, type AccountComponents } from './context';
+import { useEffect, useRef, useState, type ElementRef } from 'react';
+import { AccessibilityInfo, BackHandler, Keyboard, Platform, ScrollView, View } from 'react-native';
+import { AccountProvider, type AccountComponents } from './context';
+import { useLook, useStyles } from './look';
 import { useAction } from './hooks/useAction';
 import { parentOf, type Page } from './logic/pages';
 import { AboutSection } from './sections/AboutSection';
@@ -20,10 +21,11 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-function Body({ onBack, backLabel, profile, nickname, photo, password, data, app, about, actions, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, profile, nickname, photo, password, data, app, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
-  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.accent, fontSize: 13, lineHeight: 18 } }));
-  const action = useAction(onError, describeError);
+  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent } }));
+  const action = useAction(onError, describeError, actionTimeoutMs);
+  const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
   const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !app);
@@ -49,17 +51,23 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
     const sub = BackHandler.addEventListener('hardwareBackPress', stepBack);
     return () => sub.remove();
   });
+  // A new message may land while the button that caused it is far down the page: bring it into view and say it aloud on iOS (Android announces it through the live region).
+  useEffect(() => {
+    if (!action.note) return;
+    scroll.current?.scrollTo({ y: 0, animated: true });
+    if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
+  }, [action.note]);
   const titles: Record<Page, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, about: strings.about, password: strings.changePassword };
-  const note = action.note ? <components.Text style={styles.note} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
+  const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
   return (
     <>
       <components.Header title={titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
-      <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
+      <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage profile={profile} data={data} app={app} about={about} onSignOut={actions.onSignOut} busy={action.busy} onOpen={go} /> : null}
+        {page === 'hub' ? <HubPage profile={profile} data={data} app={app} about={about} onSignOut={actions.onSignOut} action={action} onOpen={go} /> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}

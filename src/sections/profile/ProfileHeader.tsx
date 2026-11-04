@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
-import { useLook, useStyles } from '../../context';
+import { useLook, useStyles } from '../../look';
 import type { ActionRunner } from '../../hooks/useAction';
 import { initialOf } from '../../logic/nickname';
+import { isPermissionError, safePhoto } from '../../logic/photo';
 import type { AccountTheme } from '../../theme';
 import type { PhotoProps, PhotoSource, ProfileInfo } from '../../types';
 import { Avatar } from '../../ui/Avatar';
 import { Button } from '../../ui/Button';
+import { ROW_CENTER } from '../../ui/layout';
 
 interface Props {
   profile: ProfileInfo;
@@ -26,10 +28,11 @@ export function ProfileHeader({ profile, photo, action }: Props) {
       'photo',
       async () => {
         const next = source === 'remove' ? '' : await photo.pick(source);
+        if (next !== null && !safePhoto(next, photo.maxChars)) throw new Error('photo-invalid');
         if (next !== null) await photo.onChange(next);
         setMenu(false);
       },
-      (e) => ((e as Error).message === 'permission' ? strings.photoPermission : strings.couldNot(strings.savePhoto)),
+      (e) => (isPermissionError(e) ? strings.photoPermission : e instanceof Error && e.message === 'photo-invalid' ? strings.photoInvalid : strings.couldNot(strings.savePhoto)),
     );
   };
 
@@ -41,7 +44,7 @@ export function ProfileHeader({ profile, photo, action }: Props) {
           <components.Text style={styles.name} numberOfLines={1}>{profile.name || profile.fallbackName}</components.Text>
           {profile.email ? <components.Text style={styles.email} numberOfLines={1}>{profile.email}</components.Text> : null}
           {photo ? (
-            <Pressable onPress={() => setMenu((m) => !m)} accessibilityRole="button" hitSlop={8}>
+            <Pressable onPress={() => setMenu((m) => !m)} accessibilityRole="button" accessibilityState={{ expanded: menu }} hitSlop={8} style={styles.linkHit}>
               <components.Text style={styles.link}>{strings.changePhoto}</components.Text>
             </Pressable>
           ) : null}
@@ -60,10 +63,11 @@ export function ProfileHeader({ profile, photo, action }: Props) {
 
 const makeStyles = (t: AccountTheme) => ({
   wrap: { gap: 12 },
-  who: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 16 },
+  who: { ...ROW_CENTER, gap: 16 },
   grow: { flex: 1 },
   name: { color: t.text, fontSize: 24, fontWeight: '700' as const, letterSpacing: -0.4 },
   email: { color: t.muted, fontSize: 14 },
-  link: { marginTop: 4, color: t.accent, fontSize: 14, fontWeight: '600' as const },
+  linkHit: { minHeight: 44, justifyContent: 'center' as const },
+  link: { color: t.accent, fontSize: 14, fontWeight: '600' as const },
   menu: { flexDirection: 'row' as const, gap: 8 },
 });

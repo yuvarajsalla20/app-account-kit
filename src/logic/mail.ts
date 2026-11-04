@@ -9,9 +9,12 @@ interface SupportMail {
   kits?: string;
 }
 
+import { isEmail } from './links';
+
 /** A mailto: address with the app, version and device filled in, so support can see what the person is using. */
 export const supportMailUrl = ({ email, appName, versionNumber, device, kits }: SupportMail): string => {
   const subject = encodeURIComponent(`${appName} ${versionNumber} support`);
   const body = encodeURIComponent(`\n\n\n—\n${appName} ${versionNumber} · ${device}${kits ? `\nKits: ${kits}` : ''}`);
-  return `mailto:${email}?subject=${subject}&body=${body}`;
+  const to = isEmail(email) ? email.trim() : encodeURIComponent(email); // a stray ? or & can never add a recipient
+  return `mailto:${to}?subject=${subject}&body=${body}`;
 };

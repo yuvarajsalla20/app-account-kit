@@ -1,9 +1,11 @@
 import { Feather } from '@expo/vector-icons';
 import type { ReactNode } from 'react';
 import { Pressable, Switch, View } from 'react-native';
-import { useLook, useStyles } from '../context';
+import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
+import { CENTER } from './layout';
+import { ROW_CENTER } from './layout';
 
 interface Props {
   icon: IconName;
@@ -35,7 +37,7 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
         onPress={press}
         disabled={!press || disabled}
         accessibilityRole={toggle ? 'switch' : press ? 'button' : undefined}
-        accessibilityLabel={label}
+        accessibilityLabel={detail ? `${label}, ${detail}` : label}
         accessibilityValue={value ? { text: value } : undefined}
         accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(children ? { expanded: true } : null) }}
         style={styles.row}
@@ -61,8 +63,8 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
 
 const makeStyles = (t: AccountTheme) => ({
   line: { borderBottomWidth: 1, borderBottomColor: t.line },
-  row: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 12, paddingVertical: 12, paddingHorizontal: 14 },
-  tile: { width: 34, height: 34, borderRadius: 11, alignItems: 'center' as const, justifyContent: 'center' as const },
+  row: { ...ROW_CENTER, gap: 12, paddingVertical: 12, paddingHorizontal: 14 },
+  tile: { width: 34, height: 34, borderRadius: 11, ...CENTER },
   grow: { flex: 1 },
   label: { color: t.text, fontSize: 16, fontWeight: '600' as const },
   detail: { color: t.muted, fontSize: 12, marginTop: 2 },

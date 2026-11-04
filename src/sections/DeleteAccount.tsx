@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { View } from 'react-native';
-import { useLook, useStyles } from '../context';
+import { useEffect, useRef, useState, type ElementRef } from 'react';
+import { AccessibilityInfo, findNodeHandle, View } from 'react-native';
+import { useLook, useStyles } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
 import { canConfirmDelete } from '../logic/deleteRules';
 import type { AccountTheme } from '../theme';
@@ -10,14 +10,24 @@ import { Field } from '../ui/Field';
 
 interface Props extends Pick<ActionsProps, 'onDeleteAccount' | 'confirmsWithPassword'> {
   action: ActionRunner;
+  /** Called when the confirmation panel opens, so the page can scroll it into view. */
+  onReveal?: () => void;
 }
 
 /** Delete account, which asks for confirmation (with the password when the login has one). Lives on the Account page. */
-export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action }: Props) {
+export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, onReveal }: Props) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const [deleting, setDeleting] = useState(false);
   const [password, setPassword] = useState('');
+  const panel = useRef<ElementRef<typeof View>>(null);
+  // The panel is taller than the button it replaces and may open below the visible part: scroll to it and move screen-reader focus there.
+  useEffect(() => {
+    if (!deleting) return;
+    onReveal?.();
+    const node = findNodeHandle(panel.current);
+    if (node) AccessibilityInfo.setAccessibilityFocus(node);
+  }, [deleting, onReveal]);
   if (!onDeleteAccount) return null;
 
   const cancel = () => {
@@ -27,11 +37,11 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action }:
   };
 
   return deleting ? (
-    <View style={styles.panel}>
-      <components.Text style={styles.title}>{strings.deleteTitle}</components.Text>
+    <View ref={panel} style={styles.panel} accessible accessibilityLabel={strings.deleteTitle}>
+      <components.Text style={styles.title} accessibilityRole="header">{strings.deleteTitle}</components.Text>
       <components.Text style={styles.text}>{strings.deleteWarning}</components.Text>
       {confirmsWithPassword ? (
-        <Field value={password} onChangeText={setPassword} placeholder={strings.deletePassword} secureTextEntry autoComplete="current-password" accessibilityLabel={strings.deletePassword} />
+        <Field label={strings.deletePassword} value={password} onChangeText={setPassword} secureTextEntry autoComplete="current-password" textContentType="password" autoCapitalize="none" />
       ) : null}
       <Button
         variant="danger"

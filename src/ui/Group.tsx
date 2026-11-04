@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import { useLook, useStyles } from '../context';
+import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 
 /** The space between the cards and buttons of a page. */

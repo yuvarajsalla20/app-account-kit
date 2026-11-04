@@ -32,7 +32,7 @@ describe('toCsv', () => {
   });
 
   it('neutralises formulas', () => {
-    expect(toCsv([['=SUM(A1)', '+1', '-1', '@x', 'fine']])).toBe("'=SUM(A1),'+1,'-1,'@x,fine");
+    expect(toCsv([['=SUM(A1)', '-1+2', '+cmd', '@x', 'fine']])).toBe("'=SUM(A1),'-1+2,'+cmd,'@x,fine");
   });
 
   it('is empty for no rows', () => {
@@ -55,6 +55,7 @@ describe('share', () => {
     expect(canShare('')).toBe(false);
     expect(canShare(undefined)).toBe(false);
     expect(canShare('not a link')).toBe(false);
+    expect(canShare('http://insecure.example')).toBe(false);
   });
 });
 
@@ -135,7 +136,7 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'hubPages', 'initialOf', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'toCsv']);
   });
 });
 

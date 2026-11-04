@@ -1,7 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { Pressable, View } from 'react-native';
-import { useLook, useStyles } from '../context';
+import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
+import { CENTER } from './layout';
 
 /** The default page header: a back arrow and a big title. An app can replace it (`components.Header`) with its own. */
 export function PlainHeader({ title, onBack, backLabel }: { title: string; onBack: () => void; backLabel: string }) {
@@ -19,6 +20,6 @@ export function PlainHeader({ title, onBack, backLabel }: { title: string; onBac
 
 const makeStyles = (t: AccountTheme) => ({
   wrap: { paddingBottom: 12 },
-  back: { width: 36, height: 36, marginLeft: -8, alignItems: 'center' as const, justifyContent: 'center' as const },
+  back: { width: 36, height: 36, marginLeft: -8, ...CENTER },
   title: { marginTop: 6, color: t.text, fontSize: 30, fontWeight: '700' as const, letterSpacing: -0.8 },
 });

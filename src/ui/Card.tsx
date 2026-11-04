@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import { useStyles } from '../context';
+import { useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 
 /** The default card: the theme's fill and edge. An app can replace it (`components.Card`), for example with frosted glass. */

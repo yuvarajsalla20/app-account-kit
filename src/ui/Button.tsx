@@ -1,8 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable } from 'react-native';
-import { useLook, useStyles } from '../context';
+import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
+import { CENTER } from './layout';
 
 interface Props {
   label: string;
@@ -29,7 +30,7 @@ export function Button({ label, onPress, variant = 'quiet', icon, small, busy, d
       disabled={disabled || busy}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ disabled: !!(disabled || busy) }}
+      accessibilityState={{ disabled: !!(disabled || busy), busy: !!busy }}
       style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
     >
       {busy ? <ActivityIndicator color={color} /> : icon ? <Feather name={icon} size={small ? 17 : 18} color={color} /> : null}
@@ -39,8 +40,8 @@ export function Button({ label, onPress, variant = 'quiet', icon, small, busy, d
 }
 
 const makeStyles = (t: AccountTheme) => ({
-  button: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'center' as const, gap: 8, height: 52, borderRadius: 16 },
-  small: { height: 46, borderRadius: 14 },
+  button: { flexDirection: 'row' as const, ...CENTER, gap: 8, minHeight: 52, paddingVertical: 12, paddingHorizontal: 16, borderRadius: 16 },
+  small: { minHeight: 46, paddingVertical: 10, borderRadius: 14 },
   solid: { backgroundColor: t.accent },
   quiet: { backgroundColor: t.field, borderWidth: 1, borderColor: t.border },
   grow: { flex: 1 },

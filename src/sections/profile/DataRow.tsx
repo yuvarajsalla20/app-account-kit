@@ -1,5 +1,5 @@
 import type { ActionRunner } from '../../hooks/useAction';
-import { useLook } from '../../context';
+import { useLook } from '../../look';
 import type { DataProps } from '../../types';
 import { SettingRow } from '../../ui/Row';
 

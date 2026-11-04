@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useLook } from '../../context';
+import { useLook } from '../../look';
 import type { ActionRunner } from '../../hooks/useAction';
 import { cleanNickname } from '../../logic/nickname';
+import { createSaveTracker } from '../../logic/saveTracker';
 import type { NicknameProps } from '../../types';
 import { Field } from '../../ui/Field';
 
@@ -11,21 +12,35 @@ interface Props extends NicknameProps {
   action: ActionRunner;
 }
 
-/** The nickname box. It saves when the person leaves it. */
+/** The nickname box. It saves when the person leaves it, presses Done, or leaves the page: each change once. */
 export function NicknameRow({ saved, max, onSave, action }: Props) {
   const { strings } = useLook();
   const [text, setText] = useState(saved);
-  useEffect(() => setText(saved), [saved]);
+  const tracker = useRef(createSaveTracker(saved)).current;
+  useEffect(() => {
+    tracker.reset(saved);
+    setText(saved);
+  }, [saved, tracker]);
 
-  const save = () => {
-    const name = cleanNickname(text, max);
+  const save = async (value: string) => {
+    const name = cleanNickname(value, max);
     setText(name);
-    if (name !== saved) action.run('nickname', () => onSave(name), () => strings.couldNot(strings.saveNickname));
+    // Another action is running: keep what was typed; it saves on the next blur, Done or when the page closes.
+    if (action.busy || !tracker.begin(name)) return;
+    const ok = await action.run('nickname', () => onSave(name), () => strings.couldNot(strings.saveNickname));
+    tracker.finish(name, ok);
+    if (ok) action.setNote(strings.nicknameSaved, true);
+    else setText(tracker.saved); // the save failed: show what is really saved, with the reason in the note
   };
+
+  // Leaving the page (Back) can unmount the box before its blur arrives, so save what is typed on the way out.
+  const latest = useRef({ text, save });
+  latest.current = { text, save };
+  useEffect(() => () => void latest.current.save(latest.current.text), []);
 
   return (
     <View style={{ padding: 14 }}>
-      <Field label={strings.nickname} value={text} onChangeText={setText} onBlur={save} onSubmitEditing={save} placeholder={strings.nicknamePlaceholder} maxLength={max} autoCapitalize="words" returnKeyType="done" />
+      <Field label={strings.nickname} value={text} onChangeText={setText} onBlur={() => save(text)} onSubmitEditing={() => save(text)} placeholder={strings.nicknamePlaceholder} maxLength={max} autoCapitalize="words" returnKeyType="done" />
     </View>
   );
 }

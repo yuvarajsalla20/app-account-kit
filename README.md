@@ -28,13 +28,15 @@ The kit has no colors. The app passes a `theme`, and can replace two pieces thro
 ```
 src/
   SettingsScreen.tsx     the screen: the page switch and the header
-  context.tsx            theme, wording and text components for everything below; useStyles
+  look.ts                the theme, wording and text components every piece reads (useLook, useStyles)
+  context.tsx            AccountProvider: fills look.ts and supplies the default Card and Header
   theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
   kit.ts                 KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
-  hooks/useAction.ts     "busy, then done or failed", used by every part
+  hooks/useAction.ts     "busy, then done or failed", used by every part; stops waiting after a timeout
   logic/                 pure functions, tested without a phone
     nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts  pages.ts
+    actionGuard.ts  saveTracker.ts  photo.ts  links.ts
   ui/                    small pieces: Group, Row, Card, Header, Avatar, Button, Field
   sections/
     HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
@@ -80,7 +82,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 
 ## Versions
 
-- Every release is tagged in git (`v4.0.2`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
+- Every release is tagged in git (`v4.1.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
 - With several kits, pin each one separately and upgrade one kit at a time.
 - Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
@@ -113,6 +115,16 @@ const ACCOUNT_THEME: AccountTheme = {
 `"app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full commit SHA>"` in `package.json`. Pin a full commit SHA, not a tag, so a build always gets exactly the code you tested.
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 
+## Upgrading from 4.0.x to 4.1
+
+- A save, delete or other action now gives up after `actionTimeoutMs` (default 45 s), so the screen can no longer stay stuck on a stalled network.
+- `actions.onSignOut` may be async; a failure shows a message. `onDeleteAccount` must confirm the person's identity itself (see its comment in `types.ts`).
+- Photos from `photo.pick` are checked: only small jpeg/png/webp data or https addresses are kept (`photo.maxChars` sets the limit). A refused photo shows `strings.photoInvalid`.
+- The data download keeps plain numbers as numbers (`-12.50` is no longer prefixed). `toCsv(rows, { bom: true })` adds the marker Excel needs for accents; `csvFileName` always returns a safe name.
+- The privacy and share links must be https. The support address cannot add a recipient.
+- Messages now appear in the danger color for failures and the accent color for successes, and the page scrolls to them.
+- New strings: `nicknameSaved`, `signOutAction`, `openLink`, `photoInvalid`.
+
 ## Upgrading from 3.x to 4.x
 
 - `AccountScreen` is now `SettingsScreen`, with a page behind each row (Account, My data, App, About).
@@ -129,4 +141,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.0.2 - 2026-11-04 11:08 AM CT
+Version 4.1.0 - 2026-11-04 3:55 PM CT
