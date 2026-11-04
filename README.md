@@ -41,7 +41,7 @@ src/
   sections/
     HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
     profile/            ProfileHeader, NicknameRow, PasswordPage, DataRow
-tests/                   logic tests
+tests/                   logic, review-fix and no-own-colors tests
 ```
 
 Each file does one job. Nothing is written twice: the button, the row, the card, the text box and the busy handling each exist once.
@@ -78,7 +78,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 
 The pure functions also live at `app-account-kit/logic`, which loads no React Native, so an app's tests can import them in plain Node.
 
-`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `kitsLine`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete`, `hubPages`, `parentOf` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
+`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `kitsLine`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete`, `hubPages`, `parentOf` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner. Also exported: `isHttps` and `isEmail` (link checks), `safePhoto` and `isPermissionError` (photo checks, `DEFAULT_PHOTO_MAX_CHARS`), `createActionGuard` (the timeout and double-tap guard behind `useAction`, `DEFAULT_ACTION_TIMEOUT_MS`), `createSaveTracker`, and `CSV_BOM` (`toCsv(rows, { bom: true })` adds it for Excel).
 
 ## Versions
 
@@ -89,11 +89,11 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 ## Rules it follows
 
 - The photo contract: `pick` returns a small picture or `null` when cancelled, and throws an `Error("permission")` when access is refused (the kit then shows its permission message).
-- The share row never appears without a real `http(s)` link.
+- The share row never appears without a real `https` link.
 - Rate app opens the App Store's own "Write a Review" screen (stars, title and review are entered there; Apple does not allow a custom form). The row shows on iPhone only, and only when `rate.appStoreId` is a number.
 - Change password opens a page inside the screen (its own back arrow). Save needs the current password, a new one of at least 6 characters (`minLength` to change), different from the current one, and a matching confirmation. The app's `onChange(current, next)` should sign in again with the current password before updating, because Firebase refuses a change after a long-ago sign-in.
 - Contact support opens a mail with the app, version and device already filled in; if no mail app exists it shows the address.
-- Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs; from the main list it is left to the app.
+- Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs (an action that runs past `actionTimeoutMs`, 45 seconds by default, is released with an error so the screen never stays stuck); from the main list it is left to the app.
 - Delete account is a two-step action, and the confirm button stays off until a password is typed when one is needed.
 - The kit has no look of its own. `theme` is required and complete; a missing color is a type error at build time. A test fails if a color literal ever appears in `src/`.
 - Every word can be reworded through `strings` (English defaults are built in).
@@ -141,4 +141,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.1.0 - 2026-11-04 3:55 PM CT
+Version 4.1.0 - 2026-11-04 4:12 PM CT
