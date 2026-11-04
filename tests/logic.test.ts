@@ -3,6 +3,8 @@ import { csvFileName, toCsv } from '../src/logic/csv';
 import { canConfirmDelete } from '../src/logic/deleteRules';
 import { supportMailUrl } from '../src/logic/mail';
 import { cleanNickname, initialOf } from '../src/logic/nickname';
+import { MIN_PASSWORD, passwordProblem } from '../src/logic/password';
+import { canRate, reviewUrl, reviewWebUrl } from '../src/logic/rate';
 import { buildShareMessage, canShare } from '../src/logic/share';
 import { DEFAULT_STRINGS } from '../src/strings';
 
@@ -52,6 +54,47 @@ describe('share', () => {
   });
 });
 
+describe('change password', () => {
+  const ok = { current: 'old-pass', next: 'new-pass', confirm: 'new-pass' };
+
+  it('accepts a valid change', () => {
+    expect(passwordProblem(ok)).toBeNull();
+  });
+
+  it('asks for the current password first, then length, difference and match', () => {
+    expect(passwordProblem({ ...ok, current: '' })).toBe('current');
+    expect(passwordProblem({ ...ok, next: 'abc', confirm: 'abc' })).toBe('short');
+    expect(passwordProblem({ ...ok, next: 'old-pass', confirm: 'old-pass' })).toBe('same');
+    expect(passwordProblem({ ...ok, confirm: 'other-pass' })).toBe('mismatch');
+  });
+
+  it('uses the app minimum when given, otherwise 6', () => {
+    expect(MIN_PASSWORD).toBe(6);
+    expect(passwordProblem({ ...ok, next: 'abcdefg', confirm: 'abcdefg', min: 8 })).toBe('short');
+  });
+
+  it('has plain words for every problem', () => {
+    for (const p of ['current', 'short', 'same', 'mismatch'] as const) expect(DEFAULT_STRINGS.passwordProblem(p, 6).length).toBeGreaterThan(0);
+    expect(DEFAULT_STRINGS.passwordProblem('short', 8)).toContain('8');
+  });
+});
+
+describe('rate', () => {
+  it('only shows for a numeric App Store number', () => {
+    expect(canRate('6740123456')).toBe(true);
+    expect(canRate(' 6740123456 ')).toBe(true);
+    expect(canRate('')).toBe(false);
+    expect(canRate(undefined)).toBe(false);
+    expect(canRate('id6740123456')).toBe(false);
+    expect(canRate('https://apps.apple.com/app/id1')).toBe(false);
+  });
+
+  it('opens the App Store review screen, with a web fallback', () => {
+    expect(reviewUrl('6740123456')).toBe('itms-apps://itunes.apple.com/app/id6740123456?action=write-review');
+    expect(reviewWebUrl('6740123456')).toBe('https://apps.apple.com/app/id6740123456?action=write-review');
+  });
+});
+
 describe('supportMailUrl', () => {
   it('fills in the app, version and device', () => {
     const url = supportMailUrl({ email: 'help@x.com', appName: 'My App', versionNumber: '1.2.0', device: 'ios 18' });
@@ -73,6 +116,6 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['buildShareMessage', 'canConfirmDelete', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'supportMailUrl', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
   });
 });

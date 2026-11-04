@@ -1,5 +1,5 @@
 /** The rows the kit draws itself, each with its own icon color. */
-export const TINT_KEYS = ['password', 'data', 'share', 'privacy', 'support', 'version'] as const;
+export const TINT_KEYS = ['password', 'data', 'share', 'rate', 'privacy', 'support', 'version'] as const;
 export type TintKey = (typeof TINT_KEYS)[number];
 
 /**

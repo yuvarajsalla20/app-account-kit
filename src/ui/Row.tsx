@@ -39,7 +39,7 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
           <components.Text style={styles.label}>{label}</components.Text>
           {detail ? <components.Text style={styles.detail}>{detail}</components.Text> : null}
         </View>
-        {value ? <components.Text style={styles.value} numberOfLines={1}>{value}</components.Text> : null}
+        {value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
         {toggle ? (
           <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityLabel={label} />
         ) : onPress ? (
@@ -58,6 +58,6 @@ const makeStyles = (t: AccountTheme) => ({
   grow: { flex: 1 },
   label: { color: t.text, fontSize: 16, fontWeight: '600' as const },
   detail: { color: t.muted, fontSize: 12, marginTop: 2 },
-  value: { color: t.muted, fontSize: 15, flexShrink: 1 },
+  value: { color: t.muted, fontSize: 15, flexShrink: 1, maxWidth: '65%' as const, textAlign: 'right' as const },
   extra: { paddingHorizontal: 14, paddingBottom: 14 },
 });

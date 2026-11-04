@@ -11,7 +11,8 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { buildShareMessage, canConfirmDelete, canShare, cleanNickname, csvFileName, initialOf, supportMailUrl, toCsv } from './logic';
+export { MIN_PASSWORD, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, passwordProblem, reviewUrl, reviewWebUrl, supportMailUrl, toCsv } from './logic';
+export type { PasswordProblem } from './logic';
 export type {
   AboutProps,
   AccountScreenProps,

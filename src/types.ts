@@ -33,8 +33,10 @@ export interface PhotoProps {
 
 /** Present only for people who sign in with a password. */
 export interface PasswordProps {
-  /** Emails them a link to set a new password. */
-  onSend: () => Promise<void>;
+  /** Sets the new password. The current one is passed too, so the app can sign the person in again first (Firebase asks for a recent sign-in). Throw to show an error. */
+  onChange: (currentPassword: string, newPassword: string) => Promise<void>;
+  /** The shortest new password allowed. Default 6. */
+  minLength?: number;
 }
 
 export interface DataProps {
@@ -53,6 +55,8 @@ export interface AboutProps {
   supportEmail: string;
   /** The Share row appears when `url` is set (the App Store address). `message` replaces the default wording. */
   share?: { url?: string; message?: string };
+  /** The Rate row (iPhone only) appears when `appStoreId` is set. It opens the App Store's own review screen: stars, title and review. */
+  rate?: { appStoreId?: string };
 }
 
 export interface ActionsProps {
