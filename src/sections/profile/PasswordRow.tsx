@@ -20,7 +20,7 @@ export function PasswordRow({ onSend, email, action }: Props) {
   const [open, setOpen] = useState(false);
 
   const send = async () => {
-    const ok = await action.run('password', onSend, () => strings.couldNot(strings.sendEmail));
+    const ok = await action.run('password', onSend, (e) => action.describe(e, strings.couldNot(strings.sendEmail)));
     if (ok) {
       action.setNote(strings.linkSent(email));
       setOpen(false);

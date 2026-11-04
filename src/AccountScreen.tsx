@@ -14,10 +14,10 @@ type Props = AccountScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-function Body({ profile, nickname, photo, password, data, about, actions, children, onError }: AccountScreenProps) {
+function Body({ profile, nickname, photo, password, data, about, actions, children, onError, describeError }: AccountScreenProps) {
   const { components } = useLook();
   const styles = useStyles((t) => ({ body: { gap: 16, paddingBottom: 40 }, note: { color: t.accent, fontSize: 13, lineHeight: 18 } }));
-  const action = useAction(onError);
+  const action = useAction(onError, describeError);
   return (
     <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.body}>
       <ProfileSection profile={profile} nickname={nickname} photo={photo} password={password} data={data} action={action} />

@@ -69,3 +69,10 @@ describe('canConfirmDelete', () => {
     expect(canConfirmDelete({ busy: true, confirmsWithPassword: false, password: '' })).toBe(false);
   });
 });
+
+describe('logic entry', () => {
+  it('exposes the pure functions without React Native', async () => {
+    const logic = await import('../src/logic');
+    expect(Object.keys(logic).sort()).toEqual(['buildShareMessage', 'canConfirmDelete', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'supportMailUrl', 'toCsv']);
+  });
+});

@@ -45,7 +45,7 @@ export function ActionsSection({ onSignOut, onDeleteAccount, confirmsWithPasswor
             label={strings.deleteEverything}
             busy={action.busy}
             disabled={!canConfirmDelete({ busy: action.busy, confirmsWithPassword, password })}
-            onPress={() => action.run('delete-account', () => onDeleteAccount(password), (e) => (e as Error).message || strings.couldNot(strings.deleteAccount.toLowerCase()))}
+            onPress={() => action.run('delete-account', () => onDeleteAccount(password), (e) => action.describe(e, strings.couldNot(strings.deleteAccount.toLowerCase())))}
           />
           <Button variant="quiet" small label={strings.keepAccount} onPress={cancel} disabled={action.busy} />
         </View>

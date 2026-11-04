@@ -77,6 +77,8 @@ export interface AccountScreenProps {
   actions: ActionsProps;
   /** The app's own settings, shown between Profile and About. Build them with SettingsGroup and SettingRow. */
   children?: ReactNode;
+  /** Turns a sign-in error (wrong password, asked too often) into plain words. Return nothing for errors it does not know. */
+  describeError?: (error: unknown) => string | null | undefined;
   /** Quiet failures, for crash reporting. */
   onError?: (where: string, error: unknown) => void;
 }

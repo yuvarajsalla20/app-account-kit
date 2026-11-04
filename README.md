@@ -53,6 +53,7 @@ import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
   data={{ label: 'Download my reminders', value: 'CSV', onDownload: exportAll }}
   about={{ appName: APP_NAME, version: { number: '0.2.0', label: VERSION_LABEL }, privacyUrl: PRIVACY_URL, supportEmail: SUPPORT_EMAIL, share: { url: APP_STORE_URL } }}
   actions={{ onSignOut, onDeleteAccount, confirmsWithPassword: authKit.confirmsWithPassword() }}
+  describeError={authKit.message}                      // plain words for sign-in errors (optional)
   onError={reportError}
 >
   <SettingsGroup title="Reminders">
@@ -64,6 +65,8 @@ import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
 The app draws its own header (back arrow, title) and page background around `AccountScreen`.
 
 ## Helpers you can reuse
+
+The pure functions also live at `app-account-kit/logic`, which loads no React Native, so an app's tests can import them in plain Node.
 
 `toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `supportMailUrl`, `canConfirmDelete` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
 
@@ -81,4 +84,4 @@ The app draws its own header (back arrow, title) and page background around `Acc
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 
 ---
-Version 1.0.0 - 2026-11-03 10:30 PM CST
+Version 1.1.0 - 2026-11-03 10:45 PM CST

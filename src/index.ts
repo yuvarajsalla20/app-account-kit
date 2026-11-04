@@ -12,11 +12,7 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { cleanNickname, initialOf } from './logic/nickname';
-export { csvFileName, toCsv } from './logic/csv';
-export { buildShareMessage, canShare } from './logic/share';
-export { supportMailUrl } from './logic/mail';
-export { canConfirmDelete } from './logic/deleteRules';
+export { buildShareMessage, canConfirmDelete, canShare, cleanNickname, csvFileName, initialOf, supportMailUrl, toCsv } from './logic';
 export type {
   AboutProps,
   AccountScreenProps,
