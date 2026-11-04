@@ -128,4 +128,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.0.0 - 2026-11-04 6:55 AM CT
+Version 4.0.0 - 2026-11-04 7:25 AM CT
