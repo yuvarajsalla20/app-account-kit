@@ -1,4 +1,11 @@
-/** Colors the Account screen uses. Pass only what differs from the defaults. */
+/** The rows the kit draws itself, each with its own icon color. */
+export const TINT_KEYS = ['password', 'data', 'share', 'privacy', 'support', 'version'] as const;
+export type TintKey = (typeof TINT_KEYS)[number];
+
+/**
+ * Every color and size the Account screen uses. The kit has no look of its own: the app passes all of it, once,
+ * so a missing value is a type error at build time and never a silently wrong color.
+ */
 export interface AccountTheme {
   /** Main text and icons. */
   text: string;
@@ -22,20 +29,6 @@ export interface AccountTheme {
   on: string;
   /** Rounded corners of a card. */
   radius: number;
+  /** Icon color of each row the kit draws. */
+  tints: Record<TintKey, string>;
 }
-
-export const DEFAULT_THEME: AccountTheme = {
-  text: '#F5F5F7',
-  muted: '#9A9AA0',
-  faint: '#76767C',
-  accent: '#5B8CFF',
-  ink: '#0B0B0C',
-  surface: '#141416',
-  border: '#232326',
-  line: '#232326',
-  field: '#1C1C1F',
-  panel: '#1C1416',
-  danger: '#FF8A80',
-  on: '#34C759',
-  radius: 22,
-};

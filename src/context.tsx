@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ComponentProps, type ComponentType, type ReactNode } from 'react';
 import { StyleSheet, Text as RNText, TextInput as RNTextInput, type ImageStyle, type TextStyle, type ViewStyle } from 'react-native';
 import { DEFAULT_STRINGS, type AccountStrings } from './strings';
-import { DEFAULT_THEME, type AccountTheme } from './theme';
+import type { AccountTheme } from './theme';
 
 /** The app's own text components, so the screen picks up its fonts. Plain React Native ones are the default. */
 export interface AccountComponents {
@@ -17,10 +17,11 @@ interface Look {
   components: AccountComponents;
 }
 
-const LookContext = createContext<Look>({ theme: DEFAULT_THEME, strings: DEFAULT_STRINGS, components: DEFAULT_COMPONENTS });
+const LookContext = createContext<Look | null>(null);
 
 interface ProviderProps {
-  theme?: Partial<AccountTheme>;
+  /** Required: the kit has no colors of its own. */
+  theme: AccountTheme;
   strings?: Partial<AccountStrings>;
   components?: Partial<AccountComponents>;
   children: ReactNode;
@@ -29,13 +30,17 @@ interface ProviderProps {
 /** Gives every piece below it the app's colors, wording and text components. */
 export function AccountProvider({ theme, strings, components, children }: ProviderProps) {
   const look = useMemo<Look>(
-    () => ({ theme: { ...DEFAULT_THEME, ...theme }, strings: { ...DEFAULT_STRINGS, ...strings }, components: { ...DEFAULT_COMPONENTS, ...components } }),
+    () => ({ theme, strings: { ...DEFAULT_STRINGS, ...strings }, components: { ...DEFAULT_COMPONENTS, ...components } }),
     [theme, strings, components],
   );
   return <LookContext.Provider value={look}>{children}</LookContext.Provider>;
 }
 
-export const useLook = (): Look => useContext(LookContext);
+export const useLook = (): Look => {
+  const look = useContext(LookContext);
+  if (!look) throw new Error('app-account-kit: render this inside <AccountScreen theme={...}> or <AccountProvider theme={...}>.');
+  return look;
+};
 
 /** Styles that depend on the theme, built once per theme: `const styles = useStyles((t) => ({ box: { color: t.text } }))`. */
 type Styles = Record<string, ViewStyle | TextStyle | ImageStyle>;

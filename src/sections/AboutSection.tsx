@@ -6,7 +6,6 @@ import { buildShareMessage, canShare } from '../logic/share';
 import type { AboutProps } from '../types';
 import { SettingsGroup } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
-import { TINTS } from '../ui/tints';
 
 interface Props extends AboutProps {
   action: ActionRunner;
@@ -14,7 +13,7 @@ interface Props extends AboutProps {
 
 /** Share the app, Privacy policy, Contact support and the Version. */
 export function AboutSection({ appName, version, privacyUrl, supportEmail, share, action }: Props) {
-  const { strings } = useLook();
+  const { theme, strings } = useLook();
   const shareUrl = share?.url;
 
   const contact = () =>
@@ -27,16 +26,16 @@ export function AboutSection({ appName, version, privacyUrl, supportEmail, share
       {canShare(shareUrl) ? (
         <SettingRow
           icon="share"
-          tint={TINTS.share}
+          tint={theme.tints.share}
           label={strings.share(appName)}
           onPress={() => {
             action.run('share', () => Share.share({ message: buildShareMessage(strings.shareMessage, appName, shareUrl, share?.message) }).then(() => undefined), () => strings.couldNot(strings.shareApp));
           }}
         />
       ) : null}
-      <SettingRow icon="shield" tint={TINTS.privacy} label={strings.privacy} onPress={() => Linking.openURL(privacyUrl).catch(() => undefined)} />
-      <SettingRow icon="mail" tint={TINTS.support} label={strings.contactSupport} onPress={contact} />
-      <SettingRow last icon="info" tint={TINTS.version} label={strings.version} detail={version.label} />
+      <SettingRow icon="shield" tint={theme.tints.privacy} label={strings.privacy} onPress={() => Linking.openURL(privacyUrl).catch(() => undefined)} />
+      <SettingRow icon="mail" tint={theme.tints.support} label={strings.contactSupport} onPress={contact} />
+      <SettingRow last icon="info" tint={theme.tints.version} label={strings.version} detail={version.label} />
     </SettingsGroup>
   );
 }

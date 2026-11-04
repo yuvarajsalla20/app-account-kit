@@ -9,7 +9,8 @@ import type { AccountTheme } from './theme';
 import type { AccountScreenProps } from './types';
 
 type Props = AccountScreenProps & {
-  theme?: Partial<AccountTheme>;
+  /** Every color and size, from the app. The kit has no look of its own. */
+  theme: AccountTheme;
   strings?: Partial<AccountStrings>;
   components?: Partial<AccountComponents>;
 };

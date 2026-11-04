@@ -24,12 +24,12 @@ Every part is optional: leave a prop out and its row is hidden (no `password` fo
 src/
   AccountScreen.tsx      the screen: puts the parts in order
   context.tsx            theme, wording and text components for everything below; useStyles
-  theme.ts  strings.ts   colors and every word, both overridable
+  theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
   hooks/useAction.ts     "busy, then done or failed", used by every part
   logic/                 pure functions, tested without a phone
     nickname.ts  csv.ts  share.ts  mail.ts  deleteRules.ts
-  ui/                    small pieces: Group, Row, Avatar, Button, Field, tints
+  ui/                    small pieces: Group, Row, Avatar, Button, Field
   sections/
     ProfileSection.tsx  AboutSection.tsx  ActionsSection.tsx
     profile/            ProfileHeader, NicknameRow, PasswordRow, DataRow
@@ -44,7 +44,7 @@ Each file does one job. Nothing is written twice: the button, the row, the card,
 import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
 
 <AccountScreen
-  theme={{ text: '#fff', accent: '#fff', ink: '#2a1062', surface: 'rgba(255,255,255,0.15)', border: 'rgba(255,255,255,0.28)', danger: '#ffc2c2' }}
+  theme={ACCOUNT_THEME}                                   // required: the kit has no colors of its own
   components={{ Text, TextInput }}                       // the app's font-aware components (optional)
   profile={{ name, fallbackName: APP_NAME, email, photo, fallbackPhoto }}
   nickname={{ max: 20, onSave: (name) => saveProfile({ ...profile, name }) }}
@@ -76,7 +76,20 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 - The share row never appears without a real `http(s)` link.
 - Contact support opens a mail with the app, version and device already filled in; if no mail app exists it shows the address.
 - Delete account is a two-step action, and the confirm button stays off until a password is typed when one is needed.
-- Every word can be reworded through `strings`; every color through `theme`.
+- The kit has no look of its own. `theme` is required and complete; a missing color is a type error at build time. A test fails if a color literal ever appears in `src/`.
+- Every word can be reworded through `strings` (English defaults are built in).
+
+## The theme the app passes
+
+```ts
+const ACCOUNT_THEME: AccountTheme = {
+  text: '#fff', muted: '#bbb', faint: '#999',
+  accent: '#fff', ink: '#2a1062',
+  surface: 'rgba(255,255,255,0.15)', border: 'rgba(255,255,255,0.28)', line: 'rgba(255,255,255,0.18)',
+  field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#34c759', radius: 22,
+  tints: { password: '#f5b266', data: '#7fd9a8', share: '#c3b3ff', privacy: '#7db7f5', support: '#f48fc1', version: '#b8c4e0' },
+};
+```
 
 ## Install
 
@@ -84,4 +97,4 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 
 ---
-Version 1.1.0 - 2026-11-03 10:45 PM CST
+Version 2.0.0 - 2026-11-03 11:58 PM CT
