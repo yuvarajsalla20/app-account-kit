@@ -3,7 +3,7 @@ export const TINT_KEYS = ['account', 'app', 'about', 'password', 'data', 'share'
 export type TintKey = (typeof TINT_KEYS)[number];
 
 /**
- * Every color and size the Account screen uses. The kit has no look of its own: the app passes all of it, once,
+ * Every color and size the Settings screen uses. The kit has no look of its own: the app passes all of it, once,
  * so a missing value is a type error at build time and never a silently wrong color.
  */
 export interface AccountTheme {

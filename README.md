@@ -76,11 +76,11 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 
 The pure functions also live at `app-account-kit/logic`, which loads no React Native, so an app's tests can import them in plain Node.
 
-`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `kitsLine`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
+`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `kitsLine`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete`, `hubPages`, `parentOf` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
 
 ## Versions
 
-- Every release is tagged in git (`v3.1.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
+- Every release is tagged in git (`v4.0.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
 - With several kits, pin each one separately and upgrade one kit at a time.
 - Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
@@ -103,7 +103,7 @@ const ACCOUNT_THEME: AccountTheme = {
   accent: '#fff', ink: '#2a1062',
   surface: 'rgba(255,255,255,0.15)', border: 'rgba(255,255,255,0.28)', line: 'rgba(255,255,255,0.18)',
   field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#34c759', radius: 22,
-  tints: { password: '#f5b266', data: '#7fd9a8', share: '#c3b3ff', rate: '#ffd479', privacy: '#7db7f5', support: '#f48fc1', version: '#b8c4e0' },
+  tints: { account: '#c3b3ff', app: '#93a4ff', about: '#7db7f5', password: '#f5b266', data: '#7fd9a8', share: '#c3b3ff', rate: '#ffd479', privacy: '#7db7f5', support: '#f48fc1', version: '#b8c4e0' },
 };
 ```
 
@@ -112,6 +112,15 @@ const ACCOUNT_THEME: AccountTheme = {
 `"app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full commit SHA>"` in `package.json`. Pin a full commit SHA, not a tag, so a build always gets exactly the code you tested.
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 
+## Upgrading from 3.x to 4.0.0
+
+- `AccountScreen` is now `SettingsScreen`, with a page behind each row (Account, My data, App, About).
+- `children` is replaced by `app={{ hint, content }}`. `onBack` is required (Back from the main list).
+- Strings `profile` and `yourData` are now `account` and `myData`; new `settings` and `app`.
+- The theme needs three more icon colors: `tints.account`, `tints.app`, `tints.about`.
+- Sign out moved to the main list, and Delete account to the Account page.
+- New optional `components.Card` and `components.Header`, so the app draws the cards and page titles.
+
 ## Upgrading from 2.x
 
 - `password.onSend` is now `password.onChange(current, next)`.
@@ -119,4 +128,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 3.1.0 - 2026-11-04 6:55 AM CT
+Version 4.0.0 - 2026-11-04 6:55 AM CT

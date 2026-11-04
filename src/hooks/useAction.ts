@@ -5,12 +5,12 @@ export interface ActionRunner {
   /** A short message under the screen's title area: a success or a failure. */
   note: string | null;
   setNote: (text: string | null) => void;
+  /** Plain words for an error: the app's own `describeError` when it knows the error, else `fallback`. */
+  describe: (error: unknown, fallback: string) => string;
   /**
    * Runs one action with `busy` on and the old note cleared. A failure is reported through `onError`
    * and shown as `failure(error)`. Returns true when it worked.
    */
-  /** Plain words for an error: the app's own `describeError` when it knows the error, else `fallback`. */
-  describe: (error: unknown, fallback: string) => string;
   run: (where: string, action: () => Promise<void> | void, failure: (error: unknown) => string) => Promise<boolean>;
 }
 

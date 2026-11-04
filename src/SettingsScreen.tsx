@@ -30,6 +30,7 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
     setPage(next);
   };
   const back = () => {
+    if (action.busy) return; // a save or delete is running: stay, so its result lands on the page that started it
     const up = parentOf(page);
     if (up) go(up);
     else onBack();
@@ -40,9 +41,9 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
   return (
     <>
       <components.Header title={titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
-      <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.body}>
+      <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage profile={profile} data={data} app={app} about={about} onSignOut={actions.onSignOut} onOpen={go} /> : null}
+        {page === 'hub' ? <HubPage profile={profile} data={data} app={app} about={about} onSignOut={actions.onSignOut} busy={action.busy} onOpen={go} /> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} />
         ) : null}

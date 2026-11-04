@@ -44,7 +44,7 @@ export function AccountProvider({ theme, strings, components, children }: Provid
 
 export const useLook = (): Look => {
   const look = useContext(LookContext);
-  if (!look) throw new Error('app-account-kit: render this inside <AccountScreen theme={...}> or <AccountProvider theme={...}>.');
+  if (!look) throw new Error('app-account-kit: render this inside <SettingsScreen theme={...}> or <AccountProvider theme={...}>.');
   return look;
 };
 

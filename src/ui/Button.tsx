@@ -18,7 +18,7 @@ interface Props {
   grow?: boolean;
 }
 
-/** The one button the Account screen uses: Send link, Sign out, Delete account, Delete everything. */
+/** The one button the Settings screen uses: Send link, Sign out, Delete account, Delete everything. */
 export function Button({ label, onPress, variant = 'quiet', icon, small, busy, disabled, grow }: Props) {
   const { theme, components } = useLook();
   const styles = useStyles(makeStyles);

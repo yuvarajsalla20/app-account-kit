@@ -9,7 +9,7 @@ import { Field } from '../../ui/Field';
 
 interface Props extends PasswordProps {
   action: ActionRunner;
-  /** Called after the password was saved, to go back to the Account screen. */
+  /** Called after the password was saved, to go back to the Account page. */
   onDone: () => void;
 }
 
