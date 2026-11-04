@@ -1,3 +1,5 @@
+export { hubPages, parentOf } from './pages';
+export type { Page } from './pages';
 export { canConfirmDelete } from './deleteRules';
 export { csvFileName, toCsv } from './csv';
 export { supportMailUrl } from './mail';

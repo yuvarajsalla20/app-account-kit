@@ -2,7 +2,10 @@ import type { PasswordProblem } from './logic/password';
 
 /** Every word on the screen, so an app can translate or reword it. */
 export interface AccountStrings {
-  profile: string;
+  settings: string;
+  account: string;
+  myData: string;
+  app: string;
   nickname: string;
   nicknamePlaceholder: string;
   changePhoto: string;
@@ -18,7 +21,6 @@ export interface AccountStrings {
   passwordChanged: string;
   passwordProblem: (problem: PasswordProblem, min: number) => string;
   back: string;
-  yourData: string;
   about: string;
   share: (appName: string) => string;
   shareMessage: (appName: string, url: string) => string;
@@ -45,7 +47,10 @@ export interface AccountStrings {
 }
 
 export const DEFAULT_STRINGS: AccountStrings = {
-  profile: 'Profile',
+  settings: 'Settings',
+  account: 'Account',
+  myData: 'My data',
+  app: 'App',
   nickname: 'Nickname',
   nicknamePlaceholder: 'Add a nickname',
   changePhoto: 'Change photo',
@@ -67,7 +72,6 @@ export const DEFAULT_STRINGS: AccountStrings = {
       mismatch: 'The two new passwords do not match.',
     })[problem],
   back: 'Back',
-  yourData: 'Your data',
   about: 'About',
   share: (appName) => `Share ${appName}`,
   shareMessage: (appName, url) => `Try ${appName}: ${url}`,

@@ -25,7 +25,7 @@ export function AboutSection({ appName, version, privacyUrl, supportEmail, share
     );
 
   return (
-    <SettingsGroup title={strings.about}>
+    <SettingsGroup>
       {canShare(shareUrl) ? (
         <SettingRow
           icon="share"

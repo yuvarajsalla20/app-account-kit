@@ -1,4 +1,4 @@
-export { AccountScreen } from './AccountScreen';
+export { SettingsScreen } from './SettingsScreen';
 export { AccountProvider } from './context';
 export type { AccountComponents } from './context';
 export { KIT_NAME, KIT_VERSION } from './kit';
@@ -12,11 +12,11 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { MIN_PASSWORD, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, kitsLine, passwordProblem, reviewUrl, reviewWebUrl, supportMailUrl, toCsv } from './logic';
-export type { PasswordProblem } from './logic';
+export { MIN_PASSWORD, hubPages, parentOf, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, kitsLine, passwordProblem, reviewUrl, reviewWebUrl, supportMailUrl, toCsv } from './logic';
+export type { Page, PasswordProblem } from './logic';
 export type {
   AboutProps,
-  AccountScreenProps,
+  AppPageProps,
   ActionsProps,
   DataProps,
   IconName,
@@ -25,4 +25,5 @@ export type {
   PhotoProps,
   PhotoSource,
   ProfileInfo,
+  SettingsScreenProps,
 } from './types';

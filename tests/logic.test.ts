@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { KIT_NAME, KIT_VERSION } from '../src/kit';
+import { hubPages, parentOf } from '../src/logic/pages';
 import { kitsLine } from '../src/logic/kits';
 import { csvFileName, toCsv } from '../src/logic/csv';
 import { canConfirmDelete } from '../src/logic/deleteRules';
@@ -106,7 +107,7 @@ describe('kit version', () => {
   });
 
   it('builds one line of every kit in use', () => {
-    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '3.1.0' })).toBe('core 1.4.0 · auth 2.1.0 · account 3.1.0');
+    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.0' })).toBe('core 1.4.0 · auth 2.1.0 · account 4.0.0');
     expect(kitsLine({})).toBe('');
   });
 });
@@ -134,6 +135,20 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'kitsLine', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'hubPages', 'initialOf', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
+  });
+});
+
+describe('settings pages', () => {
+  it('goes back one level, and the hub hands back to the app', () => {
+    expect(parentOf('hub')).toBeNull();
+    expect(parentOf('account')).toBe('hub');
+    expect(parentOf('about')).toBe('hub');
+    expect(parentOf('password')).toBe('account');
+  });
+
+  it('lists only the pages the app has, Account first and About last', () => {
+    expect(hubPages({ data: true, app: true })).toEqual(['account', 'data', 'app', 'about']);
+    expect(hubPages({ data: false, app: false })).toEqual(['account', 'about']);
   });
 });

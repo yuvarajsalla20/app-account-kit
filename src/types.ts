@@ -70,19 +70,29 @@ export interface ActionsProps {
   confirmsWithPassword: boolean;
 }
 
-export interface AccountScreenProps {
+/** The App page: the app's own settings, with a short hint beside its row on the main list. */
+export interface AppPageProps {
+  hint?: string;
+  /** Build the rows with SettingsGroup and SettingRow. */
+  content: ReactNode;
+}
+
+export interface SettingsScreenProps {
+  /** Back from the main list (to Home). Back from every other page returns to the list. */
+  onBack: () => void;
+  backLabel?: string;
   profile: ProfileInfo;
   nickname: NicknameProps;
   /** Leave out to hide Change photo. */
   photo?: PhotoProps;
   /** Leave out to hide Change password (people who sign in with Apple or Google). */
   password?: PasswordProps;
-  /** Leave out to hide the data download. */
+  /** Leave out to hide the My data row. */
   data?: DataProps;
   about: AboutProps;
   actions: ActionsProps;
-  /** The app's own settings, shown between Profile and About. Build them with SettingsGroup and SettingRow. */
-  children?: ReactNode;
+  /** Leave out when the app has no settings of its own: the App row is hidden. */
+  app?: AppPageProps;
   /** Turns a sign-in error (wrong password, asked too often) into plain words. Return nothing for errors it does not know. */
   describeError?: (error: unknown) => string | null | undefined;
   /** Quiet failures, for crash reporting. */

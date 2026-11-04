@@ -1,5 +1,7 @@
 import { createContext, useContext, useMemo, type ComponentProps, type ComponentType, type ReactNode } from 'react';
 import { StyleSheet, Text as RNText, TextInput as RNTextInput, type ImageStyle, type TextStyle, type ViewStyle } from 'react-native';
+import { PlainCard } from './ui/Card';
+import { PlainHeader } from './ui/Header';
 import { DEFAULT_STRINGS, type AccountStrings } from './strings';
 import type { AccountTheme } from './theme';
 
@@ -7,9 +9,13 @@ import type { AccountTheme } from './theme';
 export interface AccountComponents {
   Text: ComponentType<ComponentProps<typeof RNText>>;
   TextInput: ComponentType<ComponentProps<typeof RNTextInput>>;
+  /** Draws every card (a group of rows). Gets the corner radius to use. Default: the theme's fill and edge. */
+  Card: ComponentType<{ children: ReactNode; radius: number }>;
+  /** Draws the title and back arrow at the top of every page. Default: a plain arrow and title. */
+  Header: ComponentType<{ title: string; onBack: () => void; backLabel: string }>;
 }
 
-const DEFAULT_COMPONENTS: AccountComponents = { Text: RNText, TextInput: RNTextInput };
+const DEFAULT_COMPONENTS: AccountComponents = { Text: RNText, TextInput: RNTextInput, Card: PlainCard, Header: PlainHeader };
 
 interface Look {
   theme: AccountTheme;

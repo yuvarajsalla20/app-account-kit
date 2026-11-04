@@ -1,38 +1,43 @@
 # app-account-kit
 
-Reusable Account screen for React Native / Expo apps (iOS, Android).
+Reusable Settings screen for React Native / Expo apps (iOS, Android).
 Profile, nickname, photo, change password (its own page), data download, About (share, rate, privacy, support, version), sign out and delete account.
 Themeable, with a slot for each app's own settings. No native dependencies of its own: the app supplies the photo picker, the file download and the sign-in calls.
 Companion to [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) and [app-auth-kit](https://github.com/yuvarajsalla20/app-auth-kit).
 
 ## What you get
 
-Top to bottom, in this order:
+A **Settings** screen: a main list, and a page behind each row. Back from a page returns to the list; Back from the list calls the app's `onBack`.
 
-| Part | What it shows | App supplies |
+| Page | What it shows | App supplies |
 |---|---|---|
-| **Profile** | Picture, name, email, Change photo; a card with the nickname and Change password (tap the arrow for a page with Current, New and Confirm password and Save); a "Your data" card with the download row | `profile`, `nickname`, `photo`, `password`, `data` |
-| **Your own settings** | Anything the app wants between Profile and About | `children`, built with `SettingsGroup` and `SettingRow` |
-| **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version with its details on the right, and a Kits row when the app passes `kits` | `about` |
-| **Account actions** | Sign out, then Delete account with a confirmation (password typed only when the login has one) | `actions` |
+| **Main list** | Account, My data, App and About rows, each with a small hint on the right (email, "CSV", the app's own hint, the version), then **Sign out** | `onBack`, `actions.onSignOut` |
+| **Account** | Picture, name, email, Change photo; a card with the nickname and Change password (its own page); **Delete account** with a confirmation (password typed only when the login has one) | `profile`, `nickname`, `photo`, `password`, `actions` |
+| **My data** | The download row | `data` |
+| **App** | The app's own settings | `app: { hint, content }`, built with `SettingsGroup` and `SettingRow` |
+| **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version, and a Kits row when the app passes `kits` | `about` |
 
-Every part is optional: leave a prop out and its row is hidden (no `password` for Apple or Google sign-ins, no `data` for an app with nothing to download, no `share.url` or `rate.appStoreId` before the app is in the store).
+Every part is optional: leave a prop out and its row (or page) is hidden.
+
+## Look
+
+The kit has no colors. The app passes a `theme`, and can replace two pieces through `components`: `Card` (draws every card, so an app can use frosted glass) and `Header` (the page title and back arrow), so every page matches the rest of the app.
 
 ## Folder layout
 
 ```
 src/
-  AccountScreen.tsx      the screen: puts the parts in order
+  SettingsScreen.tsx     the screen: the page switch and the header
   context.tsx            theme, wording and text components for everything below; useStyles
   theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
   kit.ts                 KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
   hooks/useAction.ts     "busy, then done or failed", used by every part
   logic/                 pure functions, tested without a phone
-    nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts
-  ui/                    small pieces: Group, Row, Avatar, Button, Field, Page
+    nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts  pages.ts
+  ui/                    small pieces: Group, Row, Card, Header, Avatar, Button, Field
   sections/
-    ProfileSection.tsx  AboutSection.tsx  ActionsSection.tsx
+    HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
     profile/            ProfileHeader, NicknameRow, PasswordPage, DataRow
 tests/                   logic tests
 ```
@@ -42,11 +47,12 @@ Each file does one job. Nothing is written twice: the button, the row, the card,
 ## Use it
 
 ```tsx
-import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
+import { SettingsScreen, SettingRow, SettingsGroup } from 'app-account-kit';
 
-<AccountScreen
+<SettingsScreen
   theme={ACCOUNT_THEME}                                   // required: the kit has no colors of its own
-  components={{ Text, TextInput }}                       // the app's font-aware components (optional)
+  components={{ Text, TextInput, Card, Header }}          // the app's own text, card and header (all optional)
+  onBack={goHome}
   profile={{ name, fallbackName: APP_NAME, email, photo, fallbackPhoto }}
   nickname={{ max: 20, onSave: (name) => saveProfile({ ...profile, name }) }}
   photo={{ pick: pickProfilePhoto, onChange: (photo) => saveProfile({ ...profile, photo }), cameraSupported }}
@@ -56,14 +62,15 @@ import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
   actions={{ onSignOut, onDeleteAccount, confirmsWithPassword: authKit.confirmsWithPassword() }}
   describeError={authKit.message}                      // plain words for sign-in errors (optional)
   onError={reportError}
->
-  <SettingsGroup title="Reminders">
-    <SettingRow icon="clock" tint="#7db7f5" label="Default remind before" value="At time" onPress={...} />
-  </SettingsGroup>
-</AccountScreen>
+  app={{ hint: 'Sound, alerts', content: (
+    <SettingsGroup>
+      <SettingRow icon="clock" tint="#7db7f5" label="Default remind before" value="At time" onPress={...} />
+    </SettingsGroup>
+  ) }}
+/>
 ```
 
-The app draws its own header (back arrow, title) and page background around `AccountScreen`.
+The app draws its own page background around `SettingsScreen`; the kit draws the headers.
 
 ## Helpers you can reuse
 
