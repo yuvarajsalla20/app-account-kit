@@ -13,7 +13,7 @@ Top to bottom, in this order:
 |---|---|---|
 | **Profile** | Picture, name, email, Change photo; a card with the nickname and Change password (tap the arrow for a page with Current, New and Confirm password and Save); a "Your data" card with the download row | `profile`, `nickname`, `photo`, `password`, `data` |
 | **Your own settings** | Anything the app wants between Profile and About | `children`, built with `SettingsGroup` and `SettingRow` |
-| **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version with its details on the right | `about` |
+| **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version with its details on the right, and a Kits row when the app passes `kits` | `about` |
 | **Account actions** | Sign out, then Delete account with a confirmation (password typed only when the login has one) | `actions` |
 
 Every part is optional: leave a prop out and its row is hidden (no `password` for Apple or Google sign-ins, no `data` for an app with nothing to download, no `share.url` or `rate.appStoreId` before the app is in the store).
@@ -26,9 +26,10 @@ src/
   context.tsx            theme, wording and text components for everything below; useStyles
   theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
+  kit.ts                 KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
   hooks/useAction.ts     "busy, then done or failed", used by every part
   logic/                 pure functions, tested without a phone
-    nickname.ts  csv.ts  share.ts  rate.ts  password.ts  mail.ts  deleteRules.ts
+    nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts
   ui/                    small pieces: Group, Row, Avatar, Button, Field, Page
   sections/
     ProfileSection.tsx  AboutSection.tsx  ActionsSection.tsx
@@ -51,7 +52,7 @@ import { AccountScreen, SettingRow, SettingsGroup } from 'app-account-kit';
   photo={{ pick: pickProfilePhoto, onChange: (photo) => saveProfile({ ...profile, photo }), cameraSupported }}
   password={authKit.hasPassword() ? { onChange: authKit.changePassword } : undefined}   // (current, new) => Promise; sign in again with the current one first
   data={{ label: 'Download my reminders', value: 'CSV', onDownload: exportAll }}
-  about={{ appName: APP_NAME, version: { number: '0.2.0', label: VERSION_LABEL }, privacyUrl: PRIVACY_URL, supportEmail: SUPPORT_EMAIL, share: { url: APP_STORE_URL }, rate: { appStoreId: APP_STORE_ID } }}
+  about={{ appName: APP_NAME, version: { number: '0.2.0', label: VERSION_LABEL }, privacyUrl: PRIVACY_URL, supportEmail: SUPPORT_EMAIL, share: { url: APP_STORE_URL }, rate: { appStoreId: APP_STORE_ID }, kits: kitsLine({ core: CORE_KIT_VERSION, auth: AUTH_KIT_VERSION, account: KIT_VERSION }) }}
   actions={{ onSignOut, onDeleteAccount, confirmsWithPassword: authKit.confirmsWithPassword() }}
   describeError={authKit.message}                      // plain words for sign-in errors (optional)
   onError={reportError}
@@ -68,7 +69,13 @@ The app draws its own header (back arrow, title) and page background around `Acc
 
 The pure functions also live at `app-account-kit/logic`, which loads no React Native, so an app's tests can import them in plain Node.
 
-`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
+`toCsv(rows)` and `csvFileName(appName, stem)` build a CSV that opens safely in Excel and Sheets (formula-looking cells are neutralised). `cleanNickname`, `initialOf`, `buildShareMessage`, `canShare`, `kitsLine`, `canRate`, `reviewUrl`, `passwordProblem`, `supportMailUrl`, `canConfirmDelete` are the small pure functions the parts use. `useAction()` is the busy-then-done-or-failed runner.
+
+## Versions
+
+- Every release is tagged in git (`v3.1.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
+- With several kits, pin each one separately and upgrade one kit at a time.
+- Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
 ## Rules it follows
 
@@ -105,4 +112,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 3.0.0 - 2026-11-04 6:18 AM CT
+Version 3.1.0 - 2026-11-04 6:55 AM CT

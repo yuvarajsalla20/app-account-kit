@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { KIT_NAME, KIT_VERSION } from '../src/kit';
+import { kitsLine } from '../src/logic/kits';
 import { csvFileName, toCsv } from '../src/logic/csv';
 import { canConfirmDelete } from '../src/logic/deleteRules';
 import { supportMailUrl } from '../src/logic/mail';
@@ -95,12 +98,27 @@ describe('rate', () => {
   });
 });
 
+describe('kit version', () => {
+  it('matches package.json, so it cannot drift', () => {
+    const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+    expect(KIT_VERSION).toBe(pkg.version);
+    expect(KIT_NAME).toBe(pkg.name);
+  });
+
+  it('builds one line of every kit in use', () => {
+    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '3.1.0' })).toBe('core 1.4.0 · auth 2.1.0 · account 3.1.0');
+    expect(kitsLine({})).toBe('');
+  });
+});
+
 describe('supportMailUrl', () => {
   it('fills in the app, version and device', () => {
     const url = supportMailUrl({ email: 'help@x.com', appName: 'My App', versionNumber: '1.2.0', device: 'ios 18' });
     expect(url.startsWith('mailto:help@x.com?subject=')).toBe(true);
     expect(decodeURIComponent(url)).toContain('My App 1.2.0 support');
     expect(decodeURIComponent(url)).toContain('My App 1.2.0 · ios 18');
+    expect(decodeURIComponent(url)).not.toContain('Kits:');
+    expect(decodeURIComponent(supportMailUrl({ email: 'h@x.com', appName: 'A', versionNumber: '1', device: 'ios', kits: 'core 1.0.0' }))).toContain('Kits: core 1.0.0');
   });
 });
 
@@ -116,6 +134,6 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'csvFileName', 'initialOf', 'kitsLine', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'supportMailUrl', 'toCsv']);
   });
 });

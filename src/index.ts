@@ -1,6 +1,7 @@
 export { AccountScreen } from './AccountScreen';
 export { AccountProvider } from './context';
 export type { AccountComponents } from './context';
+export { KIT_NAME, KIT_VERSION } from './kit';
 export { DEFAULT_STRINGS } from './strings';
 export type { AccountStrings } from './strings';
 export type { AccountTheme, TintKey } from './theme';
@@ -11,7 +12,7 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { MIN_PASSWORD, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, passwordProblem, reviewUrl, reviewWebUrl, supportMailUrl, toCsv } from './logic';
+export { MIN_PASSWORD, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, kitsLine, passwordProblem, reviewUrl, reviewWebUrl, supportMailUrl, toCsv } from './logic';
 export type { PasswordProblem } from './logic';
 export type {
   AboutProps,

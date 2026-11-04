@@ -27,6 +27,7 @@ export interface AccountStrings {
   contactSupport: string;
   noMail: (email: string) => string;
   version: string;
+  kits: string;
   signOut: string;
   deleteAccount: string;
   deleteTitle: string;
@@ -75,6 +76,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   contactSupport: 'Contact support',
   noMail: (email) => `No mail app is set up. Write to ${email}`,
   version: 'Version',
+  kits: 'Kits',
   signOut: 'Sign out',
   deleteAccount: 'Delete account',
   deleteTitle: 'Delete your account?',

@@ -55,6 +55,8 @@ export interface AboutProps {
   supportEmail: string;
   /** The Share row appears when `url` is set (the App Store address). `message` replaces the default wording. */
   share?: { url?: string; message?: string };
+  /** All the kit versions in use, like "core 1.4.0 · auth 2.1.0 · account 3.1.0" (build it with `kitsLine`). Shown as a Kits row in About and added to support emails. */
+  kits?: string;
   /** The Rate row (iPhone only) appears when `appStoreId` is set. It opens the App Store's own review screen: stars, title and review. */
   rate?: { appStoreId?: string };
 }
