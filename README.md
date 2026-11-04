@@ -80,7 +80,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 
 ## Versions
 
-- Every release is tagged in git (`v4.0.1`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
+- Every release is tagged in git (`v4.0.2`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
 - With several kits, pin each one separately and upgrade one kit at a time.
 - Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
@@ -129,4 +129,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.0.1 - 2026-11-04 9:04 AM CT
+Version 4.0.2 - 2026-11-04 11:08 AM CT

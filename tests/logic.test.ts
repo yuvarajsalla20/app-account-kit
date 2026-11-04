@@ -107,7 +107,7 @@ describe('kit version', () => {
   });
 
   it('builds one line of every kit in use', () => {
-    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.1' })).toBe('core 1.4.0 · auth 2.1.0 · account 4.0.1');
+    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.1' })).toBe('core 1.4.0 | auth 2.1.0 | account 4.0.1');
     expect(kitsLine({})).toBe('');
   });
 });
