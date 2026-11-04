@@ -31,7 +31,15 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
   return (
     <View style={!last && styles.line}>
-      <Pressable onPress={press} disabled={!press || disabled} accessibilityRole={press ? 'button' : undefined} style={styles.row}>
+      <Pressable
+        onPress={press}
+        disabled={!press || disabled}
+        accessibilityRole={toggle ? 'switch' : press ? 'button' : undefined}
+        accessibilityLabel={label}
+        accessibilityValue={value ? { text: value } : undefined}
+        accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(children ? { expanded: true } : null) }}
+        style={styles.row}
+      >
         <View style={[styles.tile, { backgroundColor: `${tint}33` }]}>
           <Feather name={icon} size={18} color={tint} />
         </View>
@@ -41,7 +49,7 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
         </View>
         {value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
         {toggle ? (
-          <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityLabel={label} />
+          <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
         ) : onPress ? (
           <Feather name="chevron-right" size={18} color={theme.faint} />
         ) : null}

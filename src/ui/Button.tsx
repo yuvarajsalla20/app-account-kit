@@ -28,6 +28,7 @@ export function Button({ label, onPress, variant = 'quiet', icon, small, busy, d
       onPress={onPress}
       disabled={disabled || busy}
       accessibilityRole="button"
+      accessibilityLabel={label}
       accessibilityState={{ disabled: !!(disabled || busy) }}
       style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
     >

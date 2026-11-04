@@ -11,11 +11,11 @@ interface Props {
 
 /** A round profile picture, or a circle with the person's initial. */
 export function Avatar({ photo, initial, size }: Props) {
-  const { components } = useLook();
+  const { components, strings } = useLook();
   const styles = useStyles(makeStyles);
   const round = { width: size, height: size, borderRadius: size / 2 };
   return photo ? (
-    <Image source={{ uri: photo }} style={round} accessibilityLabel="Profile picture" />
+    <Image source={{ uri: photo }} style={round} accessibilityLabel={strings.profilePicture} />
   ) : (
     <View style={[round, styles.center]}>
       <components.Text style={[styles.initial, { fontSize: size * 0.44 }]}>{initial}</components.Text>

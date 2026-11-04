@@ -107,7 +107,7 @@ describe('kit version', () => {
   });
 
   it('builds one line of every kit in use', () => {
-    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.0' })).toBe('core 1.4.0 · auth 2.1.0 · account 4.0.0');
+    expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.1' })).toBe('core 1.4.0 · auth 2.1.0 · account 4.0.1');
     expect(kitsLine({})).toBe('');
   });
 });
@@ -150,5 +150,15 @@ describe('settings pages', () => {
   it('lists only the pages the app has, Account first and About last', () => {
     expect(hubPages({ data: true, app: true })).toEqual(['account', 'data', 'app', 'about']);
     expect(hubPages({ data: false, app: false })).toEqual(['account', 'about']);
+  });
+});
+
+describe('csv and nicknames, review fixes', () => {
+  it('quotes a value with a carriage return, so a row cannot split', () => {
+    expect(toCsv([['a\rb', 'c']])).toBe('"a\rb",c');
+  });
+
+  it('cuts a nickname by whole characters, never inside an emoji', () => {
+    expect(cleanNickname('ab😀cd', 3)).toBe('ab😀');
   });
 });

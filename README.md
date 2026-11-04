@@ -80,7 +80,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 
 ## Versions
 
-- Every release is tagged in git (`v4.0.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
+- Every release is tagged in git (`v4.0.1`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
 - With several kits, pin each one separately and upgrade one kit at a time.
 - Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
@@ -91,6 +91,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 - Rate app opens the App Store's own "Write a Review" screen (stars, title and review are entered there; Apple does not allow a custom form). The row shows on iPhone only, and only when `rate.appStoreId` is a number.
 - Change password opens a page inside the screen (its own back arrow). Save needs the current password, a new one of at least 6 characters (`minLength` to change), different from the current one, and a matching confirmation. The app's `onChange(current, next)` should sign in again with the current password before updating, because Firebase refuses a change after a long-ago sign-in.
 - Contact support opens a mail with the app, version and device already filled in; if no mail app exists it shows the address.
+- Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs; from the main list it is left to the app.
 - Delete account is a two-step action, and the confirm button stays off until a password is typed when one is needed.
 - The kit has no look of its own. `theme` is required and complete; a missing color is a type error at build time. A test fails if a color literal ever appears in `src/`.
 - Every word can be reworded through `strings` (English defaults are built in).
@@ -112,7 +113,7 @@ const ACCOUNT_THEME: AccountTheme = {
 `"app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full commit SHA>"` in `package.json`. Pin a full commit SHA, not a tag, so a build always gets exactly the code you tested.
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 
-## Upgrading from 3.x to 4.0.0
+## Upgrading from 3.x to 4.x
 
 - `AccountScreen` is now `SettingsScreen`, with a page behind each row (Account, My data, App, About).
 - `children` is replaced by `app={{ hint, content }}`. `onBack` is required (Back from the main list).
@@ -128,4 +129,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.0.0 - 2026-11-04 7:25 AM CT
+Version 4.0.1 - 2026-11-04 9:04 AM CT

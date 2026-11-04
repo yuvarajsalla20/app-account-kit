@@ -12,7 +12,7 @@ export function Field({ label, ...input }: Props) {
   return (
     <View>
       {label ? <components.Text style={styles.label}>{label}</components.Text> : null}
-      <components.TextInput placeholderTextColor={theme.faint} selectionColor={theme.accent} {...input} style={styles.input} />
+      <components.TextInput accessibilityLabel={label} placeholderTextColor={theme.faint} selectionColor={theme.accent} {...input} style={styles.input} />
     </View>
   );
 }

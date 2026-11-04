@@ -3,7 +3,7 @@ import { useLook } from '../context';
 import { hubPages, type Page } from '../logic/pages';
 import type { SettingsScreenProps } from '../types';
 import { Button } from '../ui/Button';
-import { SettingsGroup } from '../ui/Group';
+import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
 
 type Props = Pick<SettingsScreenProps, 'profile' | 'data' | 'app' | 'about'> & {
@@ -24,7 +24,7 @@ export function HubPage({ profile, data, app, about, onSignOut, onOpen, busy }: 
   } as const;
   const pages = hubPages({ data: !!data, app: !!app });
   return (
-    <View style={{ gap: 16 }}>
+    <View style={STACK}>
       <SettingsGroup>
         {pages.map((page, i) => (
           <SettingRow key={page} last={i === pages.length - 1} icon={rows[page].icon} tint={theme.tints[page]} label={rows[page].label} value={rows[page].hint || undefined} onPress={() => onOpen(page)} />

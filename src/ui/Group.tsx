@@ -3,6 +3,9 @@ import { View } from 'react-native';
 import { useLook, useStyles } from '../context';
 import type { AccountTheme } from '../theme';
 
+/** The space between the cards and buttons of a page. */
+export const STACK = { gap: 16 } as const;
+
 /** A titled card holding rows. Apps use it too, for their own settings. */
 export function SettingsGroup({ title, children }: { title?: string; children: ReactNode }) {
   const { theme, components } = useLook();

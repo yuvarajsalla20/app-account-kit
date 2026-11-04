@@ -31,7 +31,7 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action }:
       <components.Text style={styles.title}>{strings.deleteTitle}</components.Text>
       <components.Text style={styles.text}>{strings.deleteWarning}</components.Text>
       {confirmsWithPassword ? (
-        <Field value={password} onChangeText={setPassword} placeholder={strings.deletePassword} secureTextEntry autoComplete="current-password" accessibilityLabel="Password" />
+        <Field value={password} onChangeText={setPassword} placeholder={strings.deletePassword} secureTextEntry autoComplete="current-password" accessibilityLabel={strings.deletePassword} />
       ) : null}
       <Button
         variant="danger"

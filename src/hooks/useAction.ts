@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 export interface ActionRunner {
   busy: boolean;
@@ -18,8 +18,12 @@ export interface ActionRunner {
 export function useAction(onError?: (where: string, error: unknown) => void, describeError?: (error: unknown) => string | null | undefined): ActionRunner {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  // `busy` only turns true after a re-render, so a quick double tap would start the action twice. This flips at once.
+  const running = useRef(false);
   const run = useCallback<ActionRunner['run']>(
     async (where, action, failure) => {
+      if (running.current) return false;
+      running.current = true;
       setBusy(true);
       setNote(null);
       try {
@@ -30,6 +34,7 @@ export function useAction(onError?: (where: string, error: unknown) => void, des
         setNote(failure(e));
         return false;
       } finally {
+        running.current = false;
         setBusy(false);
       }
     },

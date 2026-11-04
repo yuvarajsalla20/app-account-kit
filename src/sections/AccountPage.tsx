@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { useLook } from '../context';
 import type { ActionRunner } from '../hooks/useAction';
 import type { ActionsProps, NicknameProps, PasswordProps, PhotoProps, ProfileInfo } from '../types';
-import { SettingsGroup } from '../ui/Group';
+import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
 import { DeleteAccount } from './DeleteAccount';
 import { NicknameRow } from './profile/NicknameRow';
@@ -22,7 +22,7 @@ interface Props extends Pick<ActionsProps, 'onDeleteAccount' | 'confirmsWithPass
 export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, onDeleteAccount, confirmsWithPassword }: Props) {
   const { theme, strings } = useLook();
   return (
-    <View style={{ gap: 16 }}>
+    <View style={STACK}>
       <ProfileHeader profile={profile} photo={photo} action={action} />
       <SettingsGroup>
         <NicknameRow saved={profile.name} {...nickname} action={action} />

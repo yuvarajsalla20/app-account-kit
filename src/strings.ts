@@ -9,6 +9,7 @@ export interface AccountStrings {
   nickname: string;
   nicknamePlaceholder: string;
   changePhoto: string;
+  profilePicture: string;
   takePhoto: string;
   library: string;
   removePhoto: string;
@@ -54,6 +55,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   nickname: 'Nickname',
   nicknamePlaceholder: 'Add a nickname',
   changePhoto: 'Change photo',
+  profilePicture: 'Profile picture',
   takePhoto: 'Take photo',
   library: 'Library',
   removePhoto: 'Remove',
