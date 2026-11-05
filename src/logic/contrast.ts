@@ -17,11 +17,15 @@ export interface ContrastProblem {
 /** Text should reach 4.5, an icon or placeholder 3 (the WCAG AA levels). */
 const TEXT = 4.5;
 const ICON = 3;
-type Back = 'surface' | 'field' | 'panel' | 'accent';
+type Back = 'surface' | 'field' | 'panel' | 'accent' | 'page';
 const PAIRS: ReadonlyArray<readonly [keyof AccountTheme, Back, number]> = [
   ['text', 'surface', TEXT], ['muted', 'surface', TEXT], ['faint', 'surface', ICON], ['danger', 'surface', TEXT], ['accent', 'surface', TEXT],
   ['text', 'field', TEXT], ['text', 'panel', TEXT], ['muted', 'panel', TEXT], ['danger', 'panel', TEXT], ['ink', 'accent', TEXT],
+  // The app's name sits straight on the page (large, bold text); the chosen-option tick sits on the sheet, which is filled like a card.
+  ['brand', 'page', ICON], ['on', 'surface', ICON],
 ];
+
+const CLEAR: Rgba = { r: 0, g: 0, b: 0, a: 0 };
 
 /** Reads hex (3, 4, 6 or 8 digits) and rgb/rgba colors. Anything else (a color name) is null. */
 const parse = (color: string): Rgba | null => {
@@ -65,7 +69,7 @@ export const themeContrast = (theme: AccountTheme, background: string): Contrast
   const page = parse(background);
   const problems: ContrastProblem[] = [];
   for (const [front, back, min] of PAIRS) {
-    const top = parse(theme[back]);
+    const top = back === 'page' ? CLEAR : parse(theme[back]);
     const fg = parse(theme[front] as string);
     if (!page || !top || !fg) {
       problems.push({ pair: `${front} on ${back}`, ratio: null, min });

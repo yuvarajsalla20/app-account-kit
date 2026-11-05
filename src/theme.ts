@@ -25,8 +25,12 @@ export interface AccountTheme {
   /** Fill of the delete-confirmation panel. */
   panel: string;
   danger: string;
-  /** The "on" color of switches. */
+  /** The "on" color of switches, and of the tick on the chosen option of a picker. */
   on: string;
+  /** The app's own color for its name at the top of About. Each app sets its own. */
+  brand: string;
+  /** Dims the screen behind a picker sheet, such as a see-through black. */
+  scrim: string;
   /** Rounded corners of a card. */
   radius: number;
   /** Icon color of each row the kit draws. */

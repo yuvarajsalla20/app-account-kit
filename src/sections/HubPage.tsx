@@ -2,20 +2,22 @@ import { View } from 'react-native';
 import type { ActionRunner } from '../hooks/useAction';
 import { useLook } from '../look';
 import { hubPages, type Page } from '../logic/pages';
-import type { SettingsScreenProps } from '../types';
+import type { ActionsProps, SettingsScreenProps } from '../types';
 import { Button } from '../ui/Button';
 import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
+import { DeleteAccount } from './DeleteAccount';
 
-type Props = Pick<SettingsScreenProps, 'data' | 'app'> & {
-  onSignOut?: () => Promise<void> | void;
+type Props = Pick<SettingsScreenProps, 'data' | 'app'> & Pick<ActionsProps, 'onSignOut' | 'onDeleteAccount' | 'confirmsWithPassword'> & {
   onOpen: (page: Page) => void;
   /** Sign out runs through it, so it waits for a save or delete and reports a failure. */
   action: ActionRunner;
+  /** Called when the delete panel opens, so the screen can scroll it into view. */
+  onReveal?: () => void;
 };
 
-/** The main list: Account, My data, App and About, each a row with an arrow and nothing else, then Sign out. */
-export function HubPage({ data, app, onSignOut, onOpen, action }: Props) {
+/** The main list: Account, My data, App and About, each a row with an arrow and nothing else, then Sign out and, under it, Delete account. */
+export function HubPage({ data, app, onSignOut, onDeleteAccount, confirmsWithPassword, onOpen, action, onReveal }: Props) {
   const { theme, strings } = useLook();
   const rows = {
     account: { icon: 'user', label: strings.account },
@@ -32,6 +34,7 @@ export function HubPage({ data, app, onSignOut, onOpen, action }: Props) {
         ))}
       </SettingsGroup>
       {onSignOut ? <Button icon="log-out" label={strings.signOut} onPress={() => action.run('sign-out', onSignOut, () => strings.couldNot(strings.signOutAction))} disabled={action.busy} /> : null}
+      <DeleteAccount onDeleteAccount={onDeleteAccount} confirmsWithPassword={confirmsWithPassword} action={action} onReveal={onReveal} />
     </View>
   );
 }

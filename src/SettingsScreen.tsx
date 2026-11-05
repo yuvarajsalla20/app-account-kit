@@ -57,17 +57,17 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
     scroll.current?.scrollTo({ y: 0, animated: true });
     if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
   }, [action.noteKey]);
-  const titles: Record<Page, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, about: strings.about, password: strings.changePassword };
+  const titles: Record<Exclude<Page, 'about'>, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
   return (
     <>
-      <components.Header title={titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
+      <components.Header title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} action={action} onOpen={go} /> : null}
+        {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}

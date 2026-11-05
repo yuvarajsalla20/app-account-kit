@@ -9,7 +9,7 @@ export { DEFAULT_PHOTO_MAX_CHARS, isPermissionError, safePhoto } from './photo';
 export { createSaveTracker } from './saveTracker';
 export { supportMailUrl } from './mail';
 export { cleanNickname, initialOf } from './nickname';
-export { kitsLine } from './kits';
+export { kitLines, kitsLine } from './kits';
 export { MIN_PASSWORD, passwordProblem } from './password';
 export type { PasswordProblem } from './password';
 export { canRate, reviewUrl, reviewWebUrl } from './rate';

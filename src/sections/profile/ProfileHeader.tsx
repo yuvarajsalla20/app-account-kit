@@ -16,7 +16,7 @@ interface Props {
   action: ActionRunner;
 }
 
-/** The picture, the name, the email and Change photo. */
+/** The picture, the name and Change photo. The email is its own row below the nickname. */
 export function ProfileHeader({ profile, photo, action }: Props) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
@@ -44,7 +44,6 @@ export function ProfileHeader({ profile, photo, action }: Props) {
         <Avatar photo={profile.photo || profile.fallbackPhoto} initial={initialOf(profile.name, profile.email)} size={72} />
         <View style={styles.grow}>
           <components.Text style={styles.name} numberOfLines={1}>{profile.name || profile.fallbackName}</components.Text>
-          {profile.email ? <components.Text style={styles.email} numberOfLines={1}>{profile.email}</components.Text> : null}
           {photo ? (
             <Pressable onPress={() => setMenu((m) => !m)} accessibilityRole="button" accessibilityState={{ expanded: menu }} hitSlop={8} style={styles.linkHit}>
               <components.Text style={styles.link}>{strings.changePhoto}</components.Text>
@@ -68,7 +67,6 @@ const makeStyles = (t: AccountTheme) => ({
   who: { ...ROW_CENTER, gap: 16 },
   grow: { flex: 1 },
   name: { color: t.text, fontSize: 24, fontWeight: '700' as const, letterSpacing: -0.4 },
-  email: { color: t.muted, fontSize: 14 },
   linkHit: { minHeight: 44, justifyContent: 'center' as const },
   link: { color: t.accent, fontSize: 14, fontWeight: '600' as const },
   menu: { flexDirection: 'row' as const, gap: 8 },

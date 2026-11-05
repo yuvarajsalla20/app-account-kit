@@ -9,8 +9,8 @@ export interface AccountComponents {
   TextInput: ComponentType<ComponentProps<typeof RNTextInput>>;
   /** Draws every card (a group of rows). Gets the corner radius to use. Default: the theme's fill and edge. */
   Card: ComponentType<{ children: ReactNode; radius: number }>;
-  /** Draws the title and back arrow at the top of every page. Default: a plain arrow and title. */
-  Header: ComponentType<{ title: string; onBack: () => void; backLabel: string }>;
+  /** Draws the title and back arrow at the top of every page. About has no title (the app's name is shown instead), so `title` can be missing. Default: a plain arrow and title. */
+  Header: ComponentType<{ title?: string; onBack: () => void; backLabel: string }>;
 }
 
 export interface Look {

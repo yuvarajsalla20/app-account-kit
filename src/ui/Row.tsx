@@ -18,6 +18,8 @@ interface Props {
   onPress?: () => void;
   /** Shows an on/off switch instead of an arrow. */
   toggle?: { value: boolean; onChange: (value: boolean) => void };
+  /** Set on a row that opens in place: the arrow turns down while it is open, and screen readers hear it. */
+  expanded?: boolean;
   /** Extra content under the row, such as a list that opened. */
   children?: ReactNode;
   /** The last row in a card has no line under it. */
@@ -26,7 +28,7 @@ interface Props {
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, children, last, disabled }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, expanded, children, last, disabled }: Props) {
   const { theme, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
@@ -38,7 +40,7 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
         accessibilityRole={toggle ? 'switch' : press ? 'button' : undefined}
         accessibilityLabel={detail ? `${label}, ${detail}` : label}
         accessibilityValue={value ? { text: value } : undefined}
-        accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(children ? { expanded: true } : null) }}
+        accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(expanded === undefined ? null : { expanded }) }}
         style={styles.row}
       >
         <View style={[styles.tile, { backgroundColor: `${tint}33` }]}>
@@ -52,7 +54,7 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
         {toggle ? (
           <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
         ) : onPress ? (
-          <Feather name="chevron-right" size={18} color={theme.faint} />
+          <Feather name={expanded ? 'chevron-down' : 'chevron-right'} size={18} color={theme.faint} />
         ) : null}
       </Pressable>
       {children ? <View style={styles.extra}>{children}</View> : null}

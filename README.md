@@ -1,7 +1,7 @@
 # app-account-kit
 
 Reusable Settings screen for React Native / Expo apps (iOS, Android).
-Profile, nickname, photo, change password (its own page), data download, About (share, rate, privacy, support, version), sign out and delete account.
+Profile, nickname, photo, change password (its own page), data download, About (app name and version, support, share, rate, privacy, kits), sign out and delete account.
 Themeable, with a slot for each app's own settings. No native dependencies of its own: the app supplies the photo picker, the file download and the sign-in calls.
 Companion to [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) and [app-auth-kit](https://github.com/yuvarajsalla20/app-auth-kit).
 
@@ -11,11 +11,11 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 
 | Page | What it shows | App supplies |
 |---|---|---|
-| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** | `onBack`, `actions.onSignOut` |
-| **Account** | Picture, name, email, Change photo; a card with the nickname and Change password (its own page); **Delete account** with a confirmation (password typed only when the login has one) | `profile`, `nickname`, `photo`, `password`, `actions` |
+| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** and, under it, **Delete account** (quiet red text; a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
+| **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page) | `profile`, `nickname`, `photo`, `password` |
 | **My data** | The download row | `data` |
 | **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
-| **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version, and a Kits row when the app passes `kits` | `about` |
+| **About** | No page title. The app's picture (`logo`), its name in the app's own color (`theme.brand`) and the version small below; then Contact support (opens in place and shows the address; tapping the address writes an email), Share, Rate, Privacy policy and Kits (opens in place, one line per kit). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
 
 Every part is optional: leave a prop out and its row (or page) is hidden.
 
@@ -37,10 +37,10 @@ src/
   logic/                 pure functions, tested without a phone
     nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts  pages.ts
     actionGuard.ts  saveTracker.ts  photo.ts  links.ts  contrast.ts
-  ui/                    small pieces: Group, Row, Card, Header, Avatar, Button, Field
+  ui/                    small pieces: Group, Row, ExpandRow, PickerRow, ChoiceSheet, Card, Header, Avatar, Button, Field
   sections/
     HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
-    profile/            ProfileHeader, NicknameRow, PasswordPage, DataRow
+    profile/            ProfileHeader, NicknameRow, EmailRow, PasswordPage, DataRow
 tests/                   logic, contrast, no-own-colors, and the real screens (password, delete, nickname, photo, About) rendered with a small react-native stand-in in tests/stubs
 ```
 
@@ -59,8 +59,8 @@ import { SettingsScreen, SettingRow, SettingsGroup } from 'app-account-kit';
   nickname={{ max: 20, onSave: (name) => saveProfile({ ...profile, name }) }}
   photo={{ pick: pickProfilePhoto, onChange: (photo) => saveProfile({ ...profile, photo }), cameraSupported }}
   password={authKit.hasPassword() ? { onChange: authKit.changePassword } : undefined}   // (current, new) => Promise; sign in again with the current one first
-  data={{ label: 'Download my reminders', value: 'CSV', onDownload: exportAll }}
-  about={{ appName: APP_NAME, version: { number: '0.2.0', label: VERSION_LABEL }, privacyUrl: PRIVACY_URL, supportEmail: SUPPORT_EMAIL, share: { url: APP_STORE_URL }, rate: { appStoreId: APP_STORE_ID }, kits: kitsLine({ core: CORE_KIT_VERSION, auth: AUTH_KIT_VERSION, account: KIT_VERSION }) }}
+  data={{ label: 'Download my reminders', formats: [{ id: 'csv', label: 'CSV', onDownload: exportAll }] }}
+  about={{ appName: APP_NAME, logo: require('./assets/icon.png'), version: { number: '0.2.0', label: VERSION_LABEL }, privacyUrl: PRIVACY_URL, supportEmail: SUPPORT_EMAIL, share: { url: APP_STORE_URL }, rate: { appStoreId: APP_STORE_ID }, kits: kitsLine({ core: CORE_KIT_VERSION, auth: AUTH_KIT_VERSION, account: KIT_VERSION }) }}
   actions={{ onSignOut, onDeleteAccount, confirmsWithPassword: authKit.confirmsWithPassword() }}
   describeError={authKit.message}                      // plain words for sign-in errors (optional)
   onError={reportError}
@@ -89,8 +89,8 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 ## Rules it follows
 
 - The photo contract: `pick` returns a small picture or `null` when cancelled, and throws an `Error("permission")` when access is refused (the kit then shows its permission message).
-- The share row never appears without a real `https` link.
-- Rate app opens the App Store's own "Write a Review" screen (stars, title and review are entered there; Apple does not allow a custom form). The row shows on iPhone only, and only when `rate.appStoreId` is a number.
+- Share only shares a real `https` link; without one a tap says it is not available yet.
+- Rate opens the App Store's own "Write a Review" screen (stars, title and review are entered there; Apple does not allow a custom form). The row shows on iPhone only, and works once `rate.appStoreId` is a number.
 - Change password opens a page inside the screen (its own back arrow). Save needs the current password, a new one of at least 8 characters, the same as app-auth-kit (`minLength` to change; Firebase itself accepts 6), different from the current one, and a matching confirmation. The app's `onChange(current, next)` should sign in again with the current password before updating, because Firebase refuses a change after a long-ago sign-in.
 - Contact support opens a mail with the app, version and device already filled in; if no mail app exists it shows the address.
 - Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs (a save or delete that runs past `actionTimeoutMs`, 45 seconds by default, is released with a "taking too long, it may still finish" message so the screen never stays stuck; share and photo picking wait for the person and are never cut off); from the main list it is left to the app.
@@ -105,7 +105,7 @@ const ACCOUNT_THEME: AccountTheme = {
   text: '#fff', muted: '#d6cdf0', faint: '#b9aedd',
   accent: '#fff', ink: '#2a1062',
   surface: 'rgba(255,255,255,0.15)', border: 'rgba(255,255,255,0.28)', line: 'rgba(255,255,255,0.18)',
-  field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#34c759', radius: 22,
+  field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#34c759', brand: '#ffd479', scrim: 'rgba(0,0,0,0.6)', radius: 22,
   tints: { account: '#c3b3ff', app: '#93a4ff', about: '#7db7f5', password: '#f5b266', data: '#7fd9a8', share: '#c3b3ff', rate: '#ffd479', privacy: '#7db7f5', support: '#f48fc1', version: '#b8c4e0' },
 };
 ```
@@ -130,6 +130,27 @@ const problems = themeContrast(ACCOUNT_THEME, '#3b1d8f'); // your page's solid b
 ```
 
 It checks text against the cards, boxes and delete panel it sits on (4.5 for text, 3 for the chevron), and lists a color it cannot read (a color name) rather than passing it. Icon tints are not checked.
+
+## Upgrading from 5.0 to 6.0
+
+What people see:
+- **Delete account** moved from the Account page to the main list, right under Sign out, as quiet red text. Same confirmation as before.
+- **Account** shows the email as its own read-only row under the nickname (small label, address below), no longer under the name.
+- **About** has no page title. It shows the app's picture, its name in the app's own color and the version small below. The Version row is gone. Order: Contact support, Share, Rate, Privacy policy, Kits. Contact support and Kits open in place (the arrow turns down); every other row has an arrow too.
+- **Share** and **Rate** are named just that, and show whenever you pass `about.share` and `about.rate`. Until the App Store link and number are set, a tap says "Available once the app is on the App Store." (`strings.notOnStoreYet`).
+
+What to change in your app (TypeScript points at each one):
+- Theme: two new values, `brand` (the app's name on About, your own color) and `scrim` (dims the screen behind a picker sheet, such as `rgba(0,0,0,0.6)`). `themeContrast` now checks `brand` against the page and `on` against the sheet.
+- `data`: `{ label, value, onDownload }` becomes `{ label, formats: [{ id: 'csv', label: 'CSV', onDownload }] }`. With one format a tap downloads; add a second (such as PDF) and the same row opens a sheet from the bottom to choose.
+- `about.logo`: optional, the app's picture (`require('./assets/icon.png')`).
+- Wording: `strings.share` and `strings.rate` are plain text, not functions of the app name; `strings.version` is gone; new: `email`, `supportHint`, `notOnStoreYet`, `close`.
+- A custom `components.Header` must cope with a missing `title` (About has none).
+- `SettingRow` takes `expanded` (arrow turns down, screen readers hear it). It no longer says "expanded" just because it has children.
+
+New pieces for your own settings pages:
+- `PickerRow`: a row with the current choice on the right and an arrow; a tap slides a `ChoiceSheet` up from the bottom. `<PickerRow icon label tint options={[{ value, label, detail? }]} value onChange />`.
+- `ExpandRow`: a row that opens its content right below it.
+- Also exported: `ChoiceSheet`, `kitLines`.
 
 ## Upgrading from 4.2 to 5.0
 
@@ -175,4 +196,4 @@ It checks text against the cards, boxes and delete panel it sits on (4.5 for tex
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 5.0.0 - 2026-11-04 11:47 PM CT
+Version 6.0.0 - 2026-11-05 8:31 AM CT

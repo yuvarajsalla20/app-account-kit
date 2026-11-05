@@ -8,8 +8,8 @@ import { CENTER } from './layout';
 interface Props {
   label: string;
   onPress: () => void;
-  /** solid: the main button. quiet: an outlined button. danger: red text on a quiet button. */
-  variant?: 'solid' | 'quiet' | 'danger';
+  /** solid: the main button. quiet: an outlined button. danger: red text on a quiet button. link: red text alone, for a rare, serious action. */
+  variant?: 'solid' | 'quiet' | 'danger' | 'link';
   icon?: IconName;
   /** Half-height, for secondary actions. */
   small?: boolean;
@@ -23,7 +23,7 @@ interface Props {
 export function Button({ label, onPress, variant = 'quiet', icon, small, busy, disabled, grow }: Props) {
   const { theme, components } = useLook();
   const styles = useStyles(makeStyles);
-  const color = variant === 'solid' ? theme.ink : variant === 'danger' ? theme.danger : theme.text;
+  const color = variant === 'solid' ? theme.ink : variant === 'danger' || variant === 'link' ? theme.danger : theme.text;
   return (
     <Pressable
       onPress={onPress}
@@ -31,7 +31,7 @@ export function Button({ label, onPress, variant = 'quiet', icon, small, busy, d
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!(disabled || busy), busy: !!busy }}
-      style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
+      style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : variant === 'link' ? null : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
     >
       {busy ? <ActivityIndicator color={color} /> : icon ? <Feather name={icon} size={small ? 17 : 18} color={color} /> : null}
       {busy ? null : <components.Text style={[styles.label, { color }]}>{label}</components.Text>}

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { themeContrast } from '../src/logic/contrast';
 import { THEME } from './helpers/theme';
 
-const dark = { ...THEME, text: '#ffffff', muted: '#d6cdf0', faint: '#b9aedd', accent: '#ffffff', ink: '#2a1062', surface: 'rgba(255,255,255,0.15)', field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2' };
+const dark = { ...THEME, text: '#ffffff', muted: '#d6cdf0', faint: '#b9aedd', accent: '#ffffff', ink: '#2a1062', surface: 'rgba(255,255,255,0.15)', field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#7dffb0', brand: '#ffd479', scrim: 'rgba(0,0,0,0.6)' };
 
 describe('themeContrast', () => {
   it('passes the purple theme from the README on its page color (the old greys did not)', () => {
@@ -25,6 +25,12 @@ describe('themeContrast', () => {
 
   it('reads short hex, rgb and rgba colors', () => {
     expect(themeContrast({ ...dark, text: '#fff', muted: 'rgb(255, 255, 255)', faint: 'rgba(255,255,255,1)' }, '#000')).toEqual([]);
+  });
+
+  it('checks the app name against the page, and the chosen-option tick against the sheet', () => {
+    expect(themeContrast({ ...dark, brand: '#4a2a9f' }, '#3b1d8f').map((p) => p.pair)).toContain('brand on page');
+    expect(themeContrast({ ...dark, on: '#4a2a9f' }, '#3b1d8f').map((p) => p.pair)).toContain('on on surface');
+    expect(themeContrast(dark, '#3b1d8f').map((p) => p.pair)).not.toContain('brand on page');
   });
 
   it('reports a color it cannot read instead of passing it', () => {

@@ -14,7 +14,7 @@ interface Props extends Pick<ActionsProps, 'onDeleteAccount' | 'confirmsWithPass
   onReveal?: () => void;
 }
 
-/** Delete account, which asks for confirmation (with the password when the login has one). Lives on the Account page. */
+/** Delete account: quiet red text on the main list, under Sign out. It asks for confirmation (with the password when the login has one). */
 export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, onReveal }: Props) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
@@ -56,7 +56,7 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
       <Button variant="quiet" small label={strings.keepAccount} onPress={cancel} disabled={action.busy} />
     </View>
   ) : (
-    <Button variant="danger" icon="trash-2" label={strings.deleteAccount} onPress={() => setDeleting(true)} />
+    <Button variant="link" label={strings.deleteAccount} onPress={() => setDeleting(true)} />
   );
 }
 

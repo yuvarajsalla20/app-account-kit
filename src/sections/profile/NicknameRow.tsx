@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useLook } from '../../look';
+import { useLook, useStyles } from '../../look';
 import type { ActionRunner } from '../../hooks/useAction';
 import { cleanNickname } from '../../logic/nickname';
 import { createSaveTracker } from '../../logic/saveTracker';
 import type { NicknameProps } from '../../types';
+import type { AccountTheme } from '../../theme';
 import { Field } from '../../ui/Field';
 
 interface Props extends NicknameProps {
   saved: string;
   action: ActionRunner;
+  /** The last row in a card has no line under it. */
+  last?: boolean;
 }
 
 /** The nickname box. It saves when the person leaves it, presses Done, or leaves the page: each change once. */
-export function NicknameRow({ saved, max, onSave, action }: Props) {
+export function NicknameRow({ saved, max, onSave, action, last }: Props) {
   const { strings } = useLook();
+  const styles = useStyles(makeStyles);
   const [text, setText] = useState(saved);
   const [tracker] = useState(() => createSaveTracker(saved));
   useEffect(() => {
@@ -39,8 +43,13 @@ export function NicknameRow({ saved, max, onSave, action }: Props) {
   useEffect(() => () => void latest.current.save(latest.current.text), []);
 
   return (
-    <View style={{ padding: 14 }}>
+    <View style={[styles.row, !last && styles.line]}>
       <Field label={strings.nickname} value={text} onChangeText={setText} onBlur={() => save(text)} onSubmitEditing={() => save(text)} placeholder={strings.nicknamePlaceholder} maxLength={max} autoCapitalize="words" returnKeyType="done" />
     </View>
   );
 }
+
+const makeStyles = (t: AccountTheme) => ({
+  row: { padding: 14 },
+  line: { borderBottomWidth: 1, borderBottomColor: t.line },
+});

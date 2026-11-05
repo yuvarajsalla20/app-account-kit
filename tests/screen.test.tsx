@@ -29,7 +29,7 @@ describe('SettingsScreen', () => {
     await press(h.byLabel(S.savePassword));
     expect(onChange).toHaveBeenCalledWith('old-password', 'new-password');
     expect(h.has(S.currentPassword)).toBe(false);
-    expect(h.has(S.deleteAccount)).toBe(true);
+    expect(h.has(S.nickname)).toBe(true);
     expect(calls.announced).toContain(S.passwordChanged);
   });
 
@@ -64,5 +64,35 @@ describe('SettingsScreen', () => {
     h.rerender(<SettingsScreen theme={THEME} {...props()} />);
     await act(async () => {});
     expect(h.has(S.currentPassword)).toBe(false);
+  });
+});
+
+describe('the main list and About', () => {
+  const headings = (h: ReturnType<typeof screen>) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header').map((n) => n.props.children);
+
+  it('has no page title on About (the app name is the heading), and a title on the other pages', async () => {
+    const h = screen(props());
+    expect(headings(h)).toContain(S.settings);
+    await press(h.byLabel(S.about));
+    expect(headings(h)).toEqual(['My App']);
+    await press(h.byLabel(S.back));
+    await press(h.byLabel(S.account));
+    expect(headings(h)).toContain(S.account);
+  });
+
+  it('deletes from the main list, after the confirmation panel, with the password typed', async () => {
+    const onDeleteAccount = vi.fn().mockResolvedValue(undefined);
+    const h = screen(props({ actions: { confirmsWithPassword: true, onSignOut: async () => {}, onDeleteAccount } }));
+    await press(h.byLabel(S.deleteAccount));
+    expect(onDeleteAccount).not.toHaveBeenCalled();
+    await type(h.byLabel(S.deletePassword), 'secret-pass');
+    await press(h.byLabel(S.deleteEverything));
+    expect(onDeleteAccount).toHaveBeenCalledWith('secret-pass');
+  });
+
+  it('shows the email on the Account page under the nickname', async () => {
+    const h = screen(props());
+    await press(h.byLabel(S.account));
+    expect(h.has(`${S.email}, a@b.com`)).toBe(true);
   });
 });

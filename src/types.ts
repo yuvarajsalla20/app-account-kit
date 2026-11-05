@@ -1,5 +1,6 @@
 import type Feather from '@expo/vector-icons/Feather';
 import type { ReactNode } from 'react';
+import type { ImageSourcePropType } from 'react-native';
 
 export type IconName = keyof typeof Feather.glyphMap;
 export type PhotoSource = 'camera' | 'library';
@@ -41,25 +42,35 @@ export interface PasswordProps {
   minLength?: number;
 }
 
+/** One way to download the data, such as CSV. */
+export interface DataFormat {
+  id: string;
+  /** What the person sees, such as "CSV". */
+  label: string;
+  /** Makes and shares the file. Throw to show "Could not create the file". */
+  onDownload: () => Promise<void>;
+}
+
 export interface DataProps {
   /** The row's label, such as "Download my reminders". */
   label: string;
-  /** A short note beside the row on the My data page, such as "CSV". Not shown on the main list. */
-  value?: string;
-  onDownload: () => Promise<void>;
+  /** With one format the row shows its name and a tap downloads it. With two or more a tap opens a sheet from the bottom to choose. */
+  formats: readonly [DataFormat, ...DataFormat[]];
 }
 
 export interface AboutProps {
   appName: string;
-  /** The number, like 0.2.0, and the full line shown in the Version row, like "v0.2 · Nov 3, 2026 · 10:25 PM CT". */
+  /** The app's picture, shown above its name. Pass `require('./assets/icon.png')` or `{ uri }`. Leave out for no picture. */
+  logo?: ImageSourcePropType;
+  /** The number, like 0.2.0 (added to support emails), and the line shown small under the name, like "v0.2 · Nov 3, 2026 · 10:25 PM CT". */
   version: { number: string; label: string };
   privacyUrl: string;
   supportEmail: string;
-  /** The Share row appears when `url` is set (the App Store address). `message` replaces the default wording. */
+  /** The Share row appears when this is passed. It shares once `url` is a secure App Store address; until then a tap says it is not available yet. `message` replaces the default wording. */
   share?: { url?: string; message?: string };
-  /** All the kit versions in use, like "core 1.4.0 · auth 2.1.0 · account 3.1.0" (build it with `kitsLine`). Shown as a Kits row in About and added to support emails. */
+  /** All the kit versions in use (build it with `kitsLine`). Shown as a Kits row in About that opens a list, and added to support emails. */
   kits?: string;
-  /** The Rate row (iPhone only) appears when `appStoreId` is set. It opens the App Store's own review screen: stars, title and review. */
+  /** The Rate row (iPhone only) appears when this is passed. It opens the App Store's own review screen once `appStoreId` is set; until then a tap says it is not available yet. */
   rate?: { appStoreId?: string };
 }
 

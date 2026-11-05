@@ -23,14 +23,20 @@ export interface AccountStrings {
   passwordProblem: (problem: PasswordProblem, min: number) => string;
   back: string;
   about: string;
-  share: (appName: string) => string;
+  share: string;
   shareMessage: (appName: string, url: string) => string;
-  rate: (appName: string) => string;
+  rate: string;
   privacy: string;
   contactSupport: string;
   noMail: (email: string) => string;
-  version: string;
   kits: string;
+  email: string;
+  /** Under the support address when Contact support is open. */
+  supportHint: string;
+  /** Shown when Share or Rate is tapped before the app has an App Store link or number. */
+  notOnStoreYet: string;
+  /** The dimmed area behind a picker sheet, which closes it. */
+  close: string;
   signOut: string;
   deleteAccount: string;
   deleteTitle: string;
@@ -81,14 +87,17 @@ export const DEFAULT_STRINGS: AccountStrings = {
     })[problem],
   back: 'Back',
   about: 'About',
-  share: (appName) => `Share ${appName}`,
+  share: 'Share',
   shareMessage: (appName, url) => `Try ${appName}: ${url}`,
-  rate: (appName) => `Rate ${appName}`,
+  rate: 'Rate',
   privacy: 'Privacy policy',
   contactSupport: 'Contact support',
   noMail: (email) => `No mail app is set up. Write to ${email}`,
-  version: 'Version',
   kits: 'Kits',
+  email: 'Email',
+  supportHint: 'Tap to write an email',
+  notOnStoreYet: 'Available once the app is on the App Store.',
+  close: 'Close',
   signOut: 'Sign out',
   deleteAccount: 'Delete account',
   deleteTitle: 'Delete your account?',

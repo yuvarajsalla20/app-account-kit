@@ -1,5 +1,10 @@
-/** One line listing every kit an app uses, like "core 1.4.0 | auth 2.1.0 | account 3.1.0". Each kit exports its own KIT_VERSION. */
+const SEPARATOR = ' | ';
+
+/** "core 1.4.0 | auth 1.6.0", the line shown in support emails. */
 export const kitsLine = (kits: Record<string, string>): string =>
   Object.entries(kits)
     .map(([name, version]) => `${name} ${version}`)
-    .join(' | ');
+    .join(SEPARATOR);
+
+/** The same line as one entry per kit, for the Kits list. */
+export const kitLines = (line: string): string[] => line.split(SEPARATOR).filter(Boolean);

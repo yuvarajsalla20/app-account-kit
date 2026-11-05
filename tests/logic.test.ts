@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { KIT_NAME, KIT_VERSION } from '../src/kit';
 import { hubPages, parentOf } from '../src/logic/pages';
-import { kitsLine } from '../src/logic/kits';
+import { kitLines, kitsLine } from '../src/logic/kits';
 import { csvFileName, toCsv } from '../src/logic/csv';
 import { canConfirmDelete } from '../src/logic/deleteRules';
 import { supportMailUrl } from '../src/logic/mail';
@@ -111,6 +111,8 @@ describe('kit version', () => {
   it('builds one line of every kit in use', () => {
     expect(kitsLine({ core: '1.4.0', auth: '2.1.0', account: '4.0.1' })).toBe('core 1.4.0 | auth 2.1.0 | account 4.0.1');
     expect(kitsLine({})).toBe('');
+    expect(kitLines('core 1.4.0 | auth 2.1.0')).toEqual(['core 1.4.0', 'auth 2.1.0']);
+    expect(kitLines('')).toEqual([]);
   });
 });
 
@@ -137,7 +139,7 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitLines', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv']);
   });
 });
 

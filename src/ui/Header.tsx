@@ -5,7 +5,7 @@ import type { AccountTheme } from '../theme';
 import { CENTER } from './layout';
 
 /** The default page header: a back arrow and a big title. An app can replace it (`components.Header`) with its own. */
-export function PlainHeader({ title, onBack, backLabel }: { title: string; onBack: () => void; backLabel: string }) {
+export function PlainHeader({ title, onBack, backLabel }: { title?: string; onBack: () => void; backLabel: string }) {
   const { theme, components } = useLook();
   const styles = useStyles(makeStyles);
   return (
@@ -13,7 +13,7 @@ export function PlainHeader({ title, onBack, backLabel }: { title: string; onBac
       <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={styles.back}>
         <Feather name="chevron-left" size={22} color={theme.accent} />
       </Pressable>
-      <components.Text style={styles.title} accessibilityRole="header">{title}</components.Text>
+      {title ? <components.Text style={styles.title} accessibilityRole="header">{title}</components.Text> : null}
     </View>
   );
 }
