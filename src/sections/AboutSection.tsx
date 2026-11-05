@@ -91,7 +91,7 @@ export function AboutSection({ appName, logo, version, privacyUrl, supportEmail,
 }
 
 const makeStyles = (t: AccountTheme) => ({
-  hero: { alignItems: 'center' as const, paddingTop: 8, paddingBottom: 12, gap: 6 },
+  hero: { alignItems: 'center' as const, paddingTop: 0, paddingBottom: 12, gap: 6 },
   logo: { width: 84, height: 84, borderRadius: 20, marginBottom: 6 },
   name: { color: t.brand, fontSize: 34, fontWeight: '800' as const, letterSpacing: -0.6, textAlign: 'center' as const },
   version: { color: t.muted, fontSize: 12, textAlign: 'center' as const },

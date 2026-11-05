@@ -5,7 +5,7 @@ import type { AccountTheme } from '../theme';
 import { CENTER } from './layout';
 
 interface Props {
-  /** Missing on About (the app's name is shown there instead). */
+  /** Missing on About (the app's name is shown there instead), where the arrow floats beside the content. */
   title?: string;
   onBack: () => void;
   backLabel: string;
@@ -24,11 +24,13 @@ export function PageHeader({ title, onBack, backLabel, large }: Props) {
   );
   const heading = title ? <components.Text style={large ? styles.large : styles.title} accessibilityRole="header">{title}</components.Text> : null;
   if (large) return <View style={styles.wrapLarge}>{back}{heading}</View>;
-  return <View style={styles.bar}>{back}{heading}</View>;
+  // No title (About): the bar takes no height, so the page's own content starts level with the arrow instead of below an empty row.
+  return <View style={heading ? styles.bar : styles.bare}>{back}{heading}</View>;
 }
 
 const makeStyles = (t: AccountTheme) => ({
   bar: { height: 44, ...CENTER, marginBottom: 22 },
+  bare: { height: 0, zIndex: 1 },
   back: { position: 'absolute' as const, left: 0, top: 2, width: 40, height: 40, borderRadius: 20, backgroundColor: t.field, borderWidth: 1, borderColor: t.border, ...CENTER },
   title: { color: t.text, fontSize: 20, fontWeight: '600' as const, letterSpacing: -0.2 },
   wrapLarge: { paddingBottom: 12 },

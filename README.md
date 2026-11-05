@@ -201,6 +201,10 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.0.1
+
+About no longer reserves an empty header row: the arrow floats at the top-left and the logo starts level with it. Nothing to change when upgrading from 7.0.
+
 ### 7.0.0
 
 The kit draws the page header (centred 20 px titles); Delete account is an outlined red button with a trash icon. See "Upgrading from 6.x to 7.0".
@@ -209,4 +213,4 @@ The kit draws the page header (centred 20 px titles); Delete account is an outli
 
 `PickerRow` and `ChoiceSheet` now accept numbers as option values (`value: 15`, `onChange(15)`), and `PickerRow` takes an optional `detail` line under its label. Nothing to change when upgrading from 6.0.
 
-Version 7.0.0 - 2026-11-05 9:20 AM CT
+Version 7.0.1 - 2026-11-05 10:00 AM CT

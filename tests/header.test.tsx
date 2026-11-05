@@ -50,4 +50,13 @@ describe('Delete account button', () => {
     expect(icons.map((i) => i.props.name)).toEqual(['trash-2']);
     expect(icons[0]!.props.color).toBe(THEME.danger);
   });
+
+  it('About has no title row, so its content starts level with the arrow instead of under an empty bar', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} />);
+    await press(h.byLabel(S.about));
+    expect(flat(h.byLabel(S.back).props.style)).toMatchObject({ position: 'absolute', left: 0 });
+    const bar = flat(h.byLabel(S.back).parent!.parent!.props.style);
+    expect(bar).toMatchObject({ height: 0 });
+    expect(bar.marginBottom).toBeUndefined();
+  });
 });
