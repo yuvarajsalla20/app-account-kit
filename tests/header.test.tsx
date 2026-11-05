@@ -27,7 +27,7 @@ describe('page header', () => {
       expect(t.props.children).toBe(title);
       expect(flat(t.props.style)).toMatchObject({ fontSize: 20, fontWeight: '600' });
       // The arrow floats at the left of the same row, so the title is what the row centres.
-      expect(flat(h.byLabel(S.back).props.style)).toMatchObject({ position: 'absolute', left: 0 });
+      expect(flat(h.byLabel(S.back).props.style)).toMatchObject({ position: 'absolute', left: -6 });
       expect(flat(t.parent!.parent!.props.style)).toMatchObject({ alignItems: 'center', justifyContent: 'center', marginBottom: 22 });
       await press(h.byLabel(S.back));
     }
@@ -54,7 +54,7 @@ describe('Delete account button', () => {
   it('About has no title row, so its content starts level with the arrow instead of under an empty bar', async () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} />);
     await press(h.byLabel(S.about));
-    expect(flat(h.byLabel(S.back).props.style)).toMatchObject({ position: 'absolute', left: 0 });
+    expect(flat(h.byLabel(S.back).props.style)).toMatchObject({ position: 'absolute', left: -6 });
     const bar = flat(h.byLabel(S.back).parent!.parent!.props.style);
     expect(bar).toMatchObject({ height: 0 });
     expect(bar.marginBottom).toBeUndefined();

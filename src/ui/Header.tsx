@@ -15,11 +15,12 @@ interface Props {
 
 /** The top of every page: a back arrow and the page title. The kit draws it, so every app's pages look the same. */
 export function PageHeader({ title, onBack, backLabel, large }: Props) {
-  const { theme, components } = useLook();
+  const { theme, components, strings } = useLook();
   const styles = useStyles(makeStyles);
   const back = (
     <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={large ? styles.backLarge : styles.back}>
-      <Feather name="chevron-left" size={22} color={theme.accent} />
+      <Feather name="chevron-left" size={24} color={theme.accent} />
+      <components.Text style={styles.backText}>{strings.back}</components.Text>
     </Pressable>
   );
   const heading = title ? <components.Text style={large ? styles.large : styles.title} accessibilityRole="header">{title}</components.Text> : null;
@@ -31,9 +32,10 @@ export function PageHeader({ title, onBack, backLabel, large }: Props) {
 const makeStyles = (t: AccountTheme) => ({
   bar: { height: 44, ...CENTER, marginBottom: 22 },
   bare: { height: 0, zIndex: 1 },
-  back: { position: 'absolute' as const, left: 0, top: 2, width: 40, height: 40, borderRadius: 20, backgroundColor: t.field, borderWidth: 1, borderColor: t.border, ...CENTER },
+  back: { position: 'absolute' as const, left: -6, top: 0, height: 44, flexDirection: 'row' as const, alignItems: 'center' as const, paddingRight: 10 },
+  backText: { color: t.accent, fontSize: 16, fontWeight: '500' as const },
   title: { color: t.text, fontSize: 20, fontWeight: '600' as const, letterSpacing: -0.2 },
   wrapLarge: { paddingBottom: 12 },
-  backLarge: { width: 36, height: 36, marginLeft: -8, ...CENTER },
+  backLarge: { height: 44, marginLeft: -6, flexDirection: 'row' as const, alignItems: 'center' as const, paddingRight: 10 },
   large: { marginTop: 6, color: t.text, fontSize: 30, fontWeight: '700' as const, letterSpacing: -0.8 },
 });
