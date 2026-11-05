@@ -6,6 +6,6 @@ const stub = (name: string) => fileURLToPath(new URL(`./tests/stubs/${name}.ts`,
 export default defineConfig({
   test: { include: ['tests/**/*.test.{ts,tsx}'], globals: false },
   esbuild: { jsx: 'automatic' },
-  resolve: { alias: { 'react-native': stub('react-native'), '@expo/vector-icons': stub('vector-icons') } },
+  resolve: { alias: { 'react-native': stub('react-native'), '@expo/vector-icons/Feather': stub('vector-icons') } },
   define: { __DEV__: false },
 });

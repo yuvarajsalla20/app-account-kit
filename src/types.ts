@@ -1,4 +1,4 @@
-import type { Feather } from '@expo/vector-icons';
+import type Feather from '@expo/vector-icons/Feather';
 import type { ReactNode } from 'react';
 
 export type IconName = keyof typeof Feather.glyphMap;

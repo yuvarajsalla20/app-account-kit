@@ -131,6 +131,10 @@ const problems = themeContrast(ACCOUNT_THEME, '#3b1d8f'); // your page's solid b
 
 It checks text against the cards, boxes and delete panel it sits on (4.5 for text, 3 for the chevron), and lists a color it cannot read (a color name) rather than passing it. Icon tints are not checked.
 
+## Upgrading from 4.2.0 to 4.2.1
+
+- The kit now imports only the Feather icon set (`@expo/vector-icons/Feather`), not the whole icon package. An app that used only this kit's icons no longer ships every icon set and its fonts (about 450 KB less code and several MB less in fonts). Nothing to change in your app.
+
 ## Upgrading from 4.1.x to 4.2
 
 - The default minimum new password is now 8 (was 6), matching app-auth-kit. Pass `password.minLength` to keep another number.
@@ -166,4 +170,4 @@ It checks text against the cards, boxes and delete panel it sits on (4.5 for tex
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.2.0 - 2026-11-04 7:10 PM CT
+Version 4.2.1 - 2026-11-04 10:45 PM CST
