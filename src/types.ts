@@ -44,7 +44,7 @@ export interface PasswordProps {
 export interface DataProps {
   /** The row's label, such as "Download my reminders". */
   label: string;
-  /** A short note on the right, such as "CSV". */
+  /** A short note beside the row on the My data page, such as "CSV". Not shown on the main list. */
   value?: string;
   onDownload: () => Promise<void>;
 }
@@ -76,9 +76,8 @@ export interface ActionsProps {
   confirmsWithPassword: boolean;
 }
 
-/** The App page: the app's own settings, with a short hint beside its row on the main list. */
+/** The App page: the app's own settings. */
 export interface AppPageProps {
-  hint?: string;
   /** Build the rows with SettingsGroup and SettingRow. */
   content: ReactNode;
 }

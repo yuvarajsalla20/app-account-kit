@@ -65,7 +65,7 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
       <components.Header title={titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage profile={profile} data={data} app={app} about={about} onSignOut={actions.onSignOut} action={action} onOpen={go} /> : null}
+        {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} action={action} onOpen={go} /> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} />
         ) : null}

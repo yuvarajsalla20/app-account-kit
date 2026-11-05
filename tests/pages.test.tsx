@@ -22,7 +22,7 @@ describe('HubPage', () => {
   const setup = (props: { data?: boolean; app?: boolean; onSignOut?: () => Promise<void> | void } = {}) => {
     const onOpen = vi.fn();
     const h = withAction((action) => (
-      <HubPage profile={profile} about={about} data={props.data ? { label: 'Download', value: 'CSV', onDownload: async () => {} } : undefined} app={props.app ? { hint: 'Sounds', content: null } : undefined} onSignOut={props.onSignOut} onOpen={onOpen} action={action} />
+      <HubPage data={props.data ? { label: 'Download', value: 'CSV', onDownload: async () => {} } : undefined} app={props.app ? { content: null } : undefined} onSignOut={props.onSignOut} onOpen={onOpen} action={action} />
     ));
     return { ...h, onOpen };
   };
@@ -34,6 +34,13 @@ describe('HubPage', () => {
     expect(h.has(S.app)).toBe(false);
     await press(h.byLabel(S.about));
     expect(h.onOpen).toHaveBeenCalledWith('about');
+  });
+
+  it('shows each row as a name with an arrow only: no email, format, hint or version on the right', () => {
+    const h = setup({ data: true, app: true });
+    for (const shown of ['a@b.com', 'Yuva', 'CSV', 'Sounds', 'v1.2.0', '1.2.0']) expect(h.has(shown)).toBe(false);
+    expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityValue !== undefined)).toHaveLength(0);
+    expect([S.account, S.myData, S.app, S.about].every((l) => h.has(l))).toBe(true);
   });
 
   it('shows Sign out only when the app can, and reports a failure', async () => {

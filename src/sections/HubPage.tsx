@@ -7,28 +7,28 @@ import { Button } from '../ui/Button';
 import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
 
-type Props = Pick<SettingsScreenProps, 'profile' | 'data' | 'app' | 'about'> & {
+type Props = Pick<SettingsScreenProps, 'data' | 'app'> & {
   onSignOut?: () => Promise<void> | void;
   onOpen: (page: Page) => void;
   /** Sign out runs through it, so it waits for a save or delete and reports a failure. */
   action: ActionRunner;
 };
 
-/** The main list: Account, My data, App and About, each a row with a small hint, then Sign out. */
-export function HubPage({ profile, data, app, about, onSignOut, onOpen, action }: Props) {
+/** The main list: Account, My data, App and About, each a row with an arrow and nothing else, then Sign out. */
+export function HubPage({ data, app, onSignOut, onOpen, action }: Props) {
   const { theme, strings } = useLook();
   const rows = {
-    account: { icon: 'user', label: strings.account, hint: profile.email ?? profile.name },
-    data: { icon: 'download', label: strings.myData, hint: data?.value },
-    app: { icon: 'sliders', label: strings.app, hint: app?.hint },
-    about: { icon: 'info', label: strings.about, hint: `v${about.version.number}` },
+    account: { icon: 'user', label: strings.account },
+    data: { icon: 'download', label: strings.myData },
+    app: { icon: 'sliders', label: strings.app },
+    about: { icon: 'info', label: strings.about },
   } as const;
   const pages = hubPages({ data: !!data, app: !!app });
   return (
     <View style={STACK}>
       <SettingsGroup>
         {pages.map((page, i) => (
-          <SettingRow key={page} last={i === pages.length - 1} icon={rows[page].icon} tint={theme.tints[page]} label={rows[page].label} value={rows[page].hint || undefined} onPress={() => onOpen(page)} />
+          <SettingRow key={page} last={i === pages.length - 1} icon={rows[page].icon} tint={theme.tints[page]} label={rows[page].label} onPress={() => onOpen(page)} />
         ))}
       </SettingsGroup>
       {onSignOut ? <Button icon="log-out" label={strings.signOut} onPress={() => action.run('sign-out', onSignOut, () => strings.couldNot(strings.signOutAction))} disabled={action.busy} /> : null}

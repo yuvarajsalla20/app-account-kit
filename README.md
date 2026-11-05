@@ -11,10 +11,10 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 
 | Page | What it shows | App supplies |
 |---|---|---|
-| **Main list** | Account, My data, App and About rows, each with a small hint on the right (email, "CSV", the app's own hint, the version), then **Sign out** | `onBack`, `actions.onSignOut` |
+| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** | `onBack`, `actions.onSignOut` |
 | **Account** | Picture, name, email, Change photo; a card with the nickname and Change password (its own page); **Delete account** with a confirmation (password typed only when the login has one) | `profile`, `nickname`, `photo`, `password`, `actions` |
 | **My data** | The download row | `data` |
-| **App** | The app's own settings | `app: { hint, content }`, built with `SettingsGroup` and `SettingRow` |
+| **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
 | **About** | Share app (only when a link is set), Rate app (iPhone, only when the App Store number is set), Privacy policy, Contact support, Version, and a Kits row when the app passes `kits` | `about` |
 
 Every part is optional: leave a prop out and its row (or page) is hidden.
@@ -64,7 +64,7 @@ import { SettingsScreen, SettingRow, SettingsGroup } from 'app-account-kit';
   actions={{ onSignOut, onDeleteAccount, confirmsWithPassword: authKit.confirmsWithPassword() }}
   describeError={authKit.message}                      // plain words for sign-in errors (optional)
   onError={reportError}
-  app={{ hint: 'Sound, alerts', content: (
+  app={{ content: (
     <SettingsGroup>
       <SettingRow icon="clock" tint="#7db7f5" label="Default remind before" value="At time" onPress={...} />
     </SettingsGroup>
@@ -131,6 +131,11 @@ const problems = themeContrast(ACCOUNT_THEME, '#3b1d8f'); // your page's solid b
 
 It checks text against the cards, boxes and delete panel it sits on (4.5 for text, 3 for the chevron), and lists a color it cannot read (a color name) rather than passing it. Icon tints are not checked.
 
+## Upgrading from 4.2 to 5.0
+
+- The main list shows each row with an arrow only: no email, "CSV", hint or version on the right. The same details are one tap away (email on Account, version on About). This also stops a long email squeezing the "Account" label onto two lines.
+- Breaking: `app.hint` is removed, because nothing shows it any more. Delete it from your app; TypeScript points at it. `data.value` stays: it is still shown beside the download row on the My data page.
+
 ## Upgrading from 4.2.0 to 4.2.1
 
 - The kit now imports only the Feather icon set (`@expo/vector-icons/Feather`), not the whole icon package. An app that used only this kit's icons no longer ships every icon set and its fonts (about 450 KB less code and several MB less in fonts). Nothing to change in your app.
@@ -157,7 +162,7 @@ It checks text against the cards, boxes and delete panel it sits on (4.5 for tex
 ## Upgrading from 3.x to 4.x
 
 - `AccountScreen` is now `SettingsScreen`, with a page behind each row (Account, My data, App, About).
-- `children` is replaced by `app={{ hint, content }}`. `onBack` is required (Back from the main list).
+- `children` is replaced by `app={{ content }}`. `onBack` is required (Back from the main list).
 - Strings `profile` and `yourData` are now `account` and `myData`; new `settings` and `app`.
 - The theme needs three more icon colors: `tints.account`, `tints.app`, `tints.about`.
 - Sign out moved to the main list, and Delete account to the Account page.
@@ -170,4 +175,4 @@ It checks text against the cards, boxes and delete panel it sits on (4.5 for tex
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.2.1 - 2026-11-04 10:45 PM CST
+Version 5.0.0 - 2026-11-04 11:47 PM CT
