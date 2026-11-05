@@ -196,4 +196,8 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 6.0.0 - 2026-11-05 8:31 AM CT
+### 6.1.0
+
+`PickerRow` and `ChoiceSheet` now accept numbers as option values (`value: 15`, `onChange(15)`), and `PickerRow` takes an optional `detail` line under its label. Nothing to change when upgrading from 6.0.
+
+Version 6.1.0 - 2026-11-05 8:35 AM CT

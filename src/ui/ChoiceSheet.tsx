@@ -4,25 +4,26 @@ import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import { ROW_CENTER } from './layout';
 
-export interface Choice {
-  value: string;
+/** `V` is the kind of value an option stands for: text (the default) or a number. */
+export interface Choice<V extends string | number = string> {
+  value: V;
   label: string;
   /** A smaller line beside the label, such as "US dollar". */
   detail?: string;
 }
 
-interface Props {
+interface Props<V extends string | number> {
   visible: boolean;
   title: string;
-  options: readonly Choice[];
+  options: readonly Choice<V>[];
   /** The chosen option gets a tick. Leave out when nothing is chosen yet (a list of actions). */
-  value?: string;
-  onChoose: (value: string) => void;
+  value?: V;
+  onChoose: (value: V) => void;
   onClose: () => void;
 }
 
 /** A sheet that slides up from the bottom of the screen with a list to choose from. Tapping the dimmed area, or Back on Android, closes it. */
-export function ChoiceSheet({ visible, title, options, value, onChoose, onClose }: Props) {
+export function ChoiceSheet<V extends string | number = string>({ visible, title, options, value, onChoose, onClose }: Props<V>) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   return (
@@ -37,7 +38,7 @@ export function ChoiceSheet({ visible, title, options, value, onChoose, onClose 
               const chosen = option.value === value;
               return (
                 <Pressable
-                  key={option.value}
+                  key={String(option.value)}
                   onPress={() => onChoose(option.value)}
                   accessibilityRole="button"
                   accessibilityLabel={option.detail ? `${option.label}, ${option.detail}` : option.label}

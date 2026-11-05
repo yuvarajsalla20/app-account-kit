@@ -105,3 +105,23 @@ describe('PickerRow', () => {
     expect(setup('EUR').byLabel('Currency').props.accessibilityValue).toEqual({ text: 'EUR' });
   });
 });
+
+describe('numbers as option values', () => {
+  const minutes = [{ value: 0, label: 'At time' }, { value: 15, label: '15 min' }];
+
+  it('keeps the number: shows its label, ticks it, and reports a number', async () => {
+    const onChange = vi.fn();
+    const h = mount(<PickerRow icon="clock" tint="x" label="Remind" options={minutes} value={0} onChange={onChange} />);
+    expect(h.byLabel('Remind').props.accessibilityValue).toEqual({ text: 'At time' });
+    await press(h.byLabel('Remind'));
+    expect(h.byLabel('At time').props.accessibilityState).toMatchObject({ selected: true });
+    await press(h.byLabel('15 min'));
+    expect(onChange).toHaveBeenCalledWith(15);
+  });
+
+  it('shows the explanation line under the row label', () => {
+    const h = mount(<PickerRow icon="clock" tint="x" label="Remind" detail="Before it is due" options={minutes} value={15} onChange={() => {}} />);
+    expect(h.byLabel('Remind, Before it is due')).toBeDefined();
+    expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === 'Before it is due')).toHaveLength(1);
+  });
+});
