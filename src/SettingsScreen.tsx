@@ -22,7 +22,7 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-function Body({ onBack, backLabel, profile, nickname, photo, password, data, app, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, profile, nickname, photo, password, data, app, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
@@ -63,7 +63,7 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
 
   return (
     <>
-      <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
         {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}

@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { DEFAULT_STRINGS as S } from '../src/strings';
@@ -14,6 +15,7 @@ const props: SettingsScreenProps = {
   about: { appName: 'My App', version: { number: '1.2.0', label: 'v1.2' }, privacyUrl: 'https://x.y/p', supportEmail: 'h@x.com' },
   actions: { confirmsWithPassword: true, onSignOut: async () => {}, onDeleteAccount: async () => {} },
 };
+const Brand = () => <View testID="brand" />;
 const flat = (s: unknown): Record<string, unknown> => Object.assign({}, ...[s].flat(Infinity).filter(Boolean));
 const heading = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header')[0];
 
@@ -33,9 +35,27 @@ describe('page header', () => {
     }
   });
 
-  it('keeps the arrow on the big first page in the flow, not floating', () => {
+  it('gives the big first page its own row for Back, above the title, and names it for the app', () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} backLabel="Back to Upcoming" />);
-    expect(flat(h.byLabel('Back to Upcoming').props.style).position).toBeUndefined();
+    expect(flat(h.byLabel('Back to Upcoming').props.style)).toMatchObject({ position: 'absolute', left: -6 });
+    expect(flat(h.byLabel('Back to Upcoming').parent!.parent!.props.style)).toMatchObject({ height: 40 });
+  });
+
+  it('with a brand, puts Back and the brand in one row and the page title under it, on the left', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} />);
+    const row = h.byLabel(S.back).parent!.parent!;
+    expect(row.findAll((n) => n.props.testID === 'brand').length).toBeGreaterThan(0);
+    expect(flat(row.props.style)).toMatchObject({ height: 40, alignItems: 'center', justifyContent: 'center' });
+    expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 30, fontWeight: '700' });
+    await press(h.byLabel(S.myData));
+    expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 24, fontWeight: '700' });
+    expect(h.root.root.findAll((n) => n.props.testID === 'brand').length).toBeGreaterThan(0);
+  });
+
+  it('leaves About without the brand row, so the big app picture is the header', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} />);
+    await press(h.byLabel(S.about));
+    expect(h.root.root.findAll((n) => n.props.testID === 'brand').length).toBe(0);
   });
 });
 

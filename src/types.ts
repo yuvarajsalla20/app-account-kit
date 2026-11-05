@@ -97,6 +97,8 @@ export interface SettingsScreenProps {
   /** Back from the main list (to Home). Back from every other page returns to the list. */
   onBack: () => void;
   backLabel?: string;
+  /** The app's logo and name, drawn centred in the top row beside the Back button. Leave out for the older layout (a centred page title). Not shown on About, where the app's own picture is already the header. */
+  brand?: ReactNode;
   profile: ProfileInfo;
   nickname: NicknameProps;
   /** Leave out to hide Change photo. */

@@ -201,6 +201,14 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.1.0
+
+New optional `brand` prop on `SettingsScreen`: the app's logo and name. With it, the top row of every page is a small Back on the left and the brand centred, and the page title sits under that row on the left (30 px on the first page, 24 px on the others). About keeps its own big picture and shows no brand row. Without `brand`, the pages look as in 7.0.2. Nothing to change when upgrading from 7.0.
+
+```tsx
+<SettingsScreen brand={<MyLogoAndName />} … />
+```
+
 ### 7.0.2
 
 The back arrow now says "Back" beside it (a green chevron and the `back` string, no circle), so it reads as a button. Nothing to change when upgrading from 7.0.
@@ -217,4 +225,4 @@ The kit draws the page header (centred 20 px titles); Delete account is an outli
 
 `PickerRow` and `ChoiceSheet` now accept numbers as option values (`value: 15`, `onChange(15)`), and `PickerRow` takes an optional `detail` line under its label. Nothing to change when upgrading from 6.0.
 
-Version 7.0.2 - 2026-11-05 11:40 AM CT
+Version 7.1.0 - 2026-11-05 12:10 PM CT
