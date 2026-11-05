@@ -1,4 +1,5 @@
-export const MIN_PASSWORD = 6;
+/** The same minimum as app-auth-kit, so the page never accepts what the sign-in kit would refuse. */
+export const MIN_PASSWORD = 8;
 
 export type PasswordProblem = 'current' | 'short' | 'same' | 'mismatch';
 

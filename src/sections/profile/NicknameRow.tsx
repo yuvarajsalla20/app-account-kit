@@ -16,7 +16,7 @@ interface Props extends NicknameProps {
 export function NicknameRow({ saved, max, onSave, action }: Props) {
   const { strings } = useLook();
   const [text, setText] = useState(saved);
-  const tracker = useRef(createSaveTracker(saved)).current;
+  const [tracker] = useState(() => createSaveTracker(saved));
   useEffect(() => {
     tracker.reset(saved);
     setText(saved);
@@ -29,8 +29,8 @@ export function NicknameRow({ saved, max, onSave, action }: Props) {
     if (action.busy || !tracker.begin(name)) return;
     const ok = await action.run('nickname', () => onSave(name), () => strings.couldNot(strings.saveNickname));
     tracker.finish(name, ok);
+    // A failed save keeps what was typed (the note says why), and it is tried again on the next blur, Done or when the page closes.
     if (ok) action.setNote(strings.nicknameSaved, true);
-    else setText(tracker.saved); // the save failed: show what is really saved, with the reason in the note
   };
 
   // Leaving the page (Back) can unmount the box before its blur arrives, so save what is typed on the way out.

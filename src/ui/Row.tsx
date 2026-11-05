@@ -4,8 +4,7 @@ import { Pressable, Switch, View } from 'react-native';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
-import { CENTER } from './layout';
-import { ROW_CENTER } from './layout';
+import { CENTER, ROW_CENTER } from './layout';
 
 interface Props {
   icon: IconName;

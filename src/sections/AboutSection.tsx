@@ -33,7 +33,7 @@ export function AboutSection({ appName, version, privacyUrl, supportEmail, share
           tint={theme.tints.share}
           label={strings.share(appName)}
           onPress={() => {
-            action.run('share', () => Share.share({ message: buildShareMessage(strings.shareMessage, appName, shareUrl, share?.message) }).then(() => undefined), () => strings.couldNot(strings.shareApp));
+            action.run('share', () => Share.share({ message: buildShareMessage(strings.shareMessage, appName, shareUrl, share?.message) }).then(() => undefined), () => strings.couldNot(strings.shareApp), { patient: true });
           }}
         />
       ) : null}

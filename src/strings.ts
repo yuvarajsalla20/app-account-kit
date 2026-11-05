@@ -40,6 +40,8 @@ export interface AccountStrings {
   keepAccount: string;
   /** "Could not save the nickname. Try again." */
   couldNot: (action: string) => string;
+  /** Shown when an action ran past the time limit: it may still finish, so do not just try again. */
+  tookTooLong: string;
   saveNickname: string;
   nicknameSaved: string;
   signOutAction: string;
@@ -95,6 +97,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   deleteEverything: 'Delete everything',
   keepAccount: 'Keep my account',
   couldNot: (action) => `Could not ${action}. Try again.`,
+  tookTooLong: 'This is taking too long. It may still finish, so check before you try again.',
   saveNickname: 'save the nickname',
   nicknameSaved: 'Nickname saved.',
   signOutAction: 'sign out',

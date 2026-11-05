@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useLook } from '../../look';
 import type { ActionRunner } from '../../hooks/useAction';
 import { MIN_PASSWORD, passwordProblem } from '../../logic/password';
 import type { PasswordProps } from '../../types';
 import { Button } from '../../ui/Button';
-import { Field } from '../../ui/Field';
+import { Field, type InputRef } from '../../ui/Field';
 
 interface Props extends PasswordProps {
   action: ActionRunner;
@@ -19,6 +19,8 @@ export function PasswordPage({ onChange, minLength = MIN_PASSWORD, action, onDon
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');
+  const nextBox = useRef<InputRef>(null);
+  const confirmBox = useRef<InputRef>(null);
 
   const save = async () => {
     const problem = passwordProblem({ current, next, confirm, min: minLength });
@@ -32,9 +34,9 @@ export function PasswordPage({ onChange, minLength = MIN_PASSWORD, action, onDon
 
   return (
     <View style={{ gap: 14 }}>
-      <Field label={strings.currentPassword} value={current} onChangeText={setCurrent} secureTextEntry autoComplete="current-password" textContentType="password" autoCapitalize="none" />
-      <Field label={strings.newPassword} value={next} onChangeText={setNext} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" />
-      <Field label={strings.confirmPassword} value={confirm} onChangeText={setConfirm} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" onSubmitEditing={save} returnKeyType="done" />
+      <Field label={strings.currentPassword} value={current} onChangeText={setCurrent} secureTextEntry autoComplete="current-password" textContentType="password" autoCapitalize="none" returnKeyType="next" onSubmitEditing={() => nextBox.current?.focus()} />
+      <Field ref={nextBox} label={strings.newPassword} value={next} onChangeText={setNext} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" returnKeyType="next" onSubmitEditing={() => confirmBox.current?.focus()} />
+      <Field ref={confirmBox} label={strings.confirmPassword} value={confirm} onChangeText={setConfirm} secureTextEntry autoComplete="new-password" textContentType="newPassword" autoCapitalize="none" onSubmitEditing={save} returnKeyType="done" />
       <Button variant="solid" label={strings.savePassword} onPress={save} busy={action.busy} disabled={!current || !next || !confirm} />
     </View>
   );

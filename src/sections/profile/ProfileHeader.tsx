@@ -33,6 +33,8 @@ export function ProfileHeader({ profile, photo, action }: Props) {
         setMenu(false);
       },
       (e) => (isPermissionError(e) ? strings.photoPermission : e instanceof Error && e.message === 'photo-invalid' ? strings.photoInvalid : strings.couldNot(strings.savePhoto)),
+      // Picking waits for the person (camera, library, permission prompt), so it is never cut off; removing is a plain save.
+      { patient: source !== 'remove' },
     );
   };
 

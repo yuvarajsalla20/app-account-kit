@@ -24,7 +24,7 @@ type Props = SettingsScreenProps & {
 function Body({ onBack, backLabel, profile, nickname, photo, password, data, app, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent } }));
-  const action = useAction(onError, describeError, actionTimeoutMs);
+  const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
@@ -56,7 +56,7 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
     if (!action.note) return;
     scroll.current?.scrollTo({ y: 0, animated: true });
     if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
-  }, [action.note]);
+  }, [action.noteKey]);
   const titles: Record<Page, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, about: strings.about, password: strings.changePassword };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 

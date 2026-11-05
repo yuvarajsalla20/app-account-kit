@@ -14,3 +14,5 @@ export { MIN_PASSWORD, passwordProblem } from './password';
 export type { PasswordProblem } from './password';
 export { canRate, reviewUrl, reviewWebUrl } from './rate';
 export { buildShareMessage, canShare } from './share';
+export { themeContrast } from './contrast';
+export type { ContrastProblem } from './contrast';

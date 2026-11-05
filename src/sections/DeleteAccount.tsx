@@ -22,12 +22,15 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
   const [password, setPassword] = useState('');
   const panel = useRef<ElementRef<typeof View>>(null);
   // The panel is taller than the button it replaces and may open below the visible part: scroll to it and move screen-reader focus there.
+  // Only the panel opening runs this: a new `onReveal` function on a later render must not pull focus back to the panel.
+  const reveal = useRef(onReveal);
+  reveal.current = onReveal;
   useEffect(() => {
     if (!deleting) return;
-    onReveal?.();
+    reveal.current?.();
     const node = findNodeHandle(panel.current);
     if (node) AccessibilityInfo.setAccessibilityFocus(node);
-  }, [deleting, onReveal]);
+  }, [deleting]);
   if (!onDeleteAccount) return null;
 
   const cancel = () => {

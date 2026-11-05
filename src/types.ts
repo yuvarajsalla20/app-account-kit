@@ -37,7 +37,7 @@ export interface PhotoProps {
 export interface PasswordProps {
   /** Sets the new password. The current one is passed too, so the app can sign the person in again first (Firebase asks for a recent sign-in). Throw to show an error. */
   onChange: (currentPassword: string, newPassword: string) => Promise<void>;
-  /** The shortest new password allowed. Default 6. */
+  /** The shortest new password allowed. Default 8, the same as app-auth-kit. */
   minLength?: number;
 }
 

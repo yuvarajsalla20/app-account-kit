@@ -73,9 +73,10 @@ describe('change password', () => {
     expect(passwordProblem({ ...ok, confirm: 'other-pass' })).toBe('mismatch');
   });
 
-  it('uses the app minimum when given, otherwise 6', () => {
-    expect(MIN_PASSWORD).toBe(6);
-    expect(passwordProblem({ ...ok, next: 'abcdefg', confirm: 'abcdefg', min: 8 })).toBe('short');
+  it('uses the app minimum when given, otherwise 8 like app-auth-kit', () => {
+    expect(MIN_PASSWORD).toBe(8);
+    expect(passwordProblem({ ...ok, next: 'abcdefg', confirm: 'abcdefg' })).toBe('short');
+    expect(passwordProblem({ ...ok, next: 'abcdef', confirm: 'abcdef', min: 6 })).toBeNull();
   });
 
   it('has plain words for every problem', () => {
@@ -136,7 +137,7 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv']);
   });
 });
 

@@ -33,15 +33,15 @@ src/
   theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
   kit.ts                 KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
-  hooks/useAction.ts     "busy, then done or failed", used by every part; stops waiting after a timeout
+  hooks/useAction.ts     "busy, then done or failed", used by every part; stops waiting after a timeout (not for actions that wait for the person)
   logic/                 pure functions, tested without a phone
     nickname.ts  csv.ts  share.ts  rate.ts  password.ts  kits.ts  mail.ts  deleteRules.ts  pages.ts
-    actionGuard.ts  saveTracker.ts  photo.ts  links.ts
+    actionGuard.ts  saveTracker.ts  photo.ts  links.ts  contrast.ts
   ui/                    small pieces: Group, Row, Card, Header, Avatar, Button, Field
   sections/
     HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
     profile/            ProfileHeader, NicknameRow, PasswordPage, DataRow
-tests/                   logic, review-fix and no-own-colors tests
+tests/                   logic, contrast, no-own-colors, and the real screens (password, delete, nickname, photo, About) rendered with a small react-native stand-in in tests/stubs
 ```
 
 Each file does one job. Nothing is written twice: the button, the row, the card, the text box and the busy handling each exist once.
@@ -91,9 +91,9 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 - The photo contract: `pick` returns a small picture or `null` when cancelled, and throws an `Error("permission")` when access is refused (the kit then shows its permission message).
 - The share row never appears without a real `https` link.
 - Rate app opens the App Store's own "Write a Review" screen (stars, title and review are entered there; Apple does not allow a custom form). The row shows on iPhone only, and only when `rate.appStoreId` is a number.
-- Change password opens a page inside the screen (its own back arrow). Save needs the current password, a new one of at least 6 characters (`minLength` to change), different from the current one, and a matching confirmation. The app's `onChange(current, next)` should sign in again with the current password before updating, because Firebase refuses a change after a long-ago sign-in.
+- Change password opens a page inside the screen (its own back arrow). Save needs the current password, a new one of at least 8 characters, the same as app-auth-kit (`minLength` to change; Firebase itself accepts 6), different from the current one, and a matching confirmation. The app's `onChange(current, next)` should sign in again with the current password before updating, because Firebase refuses a change after a long-ago sign-in.
 - Contact support opens a mail with the app, version and device already filled in; if no mail app exists it shows the address.
-- Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs (an action that runs past `actionTimeoutMs`, 45 seconds by default, is released with an error so the screen never stays stuck); from the main list it is left to the app.
+- Android's Back button steps back through the pages like the arrow, and does nothing while a save or delete runs (a save or delete that runs past `actionTimeoutMs`, 45 seconds by default, is released with a "taking too long, it may still finish" message so the screen never stays stuck; share and photo picking wait for the person and are never cut off); from the main list it is left to the app.
 - Delete account is a two-step action, and the confirm button stays off until a password is typed when one is needed.
 - The kit has no look of its own. `theme` is required and complete; a missing color is a type error at build time. A test fails if a color literal ever appears in `src/`.
 - Every word can be reworded through `strings` (English defaults are built in).
@@ -102,7 +102,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 
 ```ts
 const ACCOUNT_THEME: AccountTheme = {
-  text: '#fff', muted: '#bbb', faint: '#999',
+  text: '#fff', muted: '#d6cdf0', faint: '#b9aedd',
   accent: '#fff', ink: '#2a1062',
   surface: 'rgba(255,255,255,0.15)', border: 'rgba(255,255,255,0.28)', line: 'rgba(255,255,255,0.18)',
   field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#34c759', radius: 22,
@@ -114,6 +114,31 @@ const ACCOUNT_THEME: AccountTheme = {
 
 `"app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full commit SHA>"` in `package.json`. Pin a full commit SHA, not a tag, so a build always gets exactly the code you tested.
 Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
+
+## Keep these stable
+
+`theme`, `strings` and `components` are read through one memoised provider. Define them once, outside your component (or in `useMemo`), and pass the same objects every render. A new object each render rebuilds every style in the screen. Pass `onBack`, `onSave` and the other callbacks however you like.
+
+## Checking your colors
+
+The kit cannot see your colors until you hand them over, so check them yourself, in a test or at start-up in development:
+
+```ts
+import { themeContrast } from 'app-account-kit/logic';
+const problems = themeContrast(ACCOUNT_THEME, '#3b1d8f'); // your page's solid background color
+// [] when all is readable, else [{ pair: 'muted on surface', ratio: 4.15, min: 4.5 }, ...]
+```
+
+It checks text against the cards, boxes and delete panel it sits on (4.5 for text, 3 for the chevron), and lists a color it cannot read (a color name) rather than passing it. Icon tints are not checked.
+
+## Upgrading from 4.1.x to 4.2
+
+- The default minimum new password is now 8 (was 6), matching app-auth-kit. Pass `password.minLength` to keep another number.
+- A save or delete that runs past `actionTimeoutMs` now shows `strings.tookTooLong` ("it may still finish") instead of "Could not save". Share, the photo picker, camera and library wait for the person and have no time limit. `useAction().run(where, action, failure, { patient: true })` does the same for your own actions.
+- New: `themeContrast(theme, background)`; `strings.tookTooLong`; `ActionRunner.noteKey`. `useAction` takes a fourth argument, the "too long" text.
+- The delete panel no longer pulls screen-reader focus back each time the screen re-renders. A failed nickname save keeps what was typed. The same message shown twice is announced twice. The password page moves from box to box with the keyboard's Next key.
+- `"sideEffects": false` lets your bundler drop what you do not import.
+- The grey text colors in the README's example theme were too faint (muted 4.15, faint 2.8 against the card); the example now passes `themeContrast`.
 
 ## Upgrading from 4.0.x to 4.1
 
@@ -141,4 +166,4 @@ Peer dependencies: `react`, `react-native`, `@expo/vector-icons`.
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
-Version 4.1.0 - 2026-11-04 4:12 PM CT
+Version 4.2.0 - 2026-11-04 7:10 PM CT
