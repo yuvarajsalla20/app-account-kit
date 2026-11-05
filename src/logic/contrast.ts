@@ -20,7 +20,7 @@ const ICON = 3;
 type Back = 'surface' | 'field' | 'panel' | 'accent' | 'page';
 const PAIRS: ReadonlyArray<readonly [keyof AccountTheme, Back, number]> = [
   ['text', 'surface', TEXT], ['muted', 'surface', TEXT], ['faint', 'surface', ICON], ['danger', 'surface', TEXT], ['accent', 'surface', TEXT],
-  ['text', 'field', TEXT], ['text', 'panel', TEXT], ['muted', 'panel', TEXT], ['danger', 'panel', TEXT], ['ink', 'accent', TEXT],
+  ['text', 'field', TEXT], ['accent', 'field', ICON], ['danger', 'page', TEXT], ['text', 'panel', TEXT], ['muted', 'panel', TEXT], ['danger', 'panel', TEXT], ['ink', 'accent', TEXT],
   // The app's name sits straight on the page (large, bold text); the chosen-option tick sits on the sheet, which is filled like a card.
   ['brand', 'page', ICON], ['on', 'surface', ICON],
 ];

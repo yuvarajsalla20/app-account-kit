@@ -2,13 +2,12 @@ import { useMemo, type ReactNode } from 'react';
 import { Text as RNText, TextInput as RNTextInput } from 'react-native';
 import { LookContext, type AccountComponents, type Look } from './look';
 import { PlainCard } from './ui/Card';
-import { PlainHeader } from './ui/Header';
 import { DEFAULT_STRINGS, type AccountStrings } from './strings';
 import type { AccountTheme } from './theme';
 
 export type { AccountComponents } from './look';
 
-const DEFAULT_COMPONENTS: AccountComponents = { Text: RNText, TextInput: RNTextInput, Card: PlainCard, Header: PlainHeader };
+const DEFAULT_COMPONENTS: AccountComponents = { Text: RNText, TextInput: RNTextInput, Card: PlainCard };
 
 interface ProviderProps {
   /** Required: the kit has no colors of its own. */

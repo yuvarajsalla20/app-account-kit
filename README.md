@@ -21,7 +21,7 @@ Every part is optional: leave a prop out and its row (or page) is hidden.
 
 ## Look
 
-The kit has no colors. The app passes a `theme`, and can replace two pieces through `components`: `Card` (draws every card, so an app can use frosted glass) and `Header` (the page title and back arrow), so every page matches the rest of the app.
+The kit has no colors. The app passes a `theme`, and can replace one piece through `components`: `Card` (draws every card, so an app can use frosted glass). The kit draws the page title and back arrow itself, so every app's pages look the same.
 
 ## Folder layout
 
@@ -29,7 +29,7 @@ The kit has no colors. The app passes a `theme`, and can replace two pieces thro
 src/
   SettingsScreen.tsx     the screen: the page switch and the header
   look.ts                the theme, wording and text components every piece reads (useLook, useStyles)
-  context.tsx            AccountProvider: fills look.ts and supplies the default Card and Header
+  context.tsx            AccountProvider: fills look.ts and supplies the default Card
   theme.ts  strings.ts   the theme type (the app passes every color) and the English default wording
   types.ts               every prop type, in one place
   kit.ts                 KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
@@ -53,7 +53,7 @@ import { SettingsScreen, SettingRow, SettingsGroup } from 'app-account-kit';
 
 <SettingsScreen
   theme={ACCOUNT_THEME}                                   // required: the kit has no colors of its own
-  components={{ Text, TextInput, Card, Header }}          // the app's own text, card and header (all optional)
+  components={{ Text, TextInput, Card }}                  // the app's own text and card (all optional)
   onBack={goHome}
   profile={{ name, fallbackName: APP_NAME, email, photo, fallbackPhoto }}
   nickname={{ max: 20, onSave: (name) => saveProfile({ ...profile, name }) }}
@@ -131,6 +131,11 @@ const problems = themeContrast(ACCOUNT_THEME, '#3b1d8f'); // your page's solid b
 
 It checks text against the cards, boxes and delete panel it sits on (4.5 for text, 3 for the chevron), and lists a color it cannot read (a color name) rather than passing it. Icon tints are not checked.
 
+## Upgrading from 6.x to 7.0
+
+- **The kit now draws the page header.** Remove `Header` from your `components` (TypeScript flags it). The first page keeps a big left title under the arrow; Account, My data, App and Change password show a smaller (20) title centred beside the arrow, with space below. The arrow is a round button in `theme.field` and `theme.border`, with the chevron in `theme.accent`.
+- **Delete account is a button**: the same size as Sign out, red outline and red text, with a trash icon. Its confirm step is unchanged. `Button` has a new `variant="outline"` (it replaces the unused `link`).
+
 ## Upgrading from 5.0 to 6.0
 
 What people see:
@@ -144,7 +149,7 @@ What to change in your app (TypeScript points at each one):
 - `data`: `{ label, value, onDownload }` becomes `{ label, formats: [{ id: 'csv', label: 'CSV', onDownload }] }`. With one format a tap downloads; add a second (such as PDF) and the same row opens a sheet from the bottom to choose.
 - `about.logo`: optional, the app's picture (`require('./assets/icon.png')`).
 - Wording: `strings.share` and `strings.rate` are plain text, not functions of the app name; `strings.version` is gone; new: `email`, `supportHint`, `notOnStoreYet`, `close`.
-- A custom `components.Header` must cope with a missing `title` (About has none).
+- A custom `components.Header` must cope with a missing `title` (About has none). *(Removed in 7.0: see below.)*
 - `SettingRow` takes `expanded` (arrow turns down, screen readers hear it). It no longer says "expanded" just because it has children.
 
 New pieces for your own settings pages:
@@ -196,8 +201,12 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.0.0
+
+The kit draws the page header (centred 20 px titles); Delete account is an outlined red button with a trash icon. See "Upgrading from 6.x to 7.0".
+
 ### 6.1.0
 
 `PickerRow` and `ChoiceSheet` now accept numbers as option values (`value: 15`, `onChange(15)`), and `PickerRow` takes an optional `detail` line under its label. Nothing to change when upgrading from 6.0.
 
-Version 6.1.0 - 2026-11-05 8:35 AM CT
+Version 7.0.0 - 2026-11-05 9:20 AM CT

@@ -13,6 +13,7 @@ import type { AccountStrings } from './strings';
 import type { AccountTheme } from './theme';
 import type { SettingsScreenProps } from './types';
 import { SettingsGroup, STACK } from './ui/Group';
+import { PageHeader } from './ui/Header';
 
 type Props = SettingsScreenProps & {
   /** Every color and size, from the app. The kit has no look of its own. */
@@ -62,7 +63,7 @@ function Body({ onBack, backLabel, profile, nickname, photo, password, data, app
 
   return (
     <>
-      <components.Header title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
         {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}

@@ -56,7 +56,7 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
       <Button variant="quiet" small label={strings.keepAccount} onPress={cancel} disabled={action.busy} />
     </View>
   ) : (
-    <Button variant="link" label={strings.deleteAccount} onPress={() => setDeleting(true)} />
+    <Button variant="outline" icon="trash-2" label={strings.deleteAccount} onPress={() => setDeleting(true)} />
   );
 }
 
