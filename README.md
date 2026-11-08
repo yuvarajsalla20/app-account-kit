@@ -201,6 +201,11 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.2.0
+
+- A tall `brand` (such as a logo with text 64 px high) is no longer cut off: the brand sets the height of the top row, and Back is pinned to the left, centred on it.
+- New optional theme value `backSize`: the size of the word Back, to match the app's own Back buttons (it is then bold). Without it Back stays 14 px. Nothing to change when upgrading from 7.1.
+
 ### 7.1.0
 
 New optional `brand` prop on `SettingsScreen`: the app's logo and name. With it, the top row of every page is a small Back on the left and the brand centred, and the page title sits under that row on the left (30 px on the first page, 24 px on the others). About keeps its own big picture and shows no brand row. Without `brand`, the pages look as in 7.0.2. Nothing to change when upgrading from 7.0.

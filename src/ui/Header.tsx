@@ -21,7 +21,7 @@ export function PageHeader({ title, onBack, backLabel, large, brand }: Props) {
   const { theme, components, strings } = useLook();
   const styles = useStyles(makeStyles);
   const back = (
-    <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={styles.back}>
+    <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={brand && title ? styles.backInRow : styles.back}>
       <Feather name="chevron-left" size={20} color={theme.accent} />
       <components.Text style={styles.backText}>{strings.back}</components.Text>
     </Pressable>
@@ -32,7 +32,7 @@ export function PageHeader({ title, onBack, backLabel, large, brand }: Props) {
   if (brand) {
     return (
       <View style={styles.wrapBrand}>
-        <View style={styles.brandRow}>{back}{brand}</View>
+        <View style={styles.brandRow}>{brand}<View style={styles.brandBack}>{back}</View></View>
         {heading}
       </View>
     );
@@ -45,10 +45,13 @@ const makeStyles = (t: AccountTheme) => ({
   bar: { height: 44, ...CENTER, marginBottom: 22 },
   bare: { height: 0, zIndex: 1 },
   back: { position: 'absolute' as const, left: -6, top: -2, height: 44, flexDirection: 'row' as const, alignItems: 'center' as const, paddingRight: 10, zIndex: 1 },
-  backText: { color: t.accent, fontSize: 14, fontWeight: '500' as const },
+  backText: { color: t.accent, fontSize: t.backSize ?? 14, fontWeight: (t.backSize ? '700' : '500') as '700' | '500' },
   title: { color: t.text, fontSize: 20, fontWeight: '600' as const, letterSpacing: -0.2 },
   wrapBrand: { marginBottom: 14 },
-  brandRow: { height: 40, ...CENTER },
+  // The brand sets the row's height (a tall logo is never cut off); Back sits on the left, centred on it.
+  brandRow: { minHeight: 40, ...CENTER },
+  backInRow: { height: 44, flexDirection: 'row' as const, alignItems: 'center' as const, paddingRight: 10, marginLeft: -6 },
+  brandBack: { position: 'absolute' as const, left: 0, top: 0, bottom: 0, justifyContent: 'center' as const, zIndex: 1 },
   under: { marginTop: 8, color: t.text, fontSize: 24, fontWeight: '700' as const, letterSpacing: -0.4 },
   wrapLarge: { paddingBottom: 12 },
   largeBack: { height: 40 },

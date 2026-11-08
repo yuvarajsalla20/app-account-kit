@@ -35,4 +35,6 @@ export interface AccountTheme {
   radius: number;
   /** Icon color of each row the kit draws. */
   tints: Record<TintKey, string>;
+  /** Size of the word Back at the top of each page, to match the app's own Back buttons. Defaults to 14. */
+  backSize?: number;
 }

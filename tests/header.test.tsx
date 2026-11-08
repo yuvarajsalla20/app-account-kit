@@ -43,13 +43,25 @@ describe('page header', () => {
 
   it('with a brand, puts Back and the brand in one row and the page title under it, on the left', async () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} />);
-    const row = h.byLabel(S.back).parent!.parent!;
-    expect(row.findAll((n) => n.props.testID === 'brand').length).toBeGreaterThan(0);
-    expect(flat(row.props.style)).toMatchObject({ height: 40, alignItems: 'center', justifyContent: 'center' });
+    let row = h.byLabel(S.back).parent!;
+    while (!row.findAll((n) => n.props.testID === 'brand').length) row = row.parent!;
+    // The brand sets the row's height (a tall logo is never cut off); Back is pinned to the left, centred on it.
+    expect(flat(row.props.style)).toMatchObject({ minHeight: 40, alignItems: 'center', justifyContent: 'center' });
+    expect(flat(row.props.style).height).toBeUndefined();
+    const side = row.findAll((n) => flat(n.props.style)?.position === 'absolute' && n.findAll((m) => m.props.accessibilityLabel === S.back).length > 0);
+    expect(flat(side[0].props.style)).toMatchObject({ left: 0, top: 0, bottom: 0, justifyContent: 'center' });
     expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 30, fontWeight: '700' });
     await press(h.byLabel(S.myData));
     expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 24, fontWeight: '700' });
     expect(h.root.root.findAll((n) => n.props.testID === 'brand').length).toBeGreaterThan(0);
+  });
+
+  it('sizes the word Back from the theme when the app asks (default 14)', () => {
+    const small = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} />);
+    const word = (h: typeof small) => h.byLabel(S.back).findAll((n) => n.props.children === S.back && n.props.style)[0];
+    expect(flat(word(small).props.style)).toMatchObject({ fontSize: 14 });
+    const big = mount(<SettingsScreen theme={{ ...THEME, backSize: 17 }} {...props} brand={<Brand />} />);
+    expect(flat(word(big).props.style)).toMatchObject({ fontSize: 17, fontWeight: '700' });
   });
 
   it('leaves About without the brand row, so the big app picture is the header', async () => {
