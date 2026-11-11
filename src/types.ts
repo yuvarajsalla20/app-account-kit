@@ -93,6 +93,19 @@ export interface AppPageProps {
   content: ReactNode;
 }
 
+/** A page the app adds to the main list. */
+export interface ExtraPage {
+  /** Unique, and not one of the kit's names (`hub`, `account`, `data`, `app`, `about`, `password`). */
+  id: string;
+  /** The row's name and the page title. */
+  label: string;
+  icon: IconName;
+  /** The color of the icon tile. Default: the App page's. */
+  tint?: string;
+  /** Build the rows with SettingsGroup and SettingRow. */
+  content: ReactNode;
+}
+
 export interface SettingsScreenProps {
   /** Back from the main list (to Home). Back from every other page returns to the list. */
   onBack: () => void;
@@ -111,6 +124,10 @@ export interface SettingsScreenProps {
   actions: ActionsProps;
   /** Leave out when the app has no settings of its own: the App row is hidden. */
   app?: AppPageProps;
+  /** Pages of the app's own, each a row on the main list with its own page (a Premium page, say). The kit knows nothing about what they hold. */
+  extraPages?: readonly ExtraPage[];
+  /** The order of the rows on the main list: `'account' | 'data' | 'app' | 'about'` and the `id` of each extra page. Default: account, data, app, extra pages, about. Pages you leave out follow in that order; pages the app does not have are not shown. Rename a row with `strings` (`myData`, `app`). */
+  hubOrder?: readonly string[];
   /** Turns a sign-in error (wrong password, asked too often) into plain words. Return nothing for errors it does not know. */
   describeError?: (error: unknown) => string | null | undefined;
   /** How long a save, delete or other action may take before the screen stops waiting (ms). Default 45 s, a little over app-auth-kit's own 30 s delete limit. */

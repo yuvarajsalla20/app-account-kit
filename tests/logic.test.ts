@@ -155,6 +155,25 @@ describe('settings pages', () => {
     expect(hubPages({ data: true, app: true })).toEqual(['account', 'data', 'app', 'about']);
     expect(hubPages({ data: false, app: false })).toEqual(['account', 'about']);
   });
+
+  it('follows the order the app gives', () => {
+    expect(hubPages({ data: true, app: true }, ['app', 'account', 'data', 'about'])).toEqual(['app', 'account', 'data', 'about']);
+  });
+
+  it('puts pages the app left out after the listed ones, and skips pages it does not have', () => {
+    expect(hubPages({ data: true, app: true }, ['about', 'app'])).toEqual(['about', 'app', 'account', 'data']);
+    expect(hubPages({ data: false, app: true }, ['data', 'app', 'account', 'about'])).toEqual(['app', 'account', 'about']);
+  });
+
+  it('adds extra pages before About, and keeps them where the app puts them', () => {
+    expect(hubPages({ data: true, app: true }, undefined, ['premium'])).toEqual(['account', 'data', 'app', 'premium', 'about']);
+    expect(hubPages({ data: true, app: true }, ['app', 'premium', 'account'], ['premium'])).toEqual(['app', 'premium', 'account', 'data', 'about']);
+    expect(hubPages({ data: true, app: true }, ['premium'])).toEqual(['account', 'data', 'app', 'about']);
+  });
+
+  it('ignores repeats and unknown names', () => {
+    expect(hubPages({ data: true, app: true }, ['app', 'app', 'nope' as never])).toEqual(['app', 'account', 'data', 'about']);
+  });
 });
 
 describe('csv and nicknames, review fixes', () => {
