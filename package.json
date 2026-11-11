@@ -1,6 +1,6 @@
 {
   "name": "app-account-kit",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "description": "Reusable Account screen for React Native / Expo apps: profile, nickname, photo, change password page, data download, about (share, rate, privacy, support, version), sign out and delete account. Takes its whole theme from the app (no colors of its own), with slots for each app's own settings.",
   "main": "src/index.ts",
   "types": "src/index.ts",

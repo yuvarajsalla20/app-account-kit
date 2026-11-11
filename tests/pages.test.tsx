@@ -20,10 +20,10 @@ const profile: ProfileInfo = { name: 'Yuva', fallbackName: 'App', email: 'a@b.co
 const about: AboutProps = { appName: 'My App', version: { number: '1.2.0', label: 'v1.2 · today' }, privacyUrl: 'https://x.y/privacy', supportEmail: 'help@x.com' };
 
 describe('HubPage', () => {
-  const setup = (props: { data?: boolean; app?: boolean; onSignOut?: () => Promise<void> | void; onDeleteAccount?: (password: string) => Promise<void> } = {}) => {
+  const setup = (props: { data?: boolean; app?: boolean; extra?: boolean; onSignOut?: () => Promise<void> | void; onDeleteAccount?: (password: string) => Promise<void> } = {}) => {
     const onOpen = vi.fn();
     const h = withAction((action) => (
-      <HubPage data={props.data ? { label: 'Download', formats: [{ id: 'csv', label: 'CSV', onDownload: async () => {} }] } : undefined} app={props.app ? { content: null } : undefined} onSignOut={props.onSignOut} onDeleteAccount={props.onDeleteAccount} confirmsWithPassword={false} onOpen={onOpen} action={action} />
+      <HubPage data={props.data ? { label: 'Download', formats: [{ id: 'csv', label: 'CSV', onDownload: async () => {} }] } : undefined} app={props.app ? { content: null } : undefined} onSignOut={props.onSignOut} onDeleteAccount={props.onDeleteAccount} confirmsWithPassword={false} onOpen={onOpen} action={action} extraPages={props.extra ? [{ id: 'premium', label: 'Premium', icon: 'award', content: null }] : undefined} hubOrder={props.extra ? ['app', 'premium', 'account', 'data', 'about'] : undefined} />
     ));
     return { ...h, onOpen };
   };
@@ -35,6 +35,14 @@ describe('HubPage', () => {
     expect(h.has(S.app)).toBe(false);
     await press(h.byLabel(S.about));
     expect(h.onOpen).toHaveBeenCalledWith('about');
+  });
+
+  it('lists a page the app added, opens it by its id, and shows it where the app asked', async () => {
+    const h = setup({ extra: true, app: true });
+    expect(h.has('Premium')).toBe(true);
+    await press(h.byLabel('Premium'));
+    expect(h.onOpen).toHaveBeenCalledWith('premium');
+    expect(setup({}).has('Premium')).toBe(false);
   });
 
   it('shows each row as a name with an arrow only: no email, format, hint or version on the right', () => {

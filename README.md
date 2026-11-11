@@ -201,6 +201,24 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.3.0
+
+Two new optional props on `SettingsScreen`:
+
+- `hubOrder`: the order of the rows on the main list, for example `['app', 'account', 'data', 'about']`. Pages left out follow in the default order; pages the app does not have stay hidden. Without it the order is unchanged (Account, My data, App, About).
+- `extraPages`: pages of the app's own, each a row on the main list with its own page and title (`{ id, label, icon, tint?, content }`), for example a Premium page. The kit knows nothing about what they hold. By default they sit just before About; put their `id` in `hubOrder` to place them.
+
+To rename a row (and its page title) use the existing `strings` (`myData`, `app`). Nothing to change when upgrading from 7.2.
+
+```tsx
+<SettingsScreen
+  strings={{ app: 'Preferences', myData: 'Backup and export' }}
+  extraPages={[{ id: 'premium', label: 'Premium', icon: 'award', content: <PremiumRows /> }]}
+  hubOrder={['app', 'premium', 'account', 'data', 'about']}
+  …
+/>
+```
+
 ### 7.2.0
 
 - A tall `brand` (such as a logo with text 64 px high) is no longer cut off: the brand sets the height of the top row, and Back is pinned to the left, centred on it.

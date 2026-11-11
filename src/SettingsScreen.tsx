@@ -22,14 +22,16 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-function Body({ onBack, backLabel, brand, profile, nickname, photo, password, data, app, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password']);
+
+function Body({ onBack, backLabel, brand, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
-  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !app);
+  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !app) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
@@ -58,20 +60,22 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
     scroll.current?.scrollTo({ y: 0, animated: true });
     if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
   }, [action.noteKey]);
-  const titles: Record<Exclude<Page, 'about'>, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
+  const extra = extraPages?.find((p) => p.id === page);
+  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
   return (
     <>
-      <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : titles[page]} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage data={data} app={app} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
+        {page === 'hub' ? <HubPage data={data} app={app} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
+        {extra ? <View style={STACK}>{extra.content}</View> : null}
         {page === 'app' && app ? <View style={STACK}>{app.content}</View> : null}
         {page === 'about' ? <AboutSection {...about} action={action} /> : null}
       </ScrollView>
