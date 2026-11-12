@@ -15,7 +15,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 | **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page) | `profile`, `nickname`, `photo`, `password` |
 | **My data** | The download row | `data` |
 | **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
-| **About** | No page title. The app's picture (`logo`), its name in the app's own color (`theme.brand`) and the version small below; then Contact support (opens in place and shows the address; tapping the address writes an email), Share, Rate, Privacy policy and Kits (opens in place, one line per kit). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
+| **About** | No page title. The app's picture (`logo`) and its name in the app's own color (`theme.brand`), then three cards: **Features** (opens `featuresUrl`), Rate, Share; **Contact support** (opens in place and shows the address; tapping the address writes an email), Privacy policy; **Kits** and **Version** (both open in place, one line each). Features and Privacy policy show a slanted arrow (a web page). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
 
 Every part is optional: leave a prop out and its row (or page) is hidden.
 
@@ -84,7 +84,7 @@ The pure functions also live at `app-account-kit/logic`, which loads no React Na
 
 - Every release is tagged in git (`v4.1.0`). In the app's `package.json` pin the full commit SHA of that tag and write the tag in a comment, so the version is readable and the build is exact.
 - With several kits, pin each one separately and upgrade one kit at a time.
-- Each kit exports `KIT_VERSION`. The app collects them with `kitsLine({ core, auth, account })` and passes the line as `about.kits`: it shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
+- Each kit exports `KIT_VERSION`. The app passes them as `about.kits`, either a list (`[{ name: 'Account Kit', version: KIT_VERSION, build: '1a2b3c4' }]`, shown as "Account Kit | v7.5.0 | Build 1a2b3c4") or the older line from `kitsLine({ core, auth, account })`. It shows as a Kits row in About and is added to support emails. Without `kits`, support emails carry this kit's version alone.
 
 ## Rules it follows
 
@@ -201,6 +201,16 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.5.0
+
+About is regrouped and gains Features and Version rows. **The layout changed for every app that upgrades; existing props keep working.**
+
+- Three cards: Features, Rate, Share / Contact support, Privacy policy / Kits, Version.
+- New `about.featuresUrl`: a Features row that opens the app's features web page (https only).
+- The version is no longer under the app name. A Version row opens to show `about.version.lines` (one per line), or `label` when no lines are passed.
+- `about.kits` also takes a list of `{ name, version, build? }`, shown one per line as "Name | vX | Build Y". New helpers `kitListLines` and `kitsMailLine`.
+- `SettingRow` has a new `external` flag (slanted arrow for rows that open a web page). New strings `features`, `version`, `build`; optional `theme.tints.features`.
+
 ### 7.4.0
 
 Sign out and Delete account share one row at the bottom of the main list. **The layout changed for every app that upgrades; nothing to change in code.**

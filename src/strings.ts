@@ -30,6 +30,12 @@ export interface AccountStrings {
   contactSupport: string;
   noMail: (email: string) => string;
   kits: string;
+  /** The About row that opens the app's features web page. */
+  features: string;
+  /** The About row that opens to show the version and build. */
+  version: string;
+  /** The word before a kit's build in the Kits list, as in "Account Kit | v7.5.0 | Build 1a2b3c4". */
+  build: string;
   email: string;
   /** Under the support address when Contact support is open. */
   supportHint: string;
@@ -94,6 +100,9 @@ export const DEFAULT_STRINGS: AccountStrings = {
   contactSupport: 'Contact support',
   noMail: (email) => `No mail app is set up. Write to ${email}`,
   kits: 'Kits',
+  features: 'Features',
+  version: 'Version',
+  build: 'Build',
   email: 'Email',
   supportHint: 'Tap to write an email',
   notOnStoreYet: 'Available once the app is on the App Store.',

@@ -16,10 +16,11 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { CSV_BOM, DEFAULT_PHOTO_MAX_CHARS, MIN_PASSWORD, hubPages, isEmail, isHttps, parentOf, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, kitLines, kitsLine, passwordProblem, reviewUrl, reviewWebUrl, safePhoto, supportMailUrl, themeContrast, toCsv } from './logic';
+export { CSV_BOM, DEFAULT_PHOTO_MAX_CHARS, MIN_PASSWORD, hubPages, isEmail, isHttps, parentOf, buildShareMessage, canConfirmDelete, canRate, canShare, cleanNickname, csvFileName, initialOf, kitLines, kitListLines, kitsLine, kitsMailLine, passwordProblem, reviewUrl, reviewWebUrl, safePhoto, supportMailUrl, themeContrast, toCsv } from './logic';
 export type { ContrastProblem, Page, PasswordProblem } from './logic';
 export type {
   AboutProps,
+  KitInfo,
   AppPageProps,
   ActionsProps,
   DataFormat,

@@ -58,18 +58,34 @@ export interface DataProps {
   formats: readonly [DataFormat, ...DataFormat[]];
 }
 
+/** One kit in the About Kits list. `build` is optional, such as the short commit the app pins. */
+export interface KitInfo {
+  name: string;
+  version: string;
+  build?: string;
+}
+
 export interface AboutProps {
   appName: string;
   /** The app's picture, shown above its name. Pass `require('./assets/icon.png')` or `{ uri }`. Leave out for no picture. */
   logo?: ImageSourcePropType;
-  /** The number, like 0.2.0 (added to support emails), and the line shown small under the name, like "v0.2 · Nov 3, 2026 · 10:25 PM CT". */
-  version: { number: string; label: string };
+  /**
+   * The number, like 0.2.0 (added to support emails), and what the Version row shows when it is opened.
+   * `lines` is one entry per line, like ["v0.2.0 | Build 12", "Nov 3, 2026 | 10:25 PM CT"]; without it the row shows `label`.
+   */
+  version: { number: string; label: string; lines?: readonly string[] };
   privacyUrl: string;
+  /** The Features row appears when this is passed: a secure web page listing what the app does. */
+  featuresUrl?: string;
   supportEmail: string;
   /** The Share row appears when this is passed. It shares once `url` is a secure App Store address; until then a tap says it is not available yet. `message` replaces the default wording. */
   share?: { url?: string; message?: string };
-  /** All the kit versions in use (build it with `kitsLine`). Shown as a Kits row in About that opens a list, and added to support emails. */
-  kits?: string;
+  /**
+   * All the kits in use. Shown as a Kits row in About that opens one line per kit, and added to support emails.
+   * Pass a list (`{ name: 'Account Kit', version: '7.5.0', build: '1a2b3c4' }`) for "Account Kit | v7.5.0 | Build 1a2b3c4" lines,
+   * or the older one-line text built with `kitsLine`.
+   */
+  kits?: string | readonly KitInfo[];
   /** The Rate row (iPhone only) appears when this is passed. It opens the App Store's own review screen once `appStoreId` is set; until then a tap says it is not available yet. */
   rate?: { appStoreId?: string };
 }
