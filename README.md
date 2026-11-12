@@ -11,7 +11,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 
 | Page | What it shows | App supplies |
 |---|---|---|
-| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** and, under it, **Delete account** (quiet red text; a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
+| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** (outlined) and **Delete account** (red outline) side by side (a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
 | **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page) | `profile`, `nickname`, `photo`, `password` |
 | **My data** | The download row | `data` |
 | **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
@@ -201,6 +201,14 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.4.0
+
+Sign out and Delete account share one row at the bottom of the main list. **The layout changed for every app that upgrades; nothing to change in code.**
+
+- Sign out is an outlined button (a thin edge in the text color, no fill), on the left. Delete account keeps its red outline, on the right.
+- Tapping Delete account opens the confirmation panel under Sign out, as before.
+- `Button` has a new `variant="line"`.
+
 ### 7.3.0
 
 Two new optional props on `SettingsScreen`:

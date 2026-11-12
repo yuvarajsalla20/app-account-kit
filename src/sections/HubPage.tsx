@@ -16,7 +16,7 @@ type Props = Pick<SettingsScreenProps, 'data' | 'app' | 'hubOrder' | 'extraPages
   onReveal?: () => void;
 };
 
-/** The main list: Account, My data, App and About, each a row with an arrow and nothing else, then Sign out and, under it, Delete account. */
+/** The main list: Account, My data, App and About, each a row with an arrow and nothing else, then Sign out and Delete account side by side. */
 export function HubPage({ data, app, hubOrder, extraPages = [], onSignOut, onDeleteAccount, confirmsWithPassword, onOpen, action, onReveal }: Props) {
   const { theme, strings } = useLook();
   const rows: Record<string, { icon: IconName; label: string; tint?: string }> = {
@@ -34,8 +34,14 @@ export function HubPage({ data, app, hubOrder, extraPages = [], onSignOut, onDel
           <SettingRow key={page} last={i === pages.length - 1} icon={rows[page]!.icon} tint={rows[page]!.tint ?? theme.tints[page as keyof typeof theme.tints] ?? theme.tints.app} label={rows[page]!.label} onPress={() => onOpen(page)} />
         ))}
       </SettingsGroup>
-      {onSignOut ? <Button icon="log-out" label={strings.signOut} onPress={() => action.run('sign-out', onSignOut, () => strings.couldNot(strings.signOutAction))} disabled={action.busy} /> : null}
-      <DeleteAccount onDeleteAccount={onDeleteAccount} confirmsWithPassword={confirmsWithPassword} action={action} onReveal={onReveal} />
+      {/* Sign out and Delete account share one row. */}
+      <DeleteAccount
+        onDeleteAccount={onDeleteAccount}
+        confirmsWithPassword={confirmsWithPassword}
+        action={action}
+        onReveal={onReveal}
+        beside={onSignOut ? <Button variant="line" icon="log-out" label={strings.signOut} onPress={() => action.run('sign-out', onSignOut, () => strings.couldNot(strings.signOutAction))} disabled={action.busy} grow /> : null}
+      />
     </View>
   );
 }

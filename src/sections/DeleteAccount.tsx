@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ElementRef } from 'react';
+import { useEffect, useRef, useState, type ElementRef, type ReactNode } from 'react';
 import { AccessibilityInfo, findNodeHandle, View } from 'react-native';
 import { useLook, useStyles } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
@@ -12,10 +12,12 @@ interface Props extends Pick<ActionsProps, 'onDeleteAccount' | 'confirmsWithPass
   action: ActionRunner;
   /** Called when the confirmation panel opens, so the page can scroll it into view. */
   onReveal?: () => void;
+  /** A button shown on the same row, to the left of Delete account (Sign out). It stays above the panel while it is open. */
+  beside?: ReactNode;
 }
 
-/** Delete account: quiet red text on the main list, under Sign out. It asks for confirmation (with the password when the login has one). */
-export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, onReveal }: Props) {
+/** Delete account: a red outlined button on the main list, beside Sign out. It asks for confirmation (with the password when the login has one). */
+export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, onReveal, beside }: Props) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const [deleting, setDeleting] = useState(false);
@@ -31,7 +33,7 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
     const node = findNodeHandle(panel.current);
     if (node) AccessibilityInfo.setAccessibilityFocus(node);
   }, [deleting]);
-  if (!onDeleteAccount) return null;
+  if (!onDeleteAccount) return beside ? <>{beside}</> : null;
 
   const cancel = () => {
     setDeleting(false);
@@ -40,6 +42,8 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
   };
 
   return deleting ? (
+    <>
+    {beside}
     <View ref={panel} style={styles.panel} accessible accessibilityLabel={strings.deleteTitle}>
       <components.Text style={styles.title} accessibilityRole="header">{strings.deleteTitle}</components.Text>
       <components.Text style={styles.text}>{strings.deleteWarning}</components.Text>
@@ -55,12 +59,17 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
       />
       <Button variant="quiet" small label={strings.keepAccount} onPress={cancel} disabled={action.busy} />
     </View>
+    </>
   ) : (
-    <Button variant="outline" icon="trash-2" label={strings.deleteAccount} onPress={() => setDeleting(true)} />
+    <View style={styles.row}>
+      {beside}
+      <Button variant="outline" icon="trash-2" label={strings.deleteAccount} onPress={() => setDeleting(true)} grow />
+    </View>
   );
 }
 
 const makeStyles = (t: AccountTheme) => ({
+  row: { flexDirection: 'row' as const, gap: 10 },
   panel: { gap: 10, padding: 18, borderRadius: 18, backgroundColor: t.panel, borderWidth: 1, borderColor: t.danger },
   title: { color: t.text, fontSize: 17, fontWeight: '700' as const },
   text: { color: t.muted, fontSize: 14, lineHeight: 20 },
