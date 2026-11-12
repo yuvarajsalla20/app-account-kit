@@ -8,8 +8,8 @@ import { CENTER } from './layout';
 interface Props {
   label: string;
   onPress: () => void;
-  /** solid: the main button. quiet: an outlined button. danger: red text on a quiet button. outline: red text and red edge, no fill, for a rare, serious action. */
-  variant?: 'solid' | 'quiet' | 'danger' | 'outline';
+  /** solid: the main button. quiet: an outlined button. danger: red text on a quiet button. outline: red text and red edge, no fill, for a rare, serious action. line: text color and a thin edge in the text color, no fill (Sign out). */
+  variant?: 'solid' | 'quiet' | 'danger' | 'outline' | 'line';
   icon?: IconName;
   /** Half-height, for secondary actions. */
   small?: boolean;
@@ -31,7 +31,7 @@ export function Button({ label, onPress, variant = 'quiet', icon, small, busy, d
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!(disabled || busy), busy: !!busy }}
-      style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : variant === 'outline' ? styles.outline : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
+      style={({ pressed }) => [styles.button, small && styles.small, variant === 'solid' ? styles.solid : variant === 'outline' ? styles.outline : variant === 'line' ? styles.line : styles.quiet, grow && styles.grow, pressed && styles.pressed, disabled && styles.off]}
     >
       {busy ? <ActivityIndicator color={color} /> : icon ? <Feather name={icon} size={small ? 17 : 18} color={color} /> : null}
       {busy ? null : <components.Text style={[styles.label, { color }]}>{label}</components.Text>}
@@ -45,6 +45,7 @@ const makeStyles = (t: AccountTheme) => ({
   solid: { backgroundColor: t.accent },
   quiet: { backgroundColor: t.field, borderWidth: 1, borderColor: t.border },
   outline: { borderWidth: 1, borderColor: t.danger },
+  line: { borderWidth: 1, borderColor: t.text },
   grow: { flex: 1 },
   pressed: { opacity: 0.8 },
   off: { opacity: 0.4 },
