@@ -139,7 +139,7 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitLines', 'kitsLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv']);
+    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'kitLines', 'kitListLines', 'kitsLine', 'kitsMailLine', 'parentOf', 'passwordProblem', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv']);
   });
 });
 

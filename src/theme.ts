@@ -34,7 +34,7 @@ export interface AccountTheme {
   /** Rounded corners of a card. */
   radius: number;
   /** Icon color of each row the kit draws. */
-  tints: Record<TintKey, string>;
+  tints: Record<TintKey, string> & { /** The Features row in About. Defaults to the About tint. */ features?: string };
   /** Size of the word Back at the top of each page, to match the app's own Back buttons. Defaults to 14. */
   backSize?: number;
 }

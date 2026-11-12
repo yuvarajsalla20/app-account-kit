@@ -225,13 +225,24 @@ describe('AboutSection', () => {
   const setup = (props: Partial<AboutProps> = {}) => withAction((action) => <AboutSection {...about} {...props} action={action} />);
   const texts = (h: ReturnType<typeof setup>) => h.root.root.findAll((n) => typeof n.type === 'string' && typeof n.props.children === 'string').map((n) => n.props.children as string);
 
-  it('shows the app name as the heading and the version small under it, with no Version row', () => {
+  it('shows the app name as the heading, and the version only inside the Version row', async () => {
     const h = setup();
     expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header' && n.props.children === 'My App')).toHaveLength(1);
-    expect(texts(h)).toContain('v1.2 · today');
     const name = h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header')[0]!;
     expect(name.props.style.color).toBe(THEME.brand); // the app's own color, not the text color
-    expect(h.has('Version')).toBe(false);
+    expect(texts(h)).not.toContain('v1.2 · today');
+    await press(h.byLabel(S.version));
+    expect(texts(h)).toContain('v1.2 · today');
+    await press(h.byLabel(S.version));
+    expect(texts(h)).not.toContain('v1.2 · today');
+  });
+
+  it('shows the version lines the app passes, one per line, with no value on the closed row', async () => {
+    const h = setup({ version: { number: '1.2.0', label: 'v1.2 · today', lines: ['v1.2.0 | Build 12', 'Nov 12, 2026 | 6:40 AM CT'] } });
+    expect(h.byLabel(S.version).props.accessibilityValue).toBeUndefined();
+    await press(h.byLabel(S.version));
+    expect(texts(h)).toEqual(expect.arrayContaining(['v1.2.0 | Build 12', 'Nov 12, 2026 | 6:40 AM CT']));
+    expect(texts(h)).not.toContain('v1.2 · today');
   });
 
   it('shows the app picture above the name only when the app passes one', () => {
@@ -243,10 +254,23 @@ describe('AboutSection', () => {
     expect(found[0]!.props.accessible).toBe(false);
   });
 
-  it('lists the rows in order: Contact support, Share, Rate, Privacy policy, Kits', () => {
-    const h = setup({ share: {}, rate: {}, kits: 'core 1.4.0' });
-    const order = h.root.root.findAll((n) => typeof n.type === 'string' && [S.contactSupport, S.share, S.rate, S.privacy, S.kits].includes(String(n.props.accessibilityLabel))).map((n) => n.props.accessibilityLabel);
-    expect(order).toEqual([S.contactSupport, S.share, S.rate, S.privacy, S.kits]);
+  it('lists the rows in order: Features, Rate, Share, then Contact support, Privacy policy, then Kits, Version', () => {
+    const h = setup({ share: {}, rate: {}, kits: 'core 1.4.0', featuresUrl: 'https://x.y/features' });
+    const labels = [S.features, S.rate, S.share, S.contactSupport, S.privacy, S.kits, S.version];
+    const order = h.root.root.findAll((n) => typeof n.type === 'string' && labels.includes(String(n.props.accessibilityLabel))).map((n) => n.props.accessibilityLabel);
+    expect(order).toEqual(labels);
+  });
+
+  it('shows Features only when the app passes a link, and opens it only when it is https', async () => {
+    expect(setup().has(S.features)).toBe(false);
+    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    await press(setup({ featuresUrl: 'https://x.y/features' }).byLabel(S.features));
+    expect(open).toHaveBeenCalledWith('https://x.y/features');
+    open.mockClear();
+    const h = setup({ featuresUrl: 'http://x.y/features' });
+    await press(h.byLabel(S.features));
+    expect(open).not.toHaveBeenCalled();
+    expect(h.held.action.note).toBe(S.couldNot(S.openLink));
   });
 
   it('shows Share and Rate whenever the app passes them (Rate on iPhone only), and says so when there is nothing to open yet', async () => {
@@ -323,5 +347,15 @@ describe('AboutSection', () => {
     expect(texts(h)).toEqual(expect.arrayContaining(['core 1.4.0', 'auth 1.6.0']));
     await press(h.byLabel(S.kits));
     expect(texts(h)).not.toContain('core 1.4.0');
+  });
+
+  it('shows a kit list as "Name | vX | Build Y" lines, and sends it in the support email', async () => {
+    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const h = setup({ kits: [{ name: 'Core Kit', version: '1.6.0', build: '6b1a0df' }, { name: 'Auth Kit', version: '1.10.0' }] });
+    await press(h.byLabel(S.kits));
+    expect(texts(h)).toEqual(expect.arrayContaining(['Core Kit | v1.6.0 | Build 6b1a0df', 'Auth Kit | v1.10.0']));
+    await press(h.byLabel(S.contactSupport));
+    await press(h.byLabel('help@x.com'));
+    expect(decodeURIComponent(String(open.mock.calls[0]![0]))).toContain('Kits: Core Kit 1.6.0 (6b1a0df) | Auth Kit 1.10.0');
   });
 });
