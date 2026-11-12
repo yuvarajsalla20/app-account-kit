@@ -15,6 +15,8 @@ interface Props {
   detail?: string;
   /** A short value on the right. */
   value?: string;
+  /** Drawn in place of the value on the right, such as a small pill. Screen readers hear `value`. */
+  badge?: ReactNode;
   onPress?: () => void;
   /** Shows an on/off switch instead of an arrow. */
   toggle?: { value: boolean; onChange: (value: boolean) => void };
@@ -30,7 +32,7 @@ interface Props {
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, external, expanded, children, last, disabled }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled }: Props) {
   const { theme, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
@@ -52,7 +54,9 @@ export function SettingRow({ icon, tint, label, detail, value, onPress, toggle, 
           <components.Text style={styles.label}>{label}</components.Text>
           {detail ? <components.Text style={styles.detail}>{detail}</components.Text> : null}
         </View>
-        {value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
+        {badge ? (
+          <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">{badge}</View>
+        ) : value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
         {toggle ? (
           <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
         ) : onPress ? (

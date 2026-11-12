@@ -201,6 +201,10 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.6.0
+
+- **A value or badge on an added page's row:** `extraPages` entries take `value` (a short word on the right, read out with the label) and `badge` (drawn in its place, such as a plan pill). `SettingRow` takes `badge` too.
+
 ### 7.5.0
 
 About is regrouped and gains Features and Version rows. **The layout changed for every app that upgrades; existing props keep working.**

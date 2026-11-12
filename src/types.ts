@@ -118,6 +118,10 @@ export interface ExtraPage {
   icon: IconName;
   /** The color of the icon tile. Default: the App page's. */
   tint?: string;
+  /** A short value on the right of the row ("Yearly"), read out with the label. */
+  value?: string;
+  /** Drawn in place of `value` on the right of the row, such as a small pill. Screen readers hear `value`. */
+  badge?: ReactNode;
   /** Build the rows with SettingsGroup and SettingRow. */
   content: ReactNode;
 }
