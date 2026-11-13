@@ -64,7 +64,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
   const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
-  return (
+  const body = (
     <>
       <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
@@ -81,6 +81,8 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
       </ScrollView>
     </>
   );
+  // A swipe from the left edge, when the app passes one, takes the same step as the Back button.
+  return components.EdgeSwipe ? <components.EdgeSwipe onBack={back}>{body}</components.EdgeSwipe> : body;
 }
 
 /**

@@ -1,4 +1,6 @@
-import { View } from 'react-native';
+import type { ReactNode } from 'react';
+import { act } from 'react-test-renderer';
+import { Pressable, View } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { DEFAULT_STRINGS as S } from '../src/strings';
@@ -90,5 +92,36 @@ describe('Delete account button', () => {
     const bar = flat(h.byLabel(S.back).parent!.parent!.props.style);
     expect(bar).toMatchObject({ height: 0 });
     expect(bar.marginBottom).toBeUndefined();
+  });
+
+  it("draws the app's own Back on every page when the app passes one, with the page's label and onBack", async () => {
+    const onBack = vi.fn();
+    const Own = ({ onPress, label }: { onPress: () => void; label: string }) => <Pressable testID="own-back" accessibilityLabel={label} onPress={onPress} />;
+    const h = mount(<SettingsScreen theme={THEME} {...props} onBack={onBack} backLabel="Back to Upcoming" brand={<Brand />} components={{ BackButton: Own }} />);
+    expect(h.byLabel('Back to Upcoming').props.testID).toBe('own-back');
+    await press(h.byLabel(S.account));
+    expect(h.byLabel(S.back).props.testID).toBe('own-back');
+    await press(h.byLabel(S.back));
+    await press(h.byLabel('Back to Upcoming'));
+    expect(onBack).toHaveBeenCalledTimes(1);
+    expect(h.root.root.findAll((n) => n.props.testID === 'own-back').length).toBeGreaterThan(0);
+  });
+
+  it('wraps the screen in the app\'s edge swipe, which steps back one page like the Back button', async () => {
+    const onBack = vi.fn();
+    let swipe: () => void = () => {};
+    const Swipe = ({ onBack: back, children }: { onBack: () => void; children: ReactNode }) => {
+      swipe = back;
+      return <View testID="swipe">{children}</View>;
+    };
+    const h = mount(<SettingsScreen theme={THEME} {...props} onBack={onBack} components={{ EdgeSwipe: Swipe }} />);
+    expect(h.root.root.findAll((n) => n.props.testID === 'swipe').length).toBeGreaterThan(0);
+    await press(h.byLabel(S.account));
+    expect(heading(h)!.props.children).toBe(S.account);
+    await act(async () => swipe());
+    expect(heading(h)!.props.children).toBe(S.settings);
+    expect(onBack).not.toHaveBeenCalled();
+    await act(async () => swipe());
+    expect(onBack).toHaveBeenCalledTimes(1);
   });
 });

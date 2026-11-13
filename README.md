@@ -201,6 +201,12 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.7.0
+
+- **The app's own Back button:** new optional `components.BackButton` (`{ onPress, label }`). When passed, the kit draws it on every page (the main list and each inner page) where its own small arrow and word would be, so the app can use one Back everywhere. Without it nothing changes.
+- **Swipe back from the left edge:** new optional `components.EdgeSwipe` (`{ onBack, children }`). When passed, the kit wraps the screen in it, and `onBack` steps back one page exactly like the Back button (from the main list it calls the app's `onBack`). The app owns the gesture; the kit only says where back goes.
+- `KIT_VERSION` now reads 7.7.0 (it still said 7.5.0 in 7.6.0).
+
 ### 7.6.0
 
 - **A value or badge on an added page's row:** `extraPages` entries take `value` (a short word on the right, read out with the label) and `badge` (drawn in its place, such as a plan pill). `SettingRow` takes `badge` too.

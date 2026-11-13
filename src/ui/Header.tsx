@@ -20,8 +20,14 @@ interface Props {
 export function PageHeader({ title, onBack, backLabel, large, brand }: Props) {
   const { theme, components, strings } = useLook();
   const styles = useStyles(makeStyles);
-  const back = (
-    <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={brand && title ? styles.backInRow : styles.back}>
+  const place = brand && title ? styles.backInRow : styles.back;
+  // The app's own Back, when it passes one, sits where the kit's would, so every page of the app has the same Back.
+  const back = components.BackButton ? (
+    <View style={[place, styles.ownBack]}>
+      <components.BackButton onPress={onBack} label={backLabel} />
+    </View>
+  ) : (
+    <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel={backLabel} hitSlop={10} style={place}>
       <Feather name="chevron-left" size={20} color={theme.accent} />
       <components.Text style={styles.backText}>{strings.back}</components.Text>
     </Pressable>
@@ -45,6 +51,8 @@ const makeStyles = (t: AccountTheme) => ({
   bar: { height: 44, ...CENTER, marginBottom: 22 },
   bare: { height: 0, zIndex: 1 },
   back: { position: 'absolute' as const, left: -6, top: -2, height: 44, flexDirection: 'row' as const, alignItems: 'center' as const, paddingRight: 10, zIndex: 1 },
+  // The app's Back brings its own size and padding; no extra gap or nudge from the kit's arrow layout.
+  ownBack: { height: undefined, minHeight: 44, paddingRight: 0, marginLeft: 0, left: 0 },
   backText: { color: t.accent, fontSize: t.backSize ?? 14, fontWeight: (t.backSize ? '700' : '500') as '700' | '500' },
   title: { color: t.text, fontSize: 20, fontWeight: '600' as const, letterSpacing: -0.2 },
   wrapBrand: { marginBottom: 14 },
