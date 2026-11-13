@@ -9,6 +9,10 @@ export interface AccountComponents {
   TextInput: ComponentType<ComponentProps<typeof RNTextInput>>;
   /** Draws every card (a group of rows). Gets the corner radius to use. Default: the theme's fill and edge. */
   Card: ComponentType<{ children: ReactNode; radius: number }>;
+  /** Optional: the app's own Back button, drawn on every page in place of the kit's arrow and word. `label` is what VoiceOver says. Default: the kit's Back. */
+  BackButton?: ComponentType<{ onPress: () => void; label: string }>;
+  /** Optional: wraps the whole screen so a swipe from the left edge goes back. `onBack` steps back one page, the same as the Back button (from the main list it calls the app's `onBack`). Default: no swipe. */
+  EdgeSwipe?: ComponentType<{ onBack: () => void; children: ReactNode }>;
 }
 
 export interface Look {
