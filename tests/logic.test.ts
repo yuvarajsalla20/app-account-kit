@@ -149,6 +149,8 @@ describe('settings pages', () => {
     expect(parentOf('account')).toBe('hub');
     expect(parentOf('about')).toBe('hub');
     expect(parentOf('password')).toBe('account');
+    expect(parentOf('export')).toBe('hub');
+    expect(parentOf('export', ['export'])).toBe('account');
   });
 
   it('lists only the pages the app has, Account first and About last', () => {

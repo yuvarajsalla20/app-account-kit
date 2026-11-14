@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ElementRef } from 'react';
+import { useEffect, useMemo, useRef, useState, type ElementRef } from 'react';
 import { AccessibilityInfo, BackHandler, Keyboard, Platform, ScrollView, View } from 'react-native';
 import { AccountProvider, type AccountComponents } from './context';
 import { useLook, useStyles } from './look';
 import { useAction } from './hooks/useAction';
 import { parentOf, type Page } from './logic/pages';
+import { SettingsNavContext, type SettingsNav } from './nav';
 import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
 import { HubPage } from './sections/HubPage';
@@ -30,18 +31,23 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
+  // Set when an app's page opened another one through useSettingsNav: Back returns there instead of the usual parent.
+  const [returnTo, setReturnTo] = useState<Page | null>(null);
+  const accountPages = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'account').map((p) => p.id), [extraPages]);
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
   const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !app) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
+    setReturnTo(null);
     setPage(next);
   };
+  const latest = useRef({ go, page: 'hub' as Page });
   /** Returns true when it handled Back inside the screen; false from the list, where the app takes over. */
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
     Keyboard.dismiss(); // leaving a text box saves what was typed in it
-    const up = parentOf(page);
+    const up = returnTo ?? parentOf(page, accountPages);
     if (!up) return false;
     go(up);
     return true;
@@ -60,6 +66,17 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
     scroll.current?.scrollTo({ y: 0, animated: true });
     if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
   }, [action.noteKey]);
+  latest.current = { go, page };
+  const nav = useMemo<SettingsNav>(
+    () => ({
+      open: (next) => {
+        const from = latest.current.page;
+        latest.current.go(next);
+        if (next !== from) setReturnTo(from);
+      },
+    }),
+    [],
+  );
   const extra = extraPages?.find((p) => p.id === page);
   const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
@@ -71,7 +88,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
         {note}
         {page === 'hub' ? <HubPage data={data} app={app} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
@@ -82,11 +99,13 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
     </>
   );
   // A swipe from the left edge, when the app passes one, takes the same step as the Back button.
-  return components.EdgeSwipe ? <components.EdgeSwipe onBack={back}>{body}</components.EdgeSwipe> : body;
+  const screen = components.EdgeSwipe ? <components.EdgeSwipe onBack={back}>{body}</components.EdgeSwipe> : body;
+  return <SettingsNavContext.Provider value={nav}>{screen}</SettingsNavContext.Provider>;
 }
 
 /**
- * The Settings screen: a main list (Account, My data, App, About, then Sign out) and a page behind each row.
+ * The Settings screen: a main list (Account, My data, App, About and the app's own pages, then Sign out) and a page behind each row.
+ * An app page with `under: 'account'` is a row on Account, under Your data, instead of on the main list.
  * The app draws its own page background around it; the kit draws the headers and cards through the theme and `components`.
  */
 export function SettingsScreen({ theme, strings, components, ...props }: Props) {

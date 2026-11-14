@@ -1,5 +1,7 @@
 export { SettingsScreen } from './SettingsScreen';
 export { AccountProvider } from './context';
+export { useSettingsNav } from './nav';
+export type { SettingsNav } from './nav';
 export type { AccountComponents } from './context';
 export { KIT_NAME, KIT_VERSION } from './kit';
 export { DEFAULT_STRINGS } from './strings';
@@ -25,6 +27,7 @@ export type {
   ActionsProps,
   DataFormat,
   DataProps,
+  ExtraPage,
   IconName,
   NicknameProps,
   PasswordProps,

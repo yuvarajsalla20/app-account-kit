@@ -5,6 +5,8 @@ export interface AccountStrings {
   settings: string;
   account: string;
   myData: string;
+  /** The heading on Account above the app's `under: 'account'` pages. */
+  yourData: string;
   app: string;
   nickname: string;
   nicknamePlaceholder: string;
@@ -69,6 +71,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   settings: 'Settings',
   account: 'Account',
   myData: 'My data',
+  yourData: 'Your data',
   app: 'App',
   nickname: 'Nickname',
   nicknamePlaceholder: 'Add a nickname',

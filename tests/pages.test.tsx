@@ -76,6 +76,39 @@ describe('HubPage', () => {
   });
 });
 
+describe('HubPage: features live inside a parent', () => {
+  it('keeps an added page with under: account off the main list', () => {
+    const h = withAction((action) => (
+      <HubPage app={{ content: null }} confirmsWithPassword={false} onOpen={() => {}} action={action} extraPages={[{ id: 'premium', label: 'Premium', icon: 'award', content: null }, { id: 'export', label: 'Data Export', icon: 'download', under: 'account', content: null }]} />
+    ));
+    expect(h.has('Premium')).toBe(true);
+    expect(h.has('Data Export')).toBe(false);
+  });
+});
+
+describe('AccountPage: Your data', () => {
+  const setup = (withExport: boolean) => {
+    const onOpen = vi.fn();
+    const h = withAction((action) => (
+      <AccountPage profile={profile} nickname={{ max: 20, onSave: async () => {} }} action={action} onOpenPassword={() => {}} onOpen={onOpen}
+        dataPages={withExport ? [{ id: 'export', label: 'Data Export', icon: 'download', value: 'Premium', badge: <Text>👑 Premium</Text>, under: 'account', content: null }] : undefined} />
+    ));
+    return { ...h, onOpen };
+  };
+
+  it('shows no Your data heading when there is nothing under it', () => {
+    expect(setup(false).root.root.findAll((n) => n.props.children === S.yourData).length).toBe(0);
+  });
+
+  it('lists the app\'s data pages under Your data, with their badge, and opens them by id', async () => {
+    const h = setup(true);
+    expect(h.root.root.findAll((n) => n.props.children === S.yourData).length).toBeGreaterThan(0);
+    expect(h.byLabel('Data Export')?.props.accessibilityValue).toEqual({ text: 'Premium' });
+    await press(h.byLabel('Data Export'));
+    expect(h.onOpen).toHaveBeenCalledWith('export');
+  });
+});
+
 describe('AccountPage', () => {
   const setup = (password: boolean, email: string | null = 'a@b.com') => {
     const onOpenPassword = vi.fn();
