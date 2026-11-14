@@ -29,11 +29,15 @@ interface Props {
   /** The last row in a card has no line under it. */
   last?: boolean;
   disabled?: boolean;
+  /** Needs the paid plan: a padlock on a soft circle (`theme.lock`) in place of the arrow, and screen readers hear `strings.lockedHint`. A tap still calls `onPress` (open the plans). */
+  locked?: boolean;
+  /** An icon in place of the usual arrow, such as "download" on a row that makes a file. */
+  trailing?: IconName;
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled }: Props) {
-  const { theme, components } = useLook();
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing }: Props) {
+  const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
   return (
@@ -42,7 +46,7 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
         onPress={press}
         disabled={!press || disabled}
         accessibilityRole={toggle ? 'switch' : press ? 'button' : undefined}
-        accessibilityLabel={detail ? `${label}, ${detail}` : label}
+        accessibilityLabel={[label, detail, locked ? strings.lockedHint : undefined].filter(Boolean).join(', ')}
         accessibilityValue={value ? { text: value } : undefined}
         accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(expanded === undefined ? null : { expanded }) }}
         style={styles.row}
@@ -57,8 +61,14 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
         {badge ? (
           <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">{badge}</View>
         ) : value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
-        {toggle ? (
+        {locked ? (
+          <View style={styles.lock}>
+            <Feather name="lock" size={17} color={theme.lock?.icon ?? theme.muted} />
+          </View>
+        ) : toggle ? (
           <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
+        ) : onPress && trailing ? (
+          <Feather name={trailing} size={18} color={theme.muted} />
         ) : onPress ? (
           <Feather name={external ? 'arrow-up-right' : expanded ? 'chevron-down' : 'chevron-right'} size={18} color={theme.faint} />
         ) : null}
@@ -77,4 +87,5 @@ const makeStyles = (t: AccountTheme) => ({
   detail: { color: t.muted, fontSize: 12, marginTop: 2 },
   value: { color: t.muted, fontSize: 15, flexShrink: 1, maxWidth: '65%' as const, textAlign: 'right' as const },
   extra: { paddingHorizontal: 14, paddingBottom: 14 },
+  lock: { width: 30, height: 30, borderRadius: 15, backgroundColor: t.lock?.circle ?? t.field, ...CENTER },
 });

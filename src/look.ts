@@ -13,6 +13,8 @@ export interface AccountComponents {
   BackButton?: ComponentType<{ onPress: () => void; label: string }>;
   /** Optional: wraps the whole screen so a swipe from the left edge goes back. `onBack` steps back one page, the same as the Back button (from the main list it calls the app's `onBack`). Default: no swipe. */
   EdgeSwipe?: ComponentType<{ onBack: () => void; children: ReactNode }>;
+  /** Optional: the app's own bottom sheet, drawn around a picker that asks before keeping a choice (one with `onConfirm`), so it matches the app's other sheets. It gets the title, a ✕ (`onCancel`) and a ✓ (`onConfirm`). Default: the kit's sheet with a round ✕ and ✓. */
+  Sheet?: ComponentType<{ title: string; visible: boolean; onCancel: () => void; onConfirm: () => void; children: ReactNode }>;
 }
 
 export interface Look {
