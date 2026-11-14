@@ -1,9 +1,13 @@
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { ChoiceSheet } from '../src/ui/ChoiceSheet';
 import { ExpandRow } from '../src/ui/ExpandRow';
 import { PickerRow } from '../src/ui/PickerRow';
+import { SettingRow } from '../src/ui/Row';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import { act, mount, press } from './helpers/render';
+import { THEME } from './helpers/theme';
+import { AccountProvider } from '../src/context';
 
 const options = [
   { value: 'USD', label: 'USD', detail: 'US dollar' },
@@ -123,5 +127,79 @@ describe('numbers as option values', () => {
     const h = mount(<PickerRow icon="clock" tint="x" label="Remind" detail="Before it is due" options={minutes} value={15} onChange={() => {}} />);
     expect(h.byLabel('Remind, Before it is due')).toBeDefined();
     expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === 'Before it is due')).toHaveLength(1);
+  });
+});
+
+describe('ChoiceSheet that asks before keeping', () => {
+  const sounds = [
+    { value: 'bell', label: 'Bell' },
+    { value: 'harp', label: 'Harp' },
+    { value: 'gold', label: 'Gold' },
+  ];
+  const setup = (over: Record<string, unknown> = {}) => {
+    const onConfirm = vi.fn();
+    const onClose = vi.fn();
+    const onPick = vi.fn();
+    const onLocked = vi.fn();
+    const h = mount(<ChoiceSheet visible title="Sound" options={sounds} value="bell" onConfirm={onConfirm} onClose={onClose} onPick={onPick} locked={(v) => v === 'gold'} {...over} />);
+    return { h, onConfirm, onClose, onPick, onLocked };
+  };
+
+  it('moves the tick on a tap and keeps it only on ✓; ✕ leaves the old choice', async () => {
+    const { h, onConfirm, onClose, onPick } = setup();
+    await press(h.byLabel('Harp'));
+    expect(onPick).toHaveBeenCalledWith('harp');
+    expect(onConfirm).not.toHaveBeenCalled();
+    expect(h.byLabel('Harp').props.accessibilityState).toMatchObject({ selected: true });
+    await press(h.byLabel(S.done));
+    expect(onConfirm).toHaveBeenCalledWith('harp');
+    await press(h.byLabel(S.cancel));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('puts a padlock on a locked option, which cannot be ticked and says why, or opens the plans', async () => {
+    const { h, onConfirm, onPick } = setup();
+    const locks = () => h.root.root.findAll((n) => n.type === 'Icon' && n.props.name === 'lock');
+    expect(locks()).toHaveLength(1);
+    await press(h.byLabel(`Gold, ${S.lockedHint}`));
+    expect(onPick).toHaveBeenCalledWith('gold');
+    expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === S.lockedNote('Gold')).length).toBe(1);
+    await press(h.byLabel(S.done));
+    expect(onConfirm).toHaveBeenCalledWith('bell');
+
+    const onLocked = vi.fn();
+    const h2 = mount(<ChoiceSheet visible title="Sound" options={sounds} value="bell" onConfirm={() => {}} onClose={() => {}} locked={(v) => v === 'gold'} onLocked={onLocked} />);
+    await press(h2.byLabel(`Gold, ${S.lockedHint}`));
+    expect(onLocked).toHaveBeenCalledTimes(1);
+    expect(h2.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === S.lockedNote('Gold')).length).toBe(0);
+  });
+
+  it("draws inside the app's own sheet when it has one", async () => {
+    const Sheet = ({ title, onConfirm, children }: { title: string; onConfirm: () => void; children: ReactNode }) => (
+      <AppSheet title={title} onConfirm={onConfirm}>{children}</AppSheet>
+    );
+    const h = mount(
+      <AccountProvider theme={THEME} components={{ Sheet }}>
+        <ChoiceSheet visible title="Sound" options={sounds} value="bell" onConfirm={() => {}} onClose={() => {}} />
+      </AccountProvider>,
+    );
+    expect(h.root.root.findAll((n) => n.type === AppSheet).length).toBe(1);
+  });
+});
+
+function AppSheet({ children }: { title: string; onConfirm: () => void; children: ReactNode }) {
+  return <>{children}</>;
+}
+
+describe('SettingRow for a paid feature', () => {
+  it('shows a padlock instead of the arrow while locked, and a download icon once open', async () => {
+    const onPress = vi.fn();
+    const icons = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => n.type === 'Icon').map((n) => n.props.name);
+    const shut = mount(<SettingRow icon="file" tint="x" label="PDF File" locked onPress={onPress} />);
+    expect(icons(shut)).toEqual(['file', 'lock']);
+    await press(shut.byLabel(`PDF File, ${S.lockedHint}`));
+    expect(onPress).toHaveBeenCalledTimes(1);
+    const open = mount(<SettingRow icon="file" tint="x" label="PDF File" trailing="download" onPress={onPress} />);
+    expect(icons(open)).toEqual(['file', 'download']);
   });
 });

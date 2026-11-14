@@ -22,7 +22,7 @@ interface Props {
   onOpen?: (page: string) => void;
 }
 
-/** Picture and name, then one card: the nickname, the email (read only) and Change password; then Your Data (the download page and the app's data features, such as Data Export). Delete account lives on the main list. */
+/** Picture and name, then one card: the nickname, the email (read only) and Change password; then a card of the app's data features (such as Data Export), with no heading of its own. Delete account lives on the main list. */
 export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, dataPages = [], onOpen }: Props) {
   const { theme, strings } = useLook();
   const hasPassword = !!(password && profile.email);
@@ -35,7 +35,7 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
         {hasPassword ? <SettingRow last icon="key" tint={theme.tints.password} label={strings.changePassword} onPress={onOpenPassword} /> : null}
       </SettingsGroup>
       {dataPages.length ? (
-        <SettingsGroup title={strings.yourData}>
+        <SettingsGroup>
           {dataPages.map((p, i) => (
             <SettingRow key={p.id} last={i === dataPages.length - 1} icon={p.icon} tint={p.tint ?? theme.tints.data} label={p.label} value={p.value} badge={p.badge} onPress={() => onOpen?.(p.id)} />
           ))}

@@ -96,13 +96,13 @@ describe('AccountPage: Your data', () => {
     return { ...h, onOpen };
   };
 
-  it('shows no Your data heading when there is nothing under it', () => {
-    expect(setup(false).root.root.findAll((n) => n.props.children === S.yourData).length).toBe(0);
+  it('shows no Data Export row when the app has none', () => {
+    expect(setup(false).byLabel('Data Export')).toBeUndefined();
   });
 
-  it('lists the app\'s data pages under Your data, with their badge, and opens them by id', async () => {
+  it('lists the app\'s data pages straight on Account (no heading), with their badge, and opens them by id', async () => {
     const h = setup(true);
-    expect(h.root.root.findAll((n) => n.props.children === S.yourData).length).toBeGreaterThan(0);
+    expect(h.root.root.findAll((n) => n.props.children === S.yourData).length).toBe(0);
     expect(h.byLabel('Data Export')?.props.accessibilityValue).toEqual({ text: 'Premium' });
     await press(h.byLabel('Data Export'));
     expect(h.onOpen).toHaveBeenCalledWith('export');

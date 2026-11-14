@@ -201,6 +201,14 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.9.0
+
+- The app's `under: 'account'` pages (Data Export) sit straight on Account in their own card, with no "Your data" heading. `strings.yourData` is no longer shown (kept so older apps compile).
+- `ChoiceSheet` can ask before keeping: pass `onConfirm` and a tap only moves the tick, ✓ keeps it, ✕ leaves the old choice. The options are large rounded buttons, the chosen one in the accent. An app with its own sheet passes it as `components.Sheet` so every sheet matches.
+- `ChoiceSheet` locks: `locked(value)` puts a padlock on an option that needs the paid plan (colors from the new optional `theme.lock`), `onLocked` opens the plans, and without it the sheet says "&lt;Option&gt; is part of the paid plan." (`strings.lockedNote`). Also `onPick` (play a sound on tap) and `note`.
+- `SettingRow` gains `locked` (a padlock on `theme.lock` in place of the arrow, read as "locked") and `trailing` (an icon in place of the arrow, such as "download").
+- New strings `cancel`, `done`, `lockedHint`, `lockedNote`. Nothing else changes for existing apps.
+
 ### 7.8.0
 
 - **A page can live inside Account:** an `extraPages` entry with `under: 'account'` is not a main-list row; it shows on the Account page under a new **Your data** heading (string `yourData`), with its `value` and `badge`, and Back from it returns to Account. Used by app-settings-kit to put Data Export inside Account.
