@@ -150,7 +150,7 @@ describe('ChoiceSheet that asks before keeping', () => {
     await press(h.byLabel('Harp'));
     expect(onPick).toHaveBeenCalledWith('harp');
     expect(onConfirm).not.toHaveBeenCalled();
-    expect(h.byLabel('Harp').props.accessibilityState).toMatchObject({ selected: true });
+    expect(h.byLabel('Harp').props.accessibilityState).toMatchObject({ checked: true });
     await press(h.byLabel(S.done));
     expect(onConfirm).toHaveBeenCalledWith('harp');
     await press(h.byLabel(S.cancel));

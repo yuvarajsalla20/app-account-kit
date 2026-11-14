@@ -150,7 +150,7 @@ function ConfirmSheet<V extends string | number>({ visible, title, options, valu
             }}
             accessibilityRole="radio"
             accessibilityLabel={shut ? `${label}, ${strings.lockedHint}` : label}
-            accessibilityState={{ selected: on }}
+            accessibilityState={{ checked: on }}
             style={[styles.pill, on && styles.pillOn]}
           >
             <View style={styles.pillWords}>

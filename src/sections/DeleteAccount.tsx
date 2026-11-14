@@ -55,7 +55,8 @@ export function DeleteAccount({ onDeleteAccount, confirmsWithPassword, action, o
         label={strings.deleteEverything}
         busy={action.busy}
         disabled={!canConfirmDelete({ busy: action.busy, confirmsWithPassword, password })}
-        onPress={() => action.run('delete-account', () => onDeleteAccount(password), (e) => action.describe(e, strings.couldNot(strings.deleteAccount.toLowerCase())))}
+        // Patient: confirming may open Apple's or Google's own sheet, which waits for the person (the sign-in kit has its own time limit on the erase).
+        onPress={() => action.run('delete-account', () => onDeleteAccount(password), (e) => action.describe(e, strings.couldNot(strings.deleteAccount.toLowerCase())), { patient: true })}
       />
       <Button variant="quiet" small label={strings.keepAccount} onPress={cancel} disabled={action.busy} />
     </View>

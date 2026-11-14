@@ -208,6 +208,10 @@ New pieces for your own settings pages:
 - `ChoiceSheet` locks: `locked(value)` puts a padlock on an option that needs the paid plan (colors from the new optional `theme.lock`), `onLocked` opens the plans, and without it the sheet says "&lt;Option&gt; is part of the paid plan." (`strings.lockedNote`). Also `onPick` (play a sound on tap) and `note`.
 - `SettingRow` gains `locked` (a padlock on `theme.lock` in place of the arrow, read as "locked") and `trailing` (an icon in place of the arrow, such as "download").
 - New strings `cancel`, `done`, `lockedHint`, `lockedNote`. Nothing else changes for existing apps.
+- An app that builds a whole `AccountStrings` object (not a partial one) must add those four words.
+- Delete account waits for the person while Apple's or Google's confirmation sheet is open, instead of saying "taking too long" after 45 seconds.
+- The ask-before-keeping options tell screen readers they are `checked`, as radio buttons should (TalkBack reads that).
+- `toCsv`, `CSV_BOM` and `csvFileName` are marked deprecated: use app-export-kit. They go in the next major version.
 
 ### 7.8.0
 
