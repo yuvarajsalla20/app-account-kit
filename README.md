@@ -7,12 +7,12 @@ Companion to [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) and 
 
 ## What you get
 
-A **Settings** screen: a main list, and a page behind each row. Back from a page returns to the list; Back from the list calls the app's `onBack`.
+A **Settings** screen: a main list, and a page behind each row. Back from a page returns to the page above it; Back from the list calls the app's `onBack`. The standard list and where each feature lives are set by [app-settings-kit](https://github.com/yuvarajsalla20/app-settings-kit), which builds on this kit.
 
 | Page | What it shows | App supplies |
 |---|---|---|
-| **Main list** | Account, My data, App and About rows, each with an arrow and nothing else, then **Sign out** (outlined) and **Delete account** (red outline) side by side (a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
-| **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page) | `profile`, `nickname`, `photo`, `password` |
+| **Main list** | Account, My data, App and About rows (and the app's own pages), each with an arrow and nothing else, then **Sign out** (outlined) and **Delete account** (red outline) side by side (a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
+| **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page); then **Your data**: each added page with `under: 'account'` | `profile`, `nickname`, `photo`, `password`, `extraPages` |
 | **My data** | The download row | `data` |
 | **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
 | **About** | No page title. The app's picture (`logo`) and its name in the app's own color (`theme.brand`), then three cards: **Features** (opens `featuresUrl`), Rate, Share; **Contact support** (opens in place and shows the address; tapping the address writes an email), Privacy policy; **Kits** and **Version** (both open in place, one line each). Features and Privacy policy show a slanted arrow (a web page). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
@@ -201,6 +201,13 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.8.0
+
+- **A page can live inside Account:** an `extraPages` entry with `under: 'account'` is not a main-list row; it shows on the Account page under a new **Your data** heading (string `yourData`), with its `value` and `badge`, and Back from it returns to Account. Used by app-settings-kit to put Data Export inside Account.
+- **Shortcuts between pages:** new `useSettingsNav()` for an app's own page inside the screen. `open(id)` opens another Settings page (Premium's Data Export perk opening Data Export); Back then returns to the page that opened it.
+- `parentOf(page, accountPages?)` takes the ids of the pages under Account. `ExtraPage` is now exported.
+- Nothing changes for an app that does not use `under` or `useSettingsNav`.
+
 ### 7.7.0
 
 - **The app's own Back button:** new optional `components.BackButton` (`{ onPress, label }`). When passed, the kit draws it on every page (the main list and each inner page) where its own small arrow and word would be, so the app can use one Back everywhere. Without it nothing changes.

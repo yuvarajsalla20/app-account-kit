@@ -20,14 +20,16 @@ type Props = Pick<SettingsScreenProps, 'data' | 'app' | 'hubOrder' | 'extraPages
 /** The main list: Account, My data, App and About, each a row with an arrow (an added page may show a value or badge too), then Sign out and Delete account side by side. */
 export function HubPage({ data, app, hubOrder, extraPages = [], onSignOut, onDeleteAccount, confirmsWithPassword, onOpen, action, onReveal }: Props) {
   const { theme, strings } = useLook();
+  // A page with `under` lives inside that parent, not on the main list.
+  const parents = extraPages.filter((p) => !p.under);
   const rows: Record<string, { icon: IconName; label: string; tint?: string; value?: string; badge?: ReactNode }> = {
     account: { icon: 'user', label: strings.account },
     data: { icon: 'download', label: strings.myData },
     app: { icon: 'sliders', label: strings.app },
     about: { icon: 'info', label: strings.about },
-    ...Object.fromEntries(extraPages.map((p) => [p.id, { icon: p.icon, label: p.label, tint: p.tint, value: p.value, badge: p.badge }])),
+    ...Object.fromEntries(parents.map((p) => [p.id, { icon: p.icon, label: p.label, tint: p.tint, value: p.value, badge: p.badge }])),
   };
-  const pages = hubPages({ data: !!data, app: !!app }, hubOrder, extraPages.map((p) => p.id));
+  const pages = hubPages({ data: !!data, app: !!app }, hubOrder, parents.map((p) => p.id));
   return (
     <View style={STACK}>
       <SettingsGroup>
