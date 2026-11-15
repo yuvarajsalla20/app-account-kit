@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AboutSection } from '../src/sections/AboutSection';
+import { SupportPage } from '../src/sections/SupportPage';
 import { AccountPage } from '../src/sections/AccountPage';
 import { HubPage } from '../src/sections/HubPage';
 import { DataRow } from '../src/sections/profile/DataRow';
@@ -264,7 +265,9 @@ describe('ProfileHeader', () => {
 });
 
 describe('AboutSection', () => {
-  const setup = (props: Partial<AboutProps> = {}) => withAction((action) => <AboutSection {...about} {...props} action={action} />);
+  const setup = (props: Partial<AboutProps> = {}) => withAction((action) => <AboutSection {...about} {...props} action={action} onOpenSupport={onOpenSupport} />);
+  let onOpenSupport = vi.fn();
+  afterEach(() => { onOpenSupport = vi.fn(); });
   const texts = (h: ReturnType<typeof setup>) => h.root.root.findAll((n) => typeof n.type === 'string' && typeof n.props.children === 'string').map((n) => n.props.children as string);
 
   it('shows the app name as the heading, and the version only inside the Version row', async () => {
@@ -363,22 +366,13 @@ describe('AboutSection', () => {
     expect(h.held.action.note).toBe(S.couldNot(S.openLink));
   });
 
-  it('opens Contact support in place to show the address, and tapping the address writes the email with the version and kits', async () => {
+  it('opens Contact Support as its own page, never showing the address on About', async () => {
     const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
-    const h = setup({ kits: 'core 1.4.0 | auth 1.6.0' });
+    const h = setup();
     expect(h.has('help@x.com')).toBe(false);
-    expect(h.byLabel(S.contactSupport).props.accessibilityState).toMatchObject({ expanded: false });
     await press(h.byLabel(S.contactSupport));
-    expect(h.byLabel(S.contactSupport).props.accessibilityState).toMatchObject({ expanded: true });
+    expect(onOpenSupport).toHaveBeenCalledTimes(1);
     expect(open).not.toHaveBeenCalled();
-    expect(texts(h)).toContain(S.supportHint);
-    await press(h.byLabel('help@x.com'));
-    expect(decodeURIComponent(String(open.mock.calls[0]![0]))).toContain('Kits: core 1.4.0 | auth 1.6.0');
-    open.mockRejectedValue(new Error('no mail'));
-    await press(h.byLabel('help@x.com'));
-    expect(h.held.action.note).toBe(S.noMail('help@x.com'));
-    await press(h.byLabel(S.contactSupport));
-    expect(h.has('help@x.com')).toBe(false);
   });
 
   it('shows the Kits row only when the app passes kits, and opens it in place with one line per kit', async () => {
@@ -391,13 +385,33 @@ describe('AboutSection', () => {
     expect(texts(h)).not.toContain('core 1.4.0');
   });
 
-  it('shows a kit list as "Name | vX | Build Y" lines, and sends it in the support email', async () => {
-    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
+  it('opens the Kits row with one "Name | vX | Build Y" line per kit', async () => {
     const h = setup({ kits: [{ name: 'Core Kit', version: '1.6.0', build: '6b1a0df' }, { name: 'Auth Kit', version: '1.10.0' }] });
     await press(h.byLabel(S.kits));
     expect(texts(h)).toEqual(expect.arrayContaining(['Core Kit | v1.6.0 | Build 6b1a0df', 'Auth Kit | v1.10.0']));
-    await press(h.byLabel(S.contactSupport));
-    await press(h.byLabel('help@x.com'));
-    expect(decodeURIComponent(String(open.mock.calls[0]![0]))).toContain('Kits: Core Kit 1.6.0 (6b1a0df) | Auth Kit 1.10.0');
+  });
+});
+
+describe('SupportPage', () => {
+  const setup = (kits?: AboutProps['kits']) => withAction((action) => <SupportPage appName="My App" version={{ number: '1.2.0', label: 'v1.2' }} supportEmail="help@x.com" kits={kits} action={action} />);
+  const texts = (h: ReturnType<typeof setup>) => h.root.root.findAll((n) => typeof n.type === 'string' && typeof n.props.children === 'string').map((n) => n.props.children as string);
+
+  it('welcomes, explains, and hides the address', () => {
+    const h = setup();
+    expect(texts(h)).toEqual(expect.arrayContaining([S.supportTitle, S.supportBody, S.writeToUs, S.supportNote]));
+    expect(h.has('help@x.com')).toBe(false);
+  });
+
+  it('Write to Us writes the email with the version and kits, and names the address only when no mail app is set up', async () => {
+    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const h = setup([{ name: 'Core Kit', version: '1.6.0', build: '6b1a0df' }, { name: 'Auth Kit', version: '1.10.0' }]);
+    await press(h.byLabel(S.writeToUs));
+    const url = decodeURIComponent(String(open.mock.calls[0]![0]));
+    expect(url).toContain('mailto:help@x.com');
+    expect(url).toContain('My App 1.2.0 support');
+    expect(url).toContain('Kits: Core Kit 1.6.0 (6b1a0df) | Auth Kit 1.10.0');
+    open.mockRejectedValue(new Error('no mail'));
+    await press(h.byLabel(S.writeToUs));
+    expect(h.held.action.note).toBe(S.noMail('help@x.com'));
   });
 });

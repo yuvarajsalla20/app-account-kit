@@ -53,3 +53,16 @@ describe('a feature inside a parent', () => {
     expect(title(h)).toBe(S.settings);
   });
 });
+
+describe('Contact Support', () => {
+  it('opens from About as its own page, and Back returns to About', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} />);
+    await press(h.byLabel(S.about));
+    await press(h.byLabel(S.contactSupport));
+    expect(title(h)).toBe(S.contactSupport);
+    expect(h.root.root.findAll((n) => n.props.children === S.supportTitle).length).toBeGreaterThan(0);
+    await press(h.byLabel(S.back));
+    expect(h.byLabel(S.contactSupport)).toBeDefined();
+    expect(h.root.root.findAll((n) => n.props.children === S.supportTitle).length).toBe(0);
+  });
+});

@@ -1,7 +1,7 @@
 /** The kit's own pages. */
-export type BuiltinPage = 'hub' | 'account' | 'data' | 'app' | 'about' | 'password';
+export type BuiltinPage = 'hub' | 'account' | 'data' | 'app' | 'about' | 'password' | 'support';
 
-/** The pages of the Settings screen: the kit's own, or the id of a page the app added (`extraPages`). `hub` is the main list; `password` opens from Account. */
+/** The pages of the Settings screen: the kit's own, or the id of a page the app added (`extraPages`). `hub` is the main list; `password` opens from Account, `support` (Contact Support) from About. */
 export type Page = BuiltinPage | (string & {});
 
 /**
@@ -11,6 +11,7 @@ export type Page = BuiltinPage | (string & {});
 export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = []): Page | null {
   if (page === 'hub') return null;
   if (page === 'password' || accountPages.includes(page)) return 'account';
+  if (page === 'support') return 'about';
   return appPages.includes(page) ? 'app' : 'hub';
 }
 

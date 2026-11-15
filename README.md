@@ -15,7 +15,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 | **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page); then **Your data**: each added page with `under: 'account'` | `profile`, `nickname`, `photo`, `password`, `extraPages` |
 | **My data** | The download row | `data` |
 | **App** (Preferences) | The app's own settings; then, in their own card, a row for each added page with `under: 'app'` (Data Export, Connect as Family). Shows when the app passes `app` or has a page under it | `app: { content }`, built with `SettingsGroup` and `SettingRow`; `extraPages` |
-| **About** | No page title. The app's picture (`logo`) and its name in the app's own color (`theme.brand`), then three cards: **Features** (opens `featuresUrl`), Rate, Share; **Contact support** (opens in place and shows the address; tapping the address writes an email), Privacy policy; **Kits** and **Version** (both open in place, one line each). Features and Privacy policy show a slanted arrow (a web page). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
+| **About** | No page title. The app's picture (`logo`) and its name in the app's own color (`theme.brand`), then three cards: **Features** (opens `featuresUrl`), Rate, Share; **Contact support** (opens its own page: a short welcome and one Write to Us button that writes the email; the address shows only when no mail app is set up), Privacy policy; **Kits** and **Version** (both open in place, one line each). Features and Privacy policy show a slanted arrow (a web page). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
 
 Every part is optional: leave a prop out and its row (or page) is hidden.
 
@@ -220,6 +220,11 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.12.0
+
+- **Contact Support is its own page:** the About row no longer opens in place to show the address. It opens a page (Back returns to About) with a mail badge, a heading (`supportTitle`), a line under it (`supportBody`), one **Write to Us** button (`writeToUs`) that writes the email with the app version, device and kits already in it, and a small note saying so (`supportNote`). If no mail app is set up, the address shows in the note at the top, as before.
+- `parentOf('support')` is `'about'`. `supportHint` is no longer shown (still accepted).
+
 ### 7.11.0
 
 - **Headings for rows on the App page (Preferences):** an `extraPages` entry with `under: 'app'` can take `group: 'On Your iPhone'`. Rows with the same group share one card under that heading, after the untitled card (Data Export). Nothing changes for rows without a group.
