@@ -285,7 +285,7 @@ npm run typecheck
 npm test
 ```
 
-To release: bump `version` in `package.json` and `KIT_VERSION` in `src/kit.ts` (a test checks they match), add an entry to [CHANGELOG.md](CHANGELOG.md), merge, then tag the merged commit (`git tag v7.12.0 <sha> && git push origin v7.12.0`).
+To release: bump `version` in `package.json` and `KIT_VERSION` in `src/kit.ts` (a test checks they match), add an entry to [CHANGELOG.md](CHANGELOG.md), and merge. The `version-tag` workflow tags the merged commit as `v<version>` by itself, and fails a pull request whose version is not higher than the latest tag.
 
 ## Changelog
 
