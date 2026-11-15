@@ -5,7 +5,7 @@ export interface AccountStrings {
   settings: string;
   account: string;
   myData: string;
-  /** The heading on Account above the app's `under: 'account'` pages. */
+  /** No longer shown: the app's `under: 'account'` pages (such as Data Export) sit on Account with no heading. Kept so older apps still compile. */
   yourData: string;
   app: string;
   nickname: string;
@@ -45,6 +45,13 @@ export interface AccountStrings {
   notOnStoreYet: string;
   /** The dimmed area behind a picker sheet, which closes it. */
   close: string;
+  /** The ✕ and ✓ of a picker sheet that asks before keeping a choice. */
+  cancel: string;
+  done: string;
+  /** What VoiceOver adds to an option that needs the paid plan, such as "Go Premium". */
+  lockedHint: string;
+  /** Shown under a picker when a locked option is tapped and the app gave no `onLocked`. */
+  lockedNote: (choice: string) => string;
   signOut: string;
   deleteAccount: string;
   deleteTitle: string;
@@ -110,6 +117,10 @@ export const DEFAULT_STRINGS: AccountStrings = {
   supportHint: 'Tap to write an email',
   notOnStoreYet: 'Available once the app is on the App Store.',
   close: 'Close',
+  cancel: 'Cancel',
+  done: 'Done',
+  lockedHint: 'Needs the paid plan',
+  lockedNote: (choice) => `${choice} is part of the paid plan.`,
   signOut: 'Sign out',
   deleteAccount: 'Delete account',
   deleteTitle: 'Delete your account?',

@@ -7,14 +7,14 @@ const cell = (value: string): string => {
   return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 };
 
-/** Put this first in a file for Excel to read accents and non-English letters correctly. */
+/** @deprecated Use `CSV_BOM` from app-export-kit; this copy goes in the next major version. Put this first in a file for Excel to read accents and non-English letters correctly. */
 export const CSV_BOM = '\uFEFF';
 
-/** Rows of text as CSV that opens safely in Excel, Numbers and Google Sheets. The first row is usually the header. `bom` adds the Excel marker. */
+/** @deprecated Use `toCsv` (or `exportCsv`) from app-export-kit; this copy goes in the next major version. Rows of text as CSV that opens safely in Excel, Numbers and Google Sheets. The first row is usually the header. `bom` adds the Excel marker. */
 export const toCsv = (rows: readonly (readonly string[])[], options: { bom?: boolean } = {}): string =>
   (options.bom && rows.length ? CSV_BOM : '') + rows.map((row) => row.map(cell).join(',')).join('\n');
 
 const slug = (text: string): string => text.toLowerCase().replace(/[^a-z0-9]+/g, '');
 
-/** File-safe names like myapp-reminders.csv. A name with no letters or digits falls back to "app". */
+/** @deprecated Use `exportFileName` from app-export-kit; this copy goes in the next major version. File-safe names like myapp-reminders.csv. A name with no letters or digits falls back to "app". */
 export const csvFileName = (appName: string, stem: string): string => `${slug(appName) || 'app'}-${slug(stem) || 'data'}.csv`;

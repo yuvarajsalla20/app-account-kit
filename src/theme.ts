@@ -37,4 +37,6 @@ export interface AccountTheme {
   tints: Record<TintKey, string> & { /** The Features row in About. Defaults to the About tint. */ features?: string };
   /** Size of the word Back at the top of each page, to match the app's own Back buttons. Defaults to 14. */
   backSize?: number;
+  /** The padlock on a picker option that needs the paid plan: its color and the soft circle behind it. Defaults to `muted` on `field`. */
+  lock?: { icon: string; circle: string };
 }

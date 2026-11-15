@@ -30,11 +30,11 @@ const props: SettingsScreenProps = {
 const title = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header')[0]?.props.children;
 
 describe('a feature inside a parent', () => {
-  it('opens Data Export from Account, Your data, and Back returns to Account', async () => {
+  it('opens Data Export straight from Account, and Back returns to Account', async () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} />);
     expect(h.byLabel('Data Export')).toBeUndefined();
     await press(h.byLabel(S.account));
-    expect(h.root.root.findAll((n) => n.props.children === S.yourData).length).toBeGreaterThan(0);
+    expect(h.root.root.findAll((n) => n.props.children === S.yourData).length).toBe(0);
     await press(h.byLabel('Data Export'));
     expect(title(h)).toBe('Data Export');
     expect(h.root.root.findAll((n) => n.props.children === 'CSV File').length).toBeGreaterThan(0);
