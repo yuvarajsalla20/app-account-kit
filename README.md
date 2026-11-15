@@ -14,7 +14,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 | **Main list** | Account, My data, App and About rows (and the app's own pages), each with an arrow and nothing else, then **Sign out** (outlined) and **Delete account** (red outline) side by side (a confirmation panel, with the password typed only when the login has one) | `onBack`, `actions` |
 | **Account** | Picture, name and Change photo; one card with the nickname, the email (read only, a small label with the address under it) and Change password (its own page); then **Your data**: each added page with `under: 'account'` | `profile`, `nickname`, `photo`, `password`, `extraPages` |
 | **My data** | The download row | `data` |
-| **App** | The app's own settings | `app: { content }`, built with `SettingsGroup` and `SettingRow` |
+| **App** (Preferences) | The app's own settings; then, in their own card, a row for each added page with `under: 'app'` (Data Export, Connect as Family). Shows when the app passes `app` or has a page under it | `app: { content }`, built with `SettingsGroup` and `SettingRow`; `extraPages` |
 | **About** | No page title. The app's picture (`logo`) and its name in the app's own color (`theme.brand`), then three cards: **Features** (opens `featuresUrl`), Rate, Share; **Contact support** (opens in place and shows the address; tapping the address writes an email), Privacy policy; **Kits** and **Version** (both open in place, one line each). Features and Privacy policy show a slanted arrow (a web page). Share and Rate show whenever the app passes `share` and `rate` (Rate on iPhone only); until the App Store link or number is set, a tap says it is not available yet. | `about` |
 
 Every part is optional: leave a prop out and its row (or page) is hidden.
@@ -39,7 +39,7 @@ src/
     actionGuard.ts  saveTracker.ts  photo.ts  links.ts  contrast.ts
   ui/                    small pieces: Group, Row, ExpandRow, PickerRow, ChoiceSheet, Card, Header, Avatar, Button, Field
   sections/
-    HubPage.tsx  AccountPage.tsx  AboutSection.tsx  DeleteAccount.tsx
+    HubPage.tsx  AccountPage.tsx  AppPage.tsx  AboutSection.tsx  DeleteAccount.tsx
     profile/            ProfileHeader, NicknameRow, EmailRow, PasswordPage, DataRow
 tests/                   logic, contrast, no-own-colors, and the real screens (password, delete, nickname, photo, About) rendered with a small react-native stand-in in tests/stubs
 ```
@@ -73,6 +73,25 @@ import { SettingsScreen, SettingRow, SettingsGroup } from 'app-account-kit';
 ```
 
 The app draws its own page background around `SettingsScreen`; the kit draws the headers.
+
+### Where an added page lives
+
+Each `extraPages` entry picks its parent with `under`:
+
+| `under` | Row shows on | Back from the page returns to |
+|---|---|---|
+| left out (default) | the main list, as a parent of its own (a Premium page) | the main list |
+| `'account'` | the Account page, in its own card (Data Export) | Account |
+| `'app'` (7.10.0+) | the App page (Preferences), in a card under the app's own settings | App |
+
+```tsx
+extraPages={[
+  { id: 'export', label: 'Data Export', icon: 'download', content: <ExportRows />, under: 'app' },
+  { id: 'family', label: 'Connect as Family', icon: 'users', content: <FamilyRows />, under: 'app' },
+]}
+```
+
+The rows keep the order of `extraPages`. A page under `'app'` makes the App row show even when the app passes no `app` settings. `useSettingsNav().open(id)` works for every page wherever it lives.
 
 ## Helpers you can reuse
 
@@ -201,6 +220,13 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.10.0
+
+- **A page can live inside the App page (Preferences):** an `extraPages` entry with `under: 'app'` is a row on the App page, in its own card under the app's settings, with its `value` and `badge`; Back from it returns to App. If the app passes no `app` settings but has such a page, the App row still shows. Used by app-settings-kit 2.2 to put Data Export and the app's own pages (Connect as Family) inside Preferences.
+- `parentOf(page, accountPages?, appPages?)` takes the ids of the pages under App as a third, optional list.
+- `HubPage` takes an optional `hasApp` (default `!!app`).
+- Nothing changes for an app that does not use `under: 'app'`: the defaults are exactly as in 7.9.0.
+
 ### 7.9.0
 
 - The app's `under: 'account'` pages (Data Export) sit straight on Account in their own card, with no "Your data" heading. `strings.yourData` is no longer shown (kept so older apps compile).

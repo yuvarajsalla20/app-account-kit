@@ -6,11 +6,12 @@ export type Page = BuiltinPage | (string & {});
 
 /**
  * Where Back goes from a page: the page above it, or null from the hub (the app handles that one).
- * `accountPages` are the ids of the app's pages that live inside Account (`under: 'account'`).
+ * `accountPages` are the ids of the app's pages that live inside Account (`under: 'account'`), `appPages` those inside App (`under: 'app'`).
  */
-export function parentOf(page: Page, accountPages: readonly string[] = []): Page | null {
+export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = []): Page | null {
   if (page === 'hub') return null;
-  return page === 'password' || accountPages.includes(page) ? 'account' : 'hub';
+  if (page === 'password' || accountPages.includes(page)) return 'account';
+  return appPages.includes(page) ? 'app' : 'hub';
 }
 
 /** A row on the main list: one of the kit's pages, or the id of an extra page. */
