@@ -127,8 +127,10 @@ export interface ExtraPage {
   /**
    * Where the row lives. Default: the main list, as a parent of its own (a Premium page).
    * `'account'`: a feature about the person's data (Data Export) shows on the Account page under Your data, and Back returns to Account.
+   * `'app'` (since 7.10.0): a row on the App page (Preferences), in its own card under the app's settings, and Back returns to App.
+   * With no `app` prop, the App row still shows when a page lives there, holding only those rows.
    */
-  under?: 'account';
+  under?: 'account' | 'app';
 }
 
 export interface SettingsScreenProps {
@@ -149,7 +151,7 @@ export interface SettingsScreenProps {
   actions: ActionsProps;
   /** Leave out when the app has no settings of its own: the App row is hidden. */
   app?: AppPageProps;
-  /** Pages of the app's own, each a row with its own page: a parent on the main list (a Premium page, say), or with `under: 'account'` a row under Your Data on Account (Data Export). The kit knows nothing about what they hold. */
+  /** Pages of the app's own, each a row with its own page: a parent on the main list (a Premium page, say), with `under: 'account'` a row on Account (Data Export), or with `under: 'app'` a row on the App page (Preferences). The kit knows nothing about what they hold. */
   extraPages?: readonly ExtraPage[];
   /** The order of the rows on the main list: `'account' | 'data' | 'app' | 'about'` and the `id` of each extra page. Default: account, data, app, extra pages, about. Pages you leave out follow in that order; pages the app does not have are not shown. Rename a row with `strings` (`myData`, `app`). Pages with `under` are not on the main list. */
   hubOrder?: readonly string[];

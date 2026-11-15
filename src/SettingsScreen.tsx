@@ -7,6 +7,7 @@ import { parentOf, type Page } from './logic/pages';
 import { SettingsNavContext, type SettingsNav } from './nav';
 import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
+import { AppPage } from './sections/AppPage';
 import { HubPage } from './sections/HubPage';
 import { DataRow } from './sections/profile/DataRow';
 import { PasswordPage } from './sections/profile/PasswordPage';
@@ -34,8 +35,12 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
   // Set when an app's page opened another one through useSettingsNav: Back returns there instead of the usual parent.
   const [returnTo, setReturnTo] = useState<Page | null>(null);
   const accountPages = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'account').map((p) => p.id), [extraPages]);
+  const appRows = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'app'), [extraPages]);
+  const appPages = useMemo(() => appRows.map((p) => p.id), [appRows]);
+  // The App page shows when the app has settings of its own or a page that lives there.
+  const hasApp = !!app || appRows.length > 0;
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
-  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !app) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
+  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
@@ -47,7 +52,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
     Keyboard.dismiss(); // leaving a text box saves what was typed in it
-    const up = returnTo ?? parentOf(page, accountPages);
+    const up = returnTo ?? parentOf(page, accountPages, appPages);
     if (!up) return false;
     go(up);
     return true;
@@ -86,14 +91,14 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
       <PageHeader large={page === 'hub'} title={page === 'about' ? undefined : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
-        {page === 'hub' ? <HubPage data={data} app={app} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
+        {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
         {extra ? <View style={STACK}>{extra.content}</View> : null}
-        {page === 'app' && app ? <View style={STACK}>{app.content}</View> : null}
+        {page === 'app' && hasApp ? <AppPage content={app?.content} pages={appRows} onOpen={go} /> : null}
         {page === 'about' ? <AboutSection {...about} action={action} /> : null}
       </ScrollView>
     </>
@@ -105,7 +110,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
 
 /**
  * The Settings screen: a main list (Account, My data, App, About and the app's own pages, then Sign out) and a page behind each row.
- * An app page with `under: 'account'` is a row on Account, under Your data, instead of on the main list.
+ * An app page with `under: 'account'` is a row on Account, and one with `under: 'app'` a row on the App page (Preferences), instead of on the main list.
  * The app draws its own page background around it; the kit draws the headers and cards through the theme and `components`.
  */
 export function SettingsScreen({ theme, strings, components, ...props }: Props) {

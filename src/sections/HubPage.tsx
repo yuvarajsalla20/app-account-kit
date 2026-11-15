@@ -10,6 +10,8 @@ import { SettingRow } from '../ui/Row';
 import { DeleteAccount } from './DeleteAccount';
 
 type Props = Pick<SettingsScreenProps, 'data' | 'app' | 'hubOrder' | 'extraPages'> & Pick<ActionsProps, 'onSignOut' | 'onDeleteAccount' | 'confirmsWithPassword'> & {
+  /** True when the App row shows: the app has settings of its own or a page with `under: 'app'`. Default: `!!app`. */
+  hasApp?: boolean;
   onOpen: (page: Page) => void;
   /** Sign out runs through it, so it waits for a save or delete and reports a failure. */
   action: ActionRunner;
@@ -18,7 +20,7 @@ type Props = Pick<SettingsScreenProps, 'data' | 'app' | 'hubOrder' | 'extraPages
 };
 
 /** The main list: Account, My data, App and About, each a row with an arrow (an added page may show a value or badge too), then Sign out and Delete account side by side. */
-export function HubPage({ data, app, hubOrder, extraPages = [], onSignOut, onDeleteAccount, confirmsWithPassword, onOpen, action, onReveal }: Props) {
+export function HubPage({ data, app, hasApp = !!app, hubOrder, extraPages = [], onSignOut, onDeleteAccount, confirmsWithPassword, onOpen, action, onReveal }: Props) {
   const { theme, strings } = useLook();
   // A page with `under` lives inside that parent, not on the main list.
   const parents = extraPages.filter((p) => !p.under);
@@ -29,7 +31,7 @@ export function HubPage({ data, app, hubOrder, extraPages = [], onSignOut, onDel
     about: { icon: 'info', label: strings.about },
     ...Object.fromEntries(parents.map((p) => [p.id, { icon: p.icon, label: p.label, tint: p.tint, value: p.value, badge: p.badge }])),
   };
-  const pages = hubPages({ data: !!data, app: !!app }, hubOrder, parents.map((p) => p.id));
+  const pages = hubPages({ data: !!data, app: hasApp }, hubOrder, parents.map((p) => p.id));
   return (
     <View style={STACK}>
       <SettingsGroup>
