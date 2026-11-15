@@ -11,6 +11,7 @@ import { AppPage } from './sections/AppPage';
 import { HubPage } from './sections/HubPage';
 import { DataRow } from './sections/profile/DataRow';
 import { PasswordPage } from './sections/profile/PasswordPage';
+import { SupportPage } from './sections/SupportPage';
 import type { AccountStrings } from './strings';
 import type { AccountTheme } from './theme';
 import type { SettingsScreenProps } from './types';
@@ -24,7 +25,7 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password']);
+const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support']);
 
 function Body({ onBack, backLabel, brand, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
@@ -83,7 +84,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
     [],
   );
   const extra = extraPages?.find((p) => p.id === page);
-  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword };
+  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport };
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
   const body = (
@@ -99,7 +100,8 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
         {extra ? <View style={STACK}>{extra.content}</View> : null}
         {page === 'app' && hasApp ? <AppPage content={app?.content} pages={appRows} onOpen={go} /> : null}
-        {page === 'about' ? <AboutSection {...about} action={action} /> : null}
+        {page === 'about' ? <AboutSection {...about} action={action} onOpenSupport={() => go('support')} /> : null}
+        {page === 'support' ? <SupportPage appName={about.appName} version={about.version} supportEmail={about.supportEmail} kits={about.kits} action={action} /> : null}
       </ScrollView>
     </>
   );

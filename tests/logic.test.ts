@@ -145,6 +145,7 @@ describe('logic entry', () => {
 
 describe('settings pages', () => {
   it('goes back one level, and the hub hands back to the app', () => {
+    expect(parentOf('support')).toBe('about');
     expect(parentOf('hub')).toBeNull();
     expect(parentOf('account')).toBe('hub');
     expect(parentOf('about')).toBe('hub');

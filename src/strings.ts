@@ -39,8 +39,16 @@ export interface AccountStrings {
   /** The word before a kit's build in the Kits list, as in "Account Kit | v7.5.0 | Build 1a2b3c4". */
   build: string;
   email: string;
-  /** Under the support address when Contact support is open. */
+  /** No longer shown: Contact Support is now a page of its own (`supportTitle`, `supportBody`, `writeToUs`, `supportNote`). Kept so older apps still compile. */
   supportHint: string;
+  /** The heading of the Contact Support page. */
+  supportTitle: string;
+  /** The line under it. */
+  supportBody: string;
+  /** The button that writes the email. */
+  writeToUs: string;
+  /** Under the button: what the email already holds. */
+  supportNote: string;
   /** Shown when Share or Rate is tapped before the app has an App Store link or number. */
   notOnStoreYet: string;
   /** The dimmed area behind a picker sheet, which closes it. */
@@ -115,6 +123,10 @@ export const DEFAULT_STRINGS: AccountStrings = {
   build: 'Build',
   email: 'Email',
   supportHint: 'Tap to write an email',
+  supportTitle: "We're here to help",
+  supportBody: 'A question, an idea or something not quite right? Write to us and a real person will reply.',
+  writeToUs: 'Write to us',
+  supportNote: 'Your app version and device are added for you, so we can help sooner.',
   notOnStoreYet: 'Available once the app is on the App Store.',
   close: 'Close',
   cancel: 'Cancel',
