@@ -156,19 +156,19 @@ describe('DeleteAccount', () => {
 });
 
 describe('NicknameRow', () => {
-  const setup = (saved = 'Yuva', onSave = vi.fn().mockResolvedValue(undefined)) => {
+  const setup = (saved = 'Sam', onSave = vi.fn().mockResolvedValue(undefined)) => {
     const h = withAction((action) => <NicknameRow saved={saved} max={6} onSave={onSave} action={action} />);
     return { ...h, onSave, box: () => h.byLabel(S.nickname) };
   };
 
   it('saves a new name once, even when blur and Done both fire', async () => {
     const h = setup();
-    await type(h.box(), '  Yuvaraj  ');
+    await type(h.box(), '  Samantha  ');
     await submit(h.box());
     await blur(h.box());
     expect(h.onSave).toHaveBeenCalledTimes(1);
-    expect(h.onSave).toHaveBeenCalledWith('Yuvara');
-    expect(h.box().props.value).toBe('Yuvara');
+    expect(h.onSave).toHaveBeenCalledWith('Samant');
+    expect(h.box().props.value).toBe('Samant');
     expect(h.held.action.note).toBe(S.nicknameSaved);
     expect(h.held.action.noteGood).toBe(true);
   });
@@ -181,7 +181,7 @@ describe('NicknameRow', () => {
 
   it('keeps what was typed when the save fails, says why, and tries again on the next blur', async () => {
     const onSave = vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValue(undefined);
-    const h = setup('Yuva', onSave);
+    const h = setup('Sam', onSave);
     await type(h.box(), 'Nova');
     await blur(h.box());
     expect(h.box().props.value).toBe('Nova');
@@ -200,7 +200,7 @@ describe('NicknameRow', () => {
 
   it('shows a new saved name handed in by the app', async () => {
     const onSave = vi.fn();
-    const h = setup('Yuva', onSave);
+    const h = setup('Sam', onSave);
     h.rerender(<NicknameRow saved="Nova" max={6} onSave={onSave} action={h.held.action} />);
     await flush();
     expect(h.box().props.value).toBe('Nova');

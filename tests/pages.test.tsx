@@ -16,7 +16,7 @@ afterEach(() => {
   Platform.OS = 'ios';
 });
 
-const profile: ProfileInfo = { name: 'Yuva', fallbackName: 'App', email: 'a@b.com', photo: '' };
+const profile: ProfileInfo = { name: 'Sam', fallbackName: 'App', email: 'a@b.com', photo: '' };
 const about: AboutProps = { appName: 'My App', version: { number: '1.2.0', label: 'v1.2 · today' }, privacyUrl: 'https://x.y/privacy', supportEmail: 'help@x.com' };
 
 describe('HubPage', () => {
@@ -56,7 +56,7 @@ describe('HubPage', () => {
 
   it('shows each row as a name with an arrow only: no email, format, hint or version on the right', () => {
     const h = setup({ data: true, app: true });
-    for (const shown of ['a@b.com', 'Yuva', 'CSV', 'Sounds', 'v1.2.0', '1.2.0']) expect(h.has(shown)).toBe(false);
+    for (const shown of ['a@b.com', 'Sam', 'CSV', 'Sounds', 'v1.2.0', '1.2.0']) expect(h.has(shown)).toBe(false);
     expect(h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityValue !== undefined)).toHaveLength(0);
     expect([S.account, S.myData, S.app, S.about].every((l) => h.has(l))).toBe(true);
   });

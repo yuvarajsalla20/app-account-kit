@@ -8,7 +8,7 @@ import { act, mount, press, type } from './helpers/render';
 
 const props = (over: Partial<SettingsScreenProps> = {}): SettingsScreenProps => ({
   onBack: vi.fn(),
-  profile: { name: 'Yuva', fallbackName: 'App', email: 'a@b.com', photo: '' },
+  profile: { name: 'Sam', fallbackName: 'App', email: 'a@b.com', photo: '' },
   nickname: { max: 20, onSave: async () => {} },
   about: { appName: 'My App', version: { number: '1.2.0', label: 'v1.2' }, privacyUrl: 'https://x.y/p', supportEmail: 'h@x.com' },
   actions: { confirmsWithPassword: true, onSignOut: async () => {}, onDeleteAccount: async () => {} },
