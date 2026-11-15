@@ -82,7 +82,7 @@ Each `extraPages` entry picks its parent with `under`:
 |---|---|---|
 | left out (default) | the main list, as a parent of its own (a Premium page) | the main list |
 | `'account'` | the Account page, in its own card (Data Export) | Account |
-| `'app'` (7.10.0+) | the App page (Preferences), in a card under the app's own settings | App |
+| `'app'` (7.10.0+) | the App page (Preferences), in a card under the app's own settings; add `group` (7.11.0+) for a titled card of its own | App |
 
 ```tsx
 extraPages={[
@@ -220,6 +220,11 @@ New pieces for your own settings pages:
 - Wording: `changePasswordHelp`, `sendLink`, `linkSent`, `sendEmail` are gone; new ones are `currentPassword`, `newPassword`, `confirmPassword`, `savePassword`, `passwordChanged`, `passwordProblem`, `back`, `rate`, `openStore`.
 
 ---
+### 7.11.0
+
+- **Headings for rows on the App page (Preferences):** an `extraPages` entry with `under: 'app'` can take `group: 'On Your iPhone'`. Rows with the same group share one card under that heading, after the untitled card (Data Export). Nothing changes for rows without a group.
+- `appGroups(pages)` is the pure rule behind it.
+
 ### 7.10.0
 
 - **A page can live inside the App page (Preferences):** an `extraPages` entry with `under: 'app'` is a row on the App page, in its own card under the app's settings, with its `value` and `badge`; Back from it returns to App. If the app passes no `app` settings but has such a page, the App row still shows. Used by app-settings-kit 2.2 to put Data Export and the app's own pages (Connect as Family) inside Preferences.

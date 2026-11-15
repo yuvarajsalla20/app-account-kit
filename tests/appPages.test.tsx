@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { parentOf } from '../src/logic/pages';
+import { appGroups } from '../src/sections/AppPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { Text } from './stubs/react-native';
@@ -69,5 +70,20 @@ describe("pages under 'app' (Preferences)", () => {
     await press(h.byLabel('Data Export'));
     await press(h.byLabel(S.back));
     expect(h.has(S.nickname)).toBe(true);
+  });
+
+  it('puts rows with a group in their own titled card after the untitled one (7.11.0)', async () => {
+    const widgets = { id: 'widgets', label: 'Home Screen Widgets', icon: 'grid', content: <Text>Widgets page</Text>, under: 'app', group: 'On Your iPhone' } as const;
+    const countdown = { ...widgets, id: 'countdown', label: 'Lock Screen Countdown', content: <Text>Countdown page</Text> } as const;
+    const groups = appGroups([widgets, exportPage, countdown]);
+    expect(groups.map((g) => [g.title, g.pages.map((p) => p.id)])).toEqual([[undefined, ['export']], ['On Your iPhone', ['widgets', 'countdown']]]);
+    expect(appGroups([widgets]).map((g) => g.title)).toEqual(['On Your iPhone']);
+    const h = screen(props({ extraPages: [exportPage, widgets, countdown] }));
+    await press(h.byLabel(S.app));
+    expect(shown(h, 'On Your iPhone')).toBe(true);
+    await press(h.byLabel('Lock Screen Countdown'));
+    expect(shown(h, 'Countdown page')).toBe(true);
+    await press(h.byLabel(S.back));
+    expect(h.has('Home Screen Widgets')).toBe(true);
   });
 });

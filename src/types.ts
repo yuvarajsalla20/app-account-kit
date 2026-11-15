@@ -131,6 +131,11 @@ export interface ExtraPage {
    * With no `app` prop, the App row still shows when a page lives there, holding only those rows.
    */
   under?: 'account' | 'app';
+  /**
+   * With `under: 'app'` (since 7.11.0): the heading of the card the row sits in, such as "On Your iPhone". Rows with the same
+   * group share one titled card, in the order they first appear; rows with none share the untitled card, which comes first.
+   */
+  group?: string;
 }
 
 export interface SettingsScreenProps {
