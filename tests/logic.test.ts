@@ -14,12 +14,12 @@ import { DEFAULT_STRINGS } from '../src/strings';
 
 describe('nickname', () => {
   it('trims and cuts to the longest allowed', () => {
-    expect(cleanNickname('  Yuvaraj  ', 20)).toBe('Yuvaraj');
+    expect(cleanNickname('  Samantha  ', 20)).toBe('Samantha');
     expect(cleanNickname('abcdefghij', 4)).toBe('abcd');
   });
 
   it('takes the initial from the nickname, then the email, then the fallback', () => {
-    expect(initialOf('yuva', 'a@b.com')).toBe('Y');
+    expect(initialOf('sam', 'a@b.com')).toBe('S');
     expect(initialOf('  ', 'a@b.com')).toBe('A');
     expect(initialOf('', null)).toBe('?');
     expect(initialOf('', null, 'T')).toBe('T');

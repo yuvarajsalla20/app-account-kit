@@ -16,7 +16,7 @@ function Shortcut() {
 
 const props: SettingsScreenProps = {
   onBack: () => {},
-  profile: { name: 'Yuva', fallbackName: 'App', email: 'a@b.com', photo: '' },
+  profile: { name: 'Sam', fallbackName: 'App', email: 'a@b.com', photo: '' },
   nickname: { max: 20, onSave: async () => {} },
   app: { content: null },
   about: { appName: 'My App', version: { number: '1.2.0', label: 'v1.2' }, privacyUrl: 'https://x.y/p', supportEmail: 'h@x.com' },

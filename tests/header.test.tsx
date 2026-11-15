@@ -10,7 +10,7 @@ import { mount, press } from './helpers/render';
 
 const props: SettingsScreenProps = {
   onBack: vi.fn(),
-  profile: { name: 'Yuva', fallbackName: 'App', email: 'a@b.com', photo: '' },
+  profile: { name: 'Sam', fallbackName: 'App', email: 'a@b.com', photo: '' },
   nickname: { max: 20, onSave: async () => {} },
   data: { label: 'Download', formats: [{ id: 'csv', label: 'CSV', onDownload: async () => {} }] },
   app: { content: null },
