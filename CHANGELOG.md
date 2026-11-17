@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.13.0
+
+- **Footer on the main list:** new optional `footer` prop on `SettingsScreen`. The app's node (such as its logo and tagline) is drawn centred at the very end of the main list, under Sign out and Delete account. Shown on the main list only. Nothing changes for an app that leaves it out.
+
 ## 7.12.0
 
 - **Contact Support is its own page:** the About row no longer opens in place to show the address. It opens a page (Back returns to About) with a mail badge, a heading (`supportTitle`), a line under it (`supportBody`), one **Write to Us** button (`writeToUs`) that writes the email with the app version, device and kits already in it, and a small note saying so (`supportNote`). If no mail app is set up, the address shows in the note at the top, as before.

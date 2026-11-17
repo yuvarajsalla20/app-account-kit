@@ -114,6 +114,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `onBack` | `() => void` | **Required.** Back from the main list |
 | `backLabel` | `string` | What the Back button says on the main list |
 | `brand` | `ReactNode` | The app's logo and name, centred in the top row of every page except About |
+| `footer` | `ReactNode` | Optional. Drawn centred at the very end of the main list, under Sign out and Delete account (main list only) |
 | `profile` | `ProfileInfo` | **Required.** `{ name, fallbackName, email, photo, fallbackPhoto? }` |
 | `nickname` | `NicknameProps` | **Required.** `{ max, onSave(name) }` |
 | `photo` | `PhotoProps` | `{ pick(source), onChange(photo), cameraSupported, maxChars? }`. Leave out to hide Change photo |
