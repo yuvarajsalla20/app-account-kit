@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.14.0
+
+- **Fewer redraws:** `SettingsScreen` / `AccountProvider` compare `theme`, `strings` and `components` by their contents, so an app passing them inline (a new object each render) no longer rebuilds every row's styles. Nothing to change in apps.
+
 ## 7.13.0
 
 - **Footer on the main list:** new optional `footer` prop on `SettingsScreen`. The app's node (such as its logo and tagline) is drawn centred at the very end of the main list, under Sign out and Delete account. Shown on the main list only. Nothing changes for an app that leaves it out.
