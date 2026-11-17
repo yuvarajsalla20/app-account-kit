@@ -27,9 +27,9 @@ type Props = SettingsScreenProps & {
 
 const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support']);
 
-function Body({ onBack, backLabel, brand, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, footer, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
-  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent } }));
+  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
@@ -93,6 +93,7 @@ function Body({ onBack, backLabel, brand, profile, nickname, photo, password, da
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {note}
         {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
+        {page === 'hub' && footer ? <View style={styles.footer}>{footer}</View> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} />
         ) : null}

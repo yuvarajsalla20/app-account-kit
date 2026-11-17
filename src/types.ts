@@ -144,6 +144,8 @@ export interface SettingsScreenProps {
   backLabel?: string;
   /** The app's logo and name, drawn centred in the top row beside the Back button. Leave out for the older layout (a centred page title). Not shown on About, where the app's own picture is already the header. */
   brand?: ReactNode;
+  /** Optional: something the app draws at the very end of the main list, under Sign out and Delete account, such as its logo and tagline. Shown on the main list only. Leave out and nothing changes. */
+  footer?: ReactNode;
   profile: ProfileInfo;
   nickname: NicknameProps;
   /** Leave out to hide Change photo. */
