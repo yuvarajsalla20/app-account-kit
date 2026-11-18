@@ -25,6 +25,13 @@ describe('footer', () => {
     expect(count(h)).toBeGreaterThan(0);
   });
 
+  it('with footerOnEveryPage, draws it on other pages too (7.15.0)', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} footer={<View testID="footer" />} footerOnEveryPage />);
+    expect(count(h)).toBeGreaterThan(0);
+    await press(h.byLabel(S.account));
+    expect(count(h)).toBeGreaterThan(0);
+  });
+
   it('draws nothing extra when the app leaves it out', () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} />);
     expect(count(h)).toBe(0);

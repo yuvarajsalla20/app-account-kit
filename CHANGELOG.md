@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.15.0
+
+- **Footer on every page (opt-in):** new optional `footerOnEveryPage` prop on `SettingsScreen`. When true, the `footer` node is also drawn centred at the end of every other Settings page (About, Account, the App page, extra pages). Default false: the footer stays on the main list only, so nothing changes for apps that leave it out.
+
 ## 7.14.0
 
 - **Fewer redraws:** `SettingsScreen` / `AccountProvider` compare `theme`, `strings` and `components` by their contents, so an app passing them inline (a new object each render) no longer rebuilds every row's styles. Nothing to change in apps.

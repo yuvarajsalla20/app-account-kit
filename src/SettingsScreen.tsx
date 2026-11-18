@@ -27,7 +27,7 @@ type Props = SettingsScreenProps & {
 
 const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support']);
 
-function Body({ onBack, backLabel, brand, footer, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
@@ -103,6 +103,7 @@ function Body({ onBack, backLabel, brand, footer, profile, nickname, photo, pass
         {page === 'app' && hasApp ? <AppPage content={app?.content} pages={appRows} onOpen={go} /> : null}
         {page === 'about' ? <AboutSection {...about} action={action} onOpenSupport={() => go('support')} /> : null}
         {page === 'support' ? <SupportPage appName={about.appName} version={about.version} supportEmail={about.supportEmail} kits={about.kits} action={action} /> : null}
+        {page !== 'hub' && footerOnEveryPage && footer ? <View style={styles.footer}>{footer}</View> : null}
       </ScrollView>
     </>
   );

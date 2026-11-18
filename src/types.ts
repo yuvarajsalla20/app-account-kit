@@ -146,6 +146,8 @@ export interface SettingsScreenProps {
   brand?: ReactNode;
   /** Optional: something the app draws at the very end of the main list, under Sign out and Delete account, such as its logo and tagline. Shown on the main list only. Leave out and nothing changes. */
   footer?: ReactNode;
+  /** Opt-in (7.15.0): also draw `footer` at the end of every other Settings page (About, Account, Preferences, extra pages...). Default false: main list only. */
+  footerOnEveryPage?: boolean;
   profile: ProfileInfo;
   nickname: NicknameProps;
   /** Leave out to hide Change photo. */
