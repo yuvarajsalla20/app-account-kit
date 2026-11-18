@@ -27,4 +27,14 @@ describe('About header (7.16.0)', () => {
     expect(named(h)).toBe(0);
     expect(h.byLabel(S.privacy)).toBeTruthy();
   });
+
+  it('keeps the normal page header (title About) when the top name is left out (7.16.1)', async () => {
+    const titled = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header' && n.props.children === S.about).length;
+    const plain = mount(<SettingsScreen theme={THEME} {...base} />);
+    await press(plain.byLabel(S.about));
+    expect(titled(plain)).toBe(0);
+    const h = mount(<SettingsScreen theme={THEME} {...base} about={{ ...base.about, showHeader: false }} />);
+    await press(h.byLabel(S.about));
+    expect(titled(h)).toBeGreaterThan(0);
+  });
 });
