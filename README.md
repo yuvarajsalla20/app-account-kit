@@ -115,6 +115,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `backLabel` | `string` | What the Back button says on the main list |
 | `brand` | `ReactNode` | The app's logo and name, centred in the top row of every page except About |
 | `footer` | `ReactNode` | Optional. Drawn centred at the very end of the main list, under Sign out and Delete account (main list only) |
+| `footerOnEveryPage` | `boolean` | Optional (7.15.0). Also draw `footer` at the end of every other Settings page. Default false |
 | `profile` | `ProfileInfo` | **Required.** `{ name, fallbackName, email, photo, fallbackPhoto? }` |
 | `nickname` | `NicknameProps` | **Required.** `{ max, onSave(name) }` |
 | `photo` | `PhotoProps` | `{ pick(source), onChange(photo), cameraSupported, maxChars? }`. Leave out to hide Change photo |
