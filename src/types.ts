@@ -70,6 +70,11 @@ export interface AboutProps {
   /** The app's picture, shown above its name. Pass `require('./assets/icon.png')` or `{ uri }`. Leave out for no picture. */
   logo?: ImageSourcePropType;
   /**
+   * Whether About opens with the app's name (and `logo`) at the top. Default true. Pass false when the app already shows its
+   * own brand elsewhere on the page (for example a `footer`), so the name and logo are not shown twice.
+   */
+  showHeader?: boolean;
+  /**
    * The number, like 0.2.0 (added to support emails), and what the Version row shows when it is opened.
    * `lines` is one entry per line, like ["v0.2.0 | Build 12", "Nov 3, 2026 | 10:25 PM CT"]; without it the row shows `label`.
    */

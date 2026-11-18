@@ -21,7 +21,7 @@ interface Props extends AboutProps {
  * The app's picture and name (in the app's own color), then three cards:
  * Features, Rate and Share; Contact Support (its own page) and Privacy Policy; Kits and Version (both open in place).
  */
-export function AboutSection({ appName, logo, version, privacyUrl, featuresUrl, share, rate, kits, action, onOpenSupport }: Props) {
+export function AboutSection({ appName, logo, showHeader = true, version, privacyUrl, featuresUrl, share, rate, kits, action, onOpenSupport }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const shareUrl = share?.url;
@@ -36,10 +36,12 @@ export function AboutSection({ appName, logo, version, privacyUrl, featuresUrl, 
 
   return (
     <View style={STACK}>
-      <View style={styles.hero}>
-        {logo ? <Image source={logo} style={styles.logo} accessible={false} /> : null}
-        <components.Text style={styles.name} accessibilityRole="header">{appName}</components.Text>
-      </View>
+      {showHeader ? (
+        <View style={styles.hero}>
+          {logo ? <Image source={logo} style={styles.logo} accessible={false} /> : null}
+          <components.Text style={styles.name} accessibilityRole="header">{appName}</components.Text>
+        </View>
+      ) : null}
       {featuresUrl || share || showRate ? (
         <SettingsGroup>
           {featuresUrl ? <SettingRow last={!showRate && !share} external icon="layers" tint={theme.tints.features ?? theme.tints.about} label={strings.features} onPress={() => openPage('features', featuresUrl)} /> : null}
