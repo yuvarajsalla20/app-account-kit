@@ -99,7 +99,7 @@ function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, top, topOnE
 
   const body = (
     <>
-      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} right={right} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={extra?.plainHeader ? undefined : brand} inline={!!extra?.plainHeader} right={right} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {topNode ? <View style={styles.top}>{topNode}</View> : null}
         {note}
