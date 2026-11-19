@@ -170,6 +170,11 @@ export interface SettingsScreenProps {
   backLabel?: string;
   /** The app's logo and name, drawn centred in the top row beside the Back button. Leave out for the older layout (a centred page title). Not shown on About, where the app's own picture is already the header. */
   brand?: ReactNode;
+  /**
+   * Opt-in (7.20.0): every Settings page, the main list included, leaves out `brand` and puts its title in the top row,
+   * on the left beside Back (the `plainHeader` look of 7.19.0, on every page). About keeps its own picture as the header. Default false.
+   */
+  plainHeaders?: boolean;
   /** Optional: something the app draws at the very end of the main list, under Sign out and Delete account, such as its logo and tagline. Shown on the main list only. Leave out and nothing changes. */
   footer?: ReactNode;
   /** Opt-in (7.15.0): also draw `footer` at the end of every other Settings page (About, Account, Preferences, extra pages...). Default false: main list only. */

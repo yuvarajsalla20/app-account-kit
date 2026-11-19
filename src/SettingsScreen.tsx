@@ -28,7 +28,7 @@ type Props = SettingsScreenProps & {
 
 const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount']);
 
-function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 }, top: { alignItems: 'center' } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
@@ -85,6 +85,8 @@ function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, top, topOnE
     [],
   );
   const extra = extraPages?.find((p) => p.id === page);
+  // 7.20.0 plainHeaders: every page gets the plain header that 7.19.0 gave one added page.
+  const plain = !!(plainHeaders || extra?.plainHeader);
   const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport, signOut: strings.signOut, deleteAccount: strings.deleteAccount };
   // 7.17.0 exitMenu: Sign out and Delete account behind a ⋯ on Account instead of on the main list.
   const exitItems = exitMenu
@@ -99,7 +101,7 @@ function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, top, topOnE
 
   const body = (
     <>
-      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={extra?.plainHeader ? undefined : brand} inline={!!extra?.plainHeader} right={right} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={plain ? undefined : brand} inline={plain} right={right} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
         {topNode ? <View style={styles.top}>{topNode}</View> : null}
         {note}
