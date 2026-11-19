@@ -67,6 +67,24 @@ export interface AccountStrings {
   deletePassword: string;
   deleteEverything: string;
   keepAccount: string;
+  /** 7.17.0, `exitMenu` only. What VoiceOver says for the ⋯ button on Account. */
+  moreOptions: string;
+  signOutTitle: string;
+  signOutBody: string;
+  stayIn: string;
+  deleteLoseTitle: string;
+  deleteBreakTitle: string;
+  deleteBreakAction: string;
+  /** The word to type before Delete can go on. */
+  deleteTypeWord: string;
+  deleteTypeLabel: (word: string) => string;
+  continue: string;
+  deleteFinalTitle: string;
+  deleteFinalPassword: string;
+  deleteFinalProvider: string;
+  deleteForever: string;
+  /** VoiceOver: "Step 2 of 3". */
+  stepOf: (step: number, total: number) => string;
   /** "Could not save the nickname. Try again." */
   couldNot: (action: string) => string;
   /** Shown when an action ran past the time limit: it may still finish, so do not just try again. */
@@ -140,6 +158,21 @@ export const DEFAULT_STRINGS: AccountStrings = {
   deletePassword: 'Enter your password to confirm',
   deleteEverything: 'Delete everything',
   keepAccount: 'Keep my account',
+  moreOptions: 'More options',
+  signOutTitle: 'Sign out?',
+  signOutBody: 'Your data stays safe in your account. Sign in any time to see it again.',
+  stayIn: 'Stay signed in',
+  deleteLoseTitle: 'You will lose, forever:',
+  deleteBreakTitle: 'Just want a break?',
+  deleteBreakAction: 'Sign out instead',
+  deleteTypeWord: 'DELETE',
+  deleteTypeLabel: (word) => `Type ${word} to continue`,
+  continue: 'Continue',
+  deleteFinalTitle: 'Last step: sign in again',
+  deleteFinalPassword: 'For your safety, enter your password one more time.',
+  deleteFinalProvider: 'For your safety, confirm it is you with Apple or Google when asked.',
+  deleteForever: 'Delete my account forever',
+  stepOf: (step, total) => `Step ${step} of ${total}`,
   couldNot: (action) => `Could not ${action}. Try again.`,
   tookTooLong: 'This is taking too long. It may still finish, so check before you try again.',
   saveNickname: 'save the nickname',

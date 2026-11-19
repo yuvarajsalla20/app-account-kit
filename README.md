@@ -116,6 +116,9 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `brand` | `ReactNode` | The app's logo and name, centred in the top row of every page except About |
 | `footer` | `ReactNode` | Optional. Drawn centred at the very end of the main list, under Sign out and Delete account (main list only) |
 | `footerOnEveryPage` | `boolean` | Optional (7.15.0). Also draw `footer` at the end of every other Settings page. Default false |
+| `top` | `ReactNode \| (page) => ReactNode` | Optional (7.17.0). Drawn at the very top of the main list, under the header (the app's logo and tagline, say). A function gets the page id, to draw it differently per page |
+| `topOnEveryPage` | `boolean` | Optional (7.17.0). Also draw `top` at the top of every other Settings page. Default false |
+| `exitMenu` | `ExitMenuProps` | Opt-in (7.17.0). Sign out and Delete account leave the main list and sit behind a ⋯ button on Account, each on its own page. Delete goes through steps: the app's optional `unlock(onUnlocked)` (Face ID or PIN, drawn by the app), what will be lost (`losses`) with "Sign out instead", typing DELETE, then the password (or Apple / Google) before `onDeleteAccount`. `components.Menu` can draw the ⋯ menu in the app's own style. Leave out and nothing changes |
 | `profile` | `ProfileInfo` | **Required.** `{ name, fallbackName, email, photo, fallbackPhoto? }` |
 | `nickname` | `NicknameProps` | **Required.** `{ max, onSave(name) }` |
 | `photo` | `PhotoProps` | `{ pick(source), onChange(photo), cameraSupported, maxChars? }`. Leave out to hide Change photo |

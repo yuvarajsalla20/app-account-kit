@@ -143,6 +143,22 @@ export interface ExtraPage {
   group?: string;
 }
 
+/**
+ * Opt-in (7.17.0): Sign out and Delete account leave the main list and sit behind a ⋯ button at the top right of Account.
+ * Each opens its own page. Sign out asks once. Delete account takes the person through steps: the app's optional
+ * `unlock` (Face ID or PIN, say), what they will lose (with "Sign out instead"), typing a word (DELETE), and a last
+ * sign-in check before `actions.onDeleteAccount` runs.
+ */
+export interface ExitMenuProps {
+  /**
+   * Optional first step on the Delete account page: the app draws its own unlock (Face ID, PIN...) and calls `onUnlocked`
+   * when it passes. Leave out and the page starts at "what you will lose".
+   */
+  unlock?: (onUnlocked: () => void) => ReactNode;
+  /** The lines under "You will lose, forever:", such as "Every piece and its photos". Leave out to show only `strings.deleteWarning`. */
+  losses?: readonly string[];
+}
+
 export interface SettingsScreenProps {
   /** Back from the main list (to Home). Back from every other page returns to the list. */
   onBack: () => void;
@@ -153,6 +169,15 @@ export interface SettingsScreenProps {
   footer?: ReactNode;
   /** Opt-in (7.15.0): also draw `footer` at the end of every other Settings page (About, Account, Preferences, extra pages...). Default false: main list only. */
   footerOnEveryPage?: boolean;
+  /**
+   * Optional (7.17.0): something the app draws at the very top of the main list, under the header, such as its logo and tagline.
+   * Pass a function to draw something different per page (smaller on inner pages, say). Leave out and nothing changes.
+   */
+  top?: ReactNode | ((page: string) => ReactNode);
+  /** Opt-in (7.17.0): also draw `top` at the top of every other Settings page. Default false: main list only. */
+  topOnEveryPage?: boolean;
+  /** Opt-in (7.17.0): move Sign out and Delete account behind a ⋯ menu on Account, each on its own page. Default: both stay on the main list. */
+  exitMenu?: ExitMenuProps;
   profile: ProfileInfo;
   nickname: NicknameProps;
   /** Leave out to hide Change photo. */

@@ -2,6 +2,17 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.17.0
+
+- **Sign out and Delete account behind a ⋯ menu (opt-in):** new optional `exitMenu` prop. When passed, the two buttons leave the main list; Account gets a round ⋯ at the top right with Sign out and Delete account, each opening its own page (`signOut`, `deleteAccount`, Back returns to Account).
+  - Sign out page: one button and "Stay signed in".
+  - Delete account page, in steps: (1) `exitMenu.unlock(onUnlocked)`, the app's own unlock such as Face ID or a PIN, only when the app passes it; (2) what will be lost (`exitMenu.losses` and `deleteWarning`) with a "Just want a break? Sign out instead" link and a box where the person types DELETE; (3) the password (or Apple / Google inside `onDeleteAccount`) before anything is erased.
+  - `components.Menu` (optional) draws the ⋯ menu in the app's style; default is the kit's round button and a small list.
+  - New strings: `moreOptions`, `signOutTitle`, `signOutBody`, `stayIn`, `deleteLoseTitle`, `deleteBreakTitle`, `deleteBreakAction`, `deleteTypeWord`, `deleteTypeLabel`, `continue`, `deleteFinalTitle`, `deleteFinalPassword`, `deleteFinalProvider`, `deleteForever`, `stepOf`. An app that builds a whole `AccountStrings` object must add them.
+- **Top slot (opt-in):** new optional `top` (a node, or a function of the page) drawn at the top of the main list, and with `topOnEveryPage` on every page. For an app's logo, name and tagline.
+- `PageHeader` takes an optional `right` node. New helper `typedWordMatches`.
+- Nothing changes for apps that leave these out.
+
 ## 7.16.1
 
 - **Fix:** with `about.showHeader: false`, About now keeps the normal page header (the app's brand row and the title "About"), like every other Settings page. Before, the page had no header at all and Back sat on top of the first row. Default About is unchanged.
