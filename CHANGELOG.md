@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.19.0
+
+- **Plain header for one page (opt-in):** an `extraPages` entry can set `plainHeader: true`. That page leaves out `brand` and shows Back and the page title in one row, the title on the left beside Back (20 pt, bold), with no logo row and no title line under it. Every other page keeps the brand. Nothing changes for apps that leave it out.
+
 ## 7.18.0
 
 - **Contact Support looks like the other pages.** The big centred hero (26 pt title, round mail picture, full-width button) is gone. The page title stays in the header; under it a left-aligned heading (16 pt, like a row label) and line (15 pt), one "Write to Us" row in a card (the `support` tint), and the small note under the card. Same words, same email, same behaviour; nothing to change in apps. Every app that updates sees the new layout.

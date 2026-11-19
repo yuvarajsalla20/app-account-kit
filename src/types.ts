@@ -141,6 +141,11 @@ export interface ExtraPage {
    * group share one titled card, in the order they first appear; rows with none share the untitled card, which comes first.
    */
   group?: string;
+  /**
+   * Opt-in (7.19.0): this page's header leaves out `brand` and puts the page title in the top row, on the left,
+   * right beside Back (no logo row, no title line under it). Other pages keep the brand. Default false.
+   */
+  plainHeader?: boolean;
 }
 
 /**

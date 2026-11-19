@@ -66,6 +66,29 @@ describe('page header', () => {
     expect(flat(word(big).props.style)).toMatchObject({ fontSize: 17, fontWeight: '700' });
   });
 
+  it('with plainHeader on an added page, leaves out the brand there and puts the title beside Back, on the left', async () => {
+    const extraPages = [
+      { id: 'security', label: 'Security', icon: 'lock' as const, content: null, plainHeader: true },
+      { id: 'family', label: 'Family', icon: 'users' as const, content: null },
+    ];
+    const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} extraPages={extraPages} />);
+    const brands = () => h.root.root.findAll((n) => n.props.testID === 'brand').length;
+    await press(h.byLabel('Security'));
+    expect(brands()).toBe(0);
+    const t = heading(h)!;
+    expect(t.props.children).toBe('Security');
+    expect(flat(t.props.style)).toMatchObject({ fontSize: 20, fontWeight: '700' });
+    // Back and the title share one left-aligned row; Back is in the flow, not floating.
+    const row = t.parent!.parent!;
+    expect(flat(row.props.style)).toMatchObject({ flexDirection: 'row', alignItems: 'center' });
+    expect(flat(row.props.style).justifyContent).toBeUndefined();
+    expect(flat(h.byLabel(S.back).props.style).position).toBeUndefined();
+    await press(h.byLabel(S.back));
+    await press(h.byLabel('Family'));
+    expect(brands()).toBeGreaterThan(0);
+    expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 24 });
+  });
+
   it('leaves About without the brand row, so the big app picture is the header', async () => {
     const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} />);
     await press(h.byLabel(S.about));
