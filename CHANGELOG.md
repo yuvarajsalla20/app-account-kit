@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.18.0
+
+- **Contact Support looks like the other pages.** The big centred hero (26 pt title, round mail picture, full-width button) is gone. The page title stays in the header; under it a left-aligned heading (16 pt, like a row label) and line (15 pt), one "Write to Us" row in a card (the `support` tint), and the small note under the card. Same words, same email, same behaviour; nothing to change in apps. Every app that updates sees the new layout.
+
 ## 7.17.0
 
 - **Sign out and Delete account behind a ⋯ menu (opt-in):** new optional `exitMenu` prop. When passed, the two buttons leave the main list; Account gets a round ⋯ at the top right with Sign out and Delete account, each opening its own page (`signOut`, `deleteAccount`, Back returns to Account).
