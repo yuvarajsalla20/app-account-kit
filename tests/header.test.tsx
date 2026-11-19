@@ -66,6 +66,19 @@ describe('page header', () => {
     expect(flat(word(big).props.style)).toMatchObject({ fontSize: 17, fontWeight: '700' });
   });
 
+  it('with plainHeaders, every page leaves out the brand and puts its title beside Back, the main list included', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...props} brand={<Brand />} plainHeaders />);
+    const brands = () => h.root.root.findAll((n) => n.props.testID === 'brand').length;
+    expect(brands()).toBe(0);
+    const t = heading(h)!;
+    expect(flat(t.props.style)).toMatchObject({ fontSize: 20, fontWeight: '700' });
+    expect(flat(t.parent!.parent!.props.style)).toMatchObject({ flexDirection: 'row', alignItems: 'center' });
+    await press(h.byLabel(S.account));
+    expect(brands()).toBe(0);
+    expect(heading(h)!.props.children).toBe(S.account);
+    expect(flat(heading(h)!.props.style)).toMatchObject({ fontSize: 20 });
+  });
+
   it('with plainHeader on an added page, leaves out the brand there and puts the title beside Back, on the left', async () => {
     const extraPages = [
       { id: 'security', label: 'Security', icon: 'lock' as const, content: null, plainHeader: true },
