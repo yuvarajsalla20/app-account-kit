@@ -136,7 +136,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 |---|---|
 | `appName` | Shown under the logo, in `theme.brand` |
 | `logo` | `require('./assets/icon.png')` or `{ uri }` |
-| `showHeader` | Optional (7.16.0). `false` leaves out the logo and name at the top of About (when the app shows its brand elsewhere, like `footer`). Default true |
+| `showHeader` | Optional (7.16.0). `false` leaves out the logo and name at the top of About (when the app shows its brand elsewhere, like `footer`). The page then keeps its normal header with the title About (7.16.1). Default true |
 | `version` | `{ number, label, lines? }`. `number` goes into support emails; the Version row shows `lines` (one per line), or `label` |
 | `privacyUrl` | https only |
 | `featuresUrl` | Adds a Features row that opens this https page |

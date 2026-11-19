@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.16.1
+
+- **Fix:** with `about.showHeader: false`, About now keeps the normal page header (the app's brand row and the title "About"), like every other Settings page. Before, the page had no header at all and Back sat on top of the first row. Default About is unchanged.
+
 ## 7.16.0
 
 - **About without the top name (opt-in):** new optional `about.showHeader` (default true). Pass false to leave out the app's logo and name at the top of About, for apps that already show their brand on the page (for example in `footer`). Nothing changes for apps that leave it out.
