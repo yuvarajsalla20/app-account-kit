@@ -15,6 +15,19 @@ export interface AccountComponents {
   EdgeSwipe?: ComponentType<{ onBack: () => void; children: ReactNode }>;
   /** Optional: the app's own bottom sheet, drawn around a picker that asks before keeping a choice (one with `onConfirm`), so it matches the app's other sheets. It gets the title, a ✕ (`onCancel`) and a ✓ (`onConfirm`). Default: the kit's sheet with a round ✕ and ✓. */
   Sheet?: ComponentType<{ title: string; visible: boolean; onCancel: () => void; onConfirm: () => void; children: ReactNode }>;
+  /**
+   * Optional (7.17.0, `exitMenu` only): the app's own menu for the ⋯ button on Account. It draws its own button (`label` is
+   * what VoiceOver says) and opens a list of `items`; a tap calls `onPick(id)`. Default: the kit's round ⋯ and a small list under it.
+   */
+  Menu?: ComponentType<{ label: string; items: readonly MenuItem[]; onPick: (id: string) => void }>;
+}
+
+/** One line of the ⋯ menu on Account (7.17.0). `danger` lines are drawn in the danger color. */
+export interface MenuItem {
+  id: string;
+  label: string;
+  icon?: string;
+  danger?: boolean;
 }
 
 export interface Look {

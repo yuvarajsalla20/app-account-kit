@@ -9,6 +9,7 @@ import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
 import { AppPage } from './sections/AppPage';
 import { HubPage } from './sections/HubPage';
+import { DeleteAccountPage, ExitMenuButton, SignOutPage } from './sections/ExitPages';
 import { DataRow } from './sections/profile/DataRow';
 import { PasswordPage } from './sections/profile/PasswordPage';
 import { SupportPage } from './sections/SupportPage';
@@ -25,11 +26,11 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support']);
+const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount']);
 
-function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
-  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 } }));
+  const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 }, top: { alignItems: 'center' } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
@@ -41,7 +42,7 @@ function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, profile, ni
   // The App page shows when the app has settings of its own or a page that lives there.
   const hasApp = !!app || appRows.length > 0;
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
-  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
+  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (asked === 'signOut' && !(exitMenu && actions.onSignOut)) || (asked === 'deleteAccount' && !(exitMenu && actions.onDeleteAccount)) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
@@ -84,18 +85,32 @@ function Body({ onBack, backLabel, brand, footer, footerOnEveryPage, profile, ni
     [],
   );
   const extra = extraPages?.find((p) => p.id === page);
-  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport };
+  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport, signOut: strings.signOut, deleteAccount: strings.deleteAccount };
+  // 7.17.0 exitMenu: Sign out and Delete account behind a ⋯ on Account instead of on the main list.
+  const exitItems = exitMenu
+    ? [
+        ...(actions.onSignOut ? [{ id: 'signOut', label: strings.signOut, icon: 'log-out' }] : []),
+        ...(actions.onDeleteAccount ? [{ id: 'deleteAccount', label: strings.deleteAccount, icon: 'trash-2', danger: true }] : []),
+      ]
+    : [];
+  const right = page === 'account' && exitItems.length ? <ExitMenuButton items={exitItems} onPick={(id) => go(id)} /> : null;
+  const topNode = top && (page === 'hub' || topOnEveryPage) ? (typeof top === 'function' ? top(page) : top) : null;
   const note = action.note ? <components.Text style={[styles.note, action.noteGood && styles.good]} accessibilityLiveRegion="polite">{action.note}</components.Text> : null;
 
   const body = (
     <>
-      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} />
+      <PageHeader large={page === 'hub'} title={page === 'about' ? (about.showHeader === false ? strings.about : undefined) : (extra?.label ?? titles[page])} onBack={back} backLabel={page === 'hub' ? (backLabel ?? strings.back) : strings.back} brand={brand} right={right} />
       <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.body}>
+        {topNode ? <View style={styles.top}>{topNode}</View> : null}
         {note}
-        {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={actions.onSignOut} onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
+        {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={exitMenu ? undefined : actions.onSignOut} onDeleteAccount={exitMenu ? undefined : actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'hub' && footer ? <View style={styles.footer}>{footer}</View> : null}
         {page === 'account' ? (
           <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} />
+        ) : null}
+        {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go('account')} /> : null}
+        {page === 'deleteAccount' && exitMenu && actions.onDeleteAccount ? (
+          <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go('account')} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
