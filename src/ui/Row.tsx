@@ -5,6 +5,7 @@ import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
 import { CENTER, ROW_CENTER } from './layout';
+import { UpDown } from './PullDown';
 
 interface Props {
   icon: IconName;
@@ -35,10 +36,12 @@ interface Props {
   trailing?: IconName;
   /** 7.24.0: a row that cannot be undone, such as Delete account: the label is drawn in `danger`. */
   danger?: boolean;
+  /** 7.26.0: the row opens a pull-down menu in place: a small up/down chevron instead of the arrow, or nothing beside a `badge` (the pill carries it). */
+  opensMenu?: boolean;
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
@@ -69,6 +72,8 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
           </View>
         ) : toggle ? (
           <Switch value={toggle.value} onValueChange={toggle.onChange} trackColor={{ true: theme.on, false: theme.field }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
+        ) : onPress && opensMenu ? (
+          badge ? null : <UpDown color={theme.faint} />
         ) : onPress && trailing ? (
           <Feather name={trailing} size={18} color={theme.muted} />
         ) : onPress ? (

@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Text as RNText, TextInput as RNTextInput } from 'react-native';
-import { LookContext, type AccountComponents, type Look } from './look';
+import { LookContext, type AccountComponents, type Look, type PickerStyle } from './look';
 import { PlainCard } from './ui/Card';
 import { DEFAULT_STRINGS, type AccountStrings } from './strings';
 import type { AccountTheme } from './theme';
@@ -14,19 +14,21 @@ interface ProviderProps {
   theme: AccountTheme;
   strings?: Partial<AccountStrings>;
   components?: Partial<AccountComponents>;
+  /** 7.26.0: 'pullDown' turns every PickerRow below into a grey value pill with a pull-down menu. Default 'sheet'. */
+  pickers?: PickerStyle;
   children: ReactNode;
 }
 
 /** Gives every piece below it the app's colors, wording and text components. */
-export function AccountProvider({ theme: themeProp, strings: stringsProp, components: componentsProp, children }: ProviderProps) {
+export function AccountProvider({ theme: themeProp, strings: stringsProp, components: componentsProp, pickers = 'sheet', children }: ProviderProps) {
   // Apps often pass these inline (a new object on each render): compare their contents, so every row below does not
   // rebuild its styles and redraw.
   const theme = useShallowStable(themeProp);
   const strings = useShallowStable(stringsProp);
   const components = useShallowStable(componentsProp);
   const look = useMemo<Look>(
-    () => ({ theme, strings: { ...DEFAULT_STRINGS, ...strings }, components: { ...DEFAULT_COMPONENTS, ...components } }),
-    [theme, strings, components],
+    () => ({ theme, strings: { ...DEFAULT_STRINGS, ...strings }, components: { ...DEFAULT_COMPONENTS, ...components }, pickers }),
+    [theme, strings, components, pickers],
   );
   return <LookContext.Provider value={look}>{children}</LookContext.Provider>;
 }

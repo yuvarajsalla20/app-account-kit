@@ -45,7 +45,7 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
         </View>
       ) : null}
       {featuresUrl || share || showRate ? (
-        <SettingsGroup>
+        <SettingsGroup title={strings.aboutAppGroup || undefined}>
           {featuresUrl ? <SettingRow last={!showRate && !share} external icon="layers" tint={theme.tints.features ?? theme.tints.about} label={strings.features} onPress={() => openPage('features', featuresUrl)} /> : null}
           {showRate ? (
             <SettingRow
@@ -75,20 +75,34 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
           ) : null}
         </SettingsGroup>
       ) : null}
-      <SettingsGroup>
+      <SettingsGroup title={strings.aboutHelpGroup || undefined}>
         <SettingRow icon="mail" tint={theme.tints.support} label={strings.contactSupport} onPress={onOpenSupport} />
         <SettingRow last external icon="shield" tint={theme.tints.privacy} label={strings.privacy} onPress={() => openPage('privacy', privacyUrl)} />
       </SettingsGroup>
-      <SettingsGroup>
-        {kits ? (
-          <ExpandRow icon="package" tint={theme.tints.version} label={strings.kits}>
-            {lines(kitListLines(kits, strings.build))}
+      {strings.aboutInfoGroup ? (
+        // 7.26.0: under a heading, Version comes first and Kits last.
+        <SettingsGroup title={strings.aboutInfoGroup}>
+          <ExpandRow last={!kits} icon="info" tint={theme.tints.version} label={strings.version}>
+            {lines(version.lines?.length ? version.lines : [version.label])}
           </ExpandRow>
-        ) : null}
-        <ExpandRow last icon="info" tint={theme.tints.version} label={strings.version}>
-          {lines(version.lines?.length ? version.lines : [version.label])}
-        </ExpandRow>
-      </SettingsGroup>
+          {kits ? (
+            <ExpandRow last icon="package" tint={theme.tints.version} label={strings.kits}>
+              {lines(kitListLines(kits, strings.build))}
+            </ExpandRow>
+          ) : null}
+        </SettingsGroup>
+      ) : (
+        <SettingsGroup>
+          {kits ? (
+            <ExpandRow icon="package" tint={theme.tints.version} label={strings.kits}>
+              {lines(kitListLines(kits, strings.build))}
+            </ExpandRow>
+          ) : null}
+          <ExpandRow last icon="info" tint={theme.tints.version} label={strings.version}>
+            {lines(version.lines?.length ? version.lines : [version.label])}
+          </ExpandRow>
+        </SettingsGroup>
+      )}
     </View>
   );
 }

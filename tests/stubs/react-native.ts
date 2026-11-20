@@ -10,6 +10,7 @@ export const Pressable = host('Pressable');
 export const ScrollView = host('ScrollView');
 export const Switch = host('Switch');
 export const Image = host('Image');
+export const useWindowDimensions = () => ({ width: 390, height: 844, scale: 3, fontScale: 1 });
 // A real Modal draws nothing while it is closed.
 export const Modal = (props: { visible?: boolean; children?: unknown }) => (props.visible ? createElement('Modal', props as never, props.children as never) : null);
 export const ActivityIndicator = host('ActivityIndicator');

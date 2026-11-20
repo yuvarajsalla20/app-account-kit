@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useLook } from '../look';
 import type { ExtraPage } from '../types';
 import { SettingsGroup, STACK } from '../ui/Group';
-import { SettingRow } from '../ui/Row';
+import { PageRow } from './AccountPage';
 
 interface Props {
   /** The app's own settings (`app.content`), or nothing when the page only holds added pages. */
@@ -34,7 +34,7 @@ export function AppPage({ content, pages = [], onOpen }: Props) {
       {appGroups(pages).map((g) => (
         <SettingsGroup key={g.title ?? ''} title={g.title}>
           {g.pages.map((p, i) => (
-            <SettingRow key={p.id} last={i === g.pages.length - 1} icon={p.icon} tint={p.tint ?? theme.tints.app} label={p.label} value={p.value} badge={p.badge} onPress={() => onOpen(p.id)} />
+            <PageRow key={p.id} page={p} last={i === g.pages.length - 1} tint={p.tint ?? theme.tints.app} onOpen={() => onOpen(p.id)} />
           ))}
         </SettingsGroup>
       ))}
