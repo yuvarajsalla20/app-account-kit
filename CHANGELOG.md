@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.25.0
+
+- **Sign out on Account, Delete account on its own page (opt-in):** with `exitMenu.place: 'page'`, `exitMenu.signOutOnAccount: true` makes Sign out its own row on Account, in the same card just above the group row. The group page then holds only Delete account, and the group row gets a `user-x` icon. Name the group through `strings.access` (an app might say "Deactivate"). Back and "Stay signed in" from Sign out return to Account. Nothing changes for apps that leave it out.
+
 ## 7.24.0
 
 - **Access page for Sign out and Delete account (opt-in):** `exitMenu.place: 'page'` drops the ⋯ on Account. Account gets one row at the bottom, **Access** (`strings.access`), that opens its own page with a Sign out row and a red Delete account row, and a short line under them (`strings.accessNote`). Each row opens the same Sign out and Delete account pages as before, with every step kept; Back and "Stay signed in" return to Access. `SettingRow` takes `danger` for a red label. `place: 'menu'` (the default) keeps the ⋯, so nothing changes for apps that leave it out.

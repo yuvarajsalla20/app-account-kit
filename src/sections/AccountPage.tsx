@@ -22,10 +22,12 @@ interface Props {
   onOpen?: (page: string) => void;
   /** 7.24.0 (`exitMenu.place: 'page'`): opens the Access page from a row at the bottom. Leave out for no row. */
   onOpenAccess?: () => void;
+  /** 7.25.0 (`exitMenu.signOutOnAccount`): a Sign out row of its own, in the same card, above the Access row. */
+  onOpenSignOut?: () => void;
 }
 
 /** Picture and name, then one card: the nickname, the email (read only) and Change password; then a card of the app's data features (such as Data Export), with no heading of its own; then, with `onOpenAccess`, one Access row (Sign out and Delete account). */
-export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, dataPages = [], onOpen, onOpenAccess }: Props) {
+export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, dataPages = [], onOpen, onOpenAccess, onOpenSignOut }: Props) {
   const { theme, strings } = useLook();
   const hasPassword = !!(password && profile.email);
   return (
@@ -43,9 +45,10 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
           ))}
         </SettingsGroup>
       ) : null}
-      {onOpenAccess ? (
+      {onOpenAccess || onOpenSignOut ? (
         <SettingsGroup>
-          <SettingRow last icon="log-out" tint={theme.muted} label={strings.access} onPress={onOpenAccess} />
+          {onOpenSignOut ? <SettingRow last={!onOpenAccess} icon="log-out" tint={theme.muted} label={strings.signOut} onPress={onOpenSignOut} /> : null}
+          {onOpenAccess ? <SettingRow last icon={onOpenSignOut ? 'user-x' : 'log-out'} tint={theme.muted} label={strings.access} onPress={onOpenAccess} /> : null}
         </SettingsGroup>
       ) : null}
     </View>
