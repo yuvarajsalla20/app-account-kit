@@ -8,6 +8,8 @@ import type { AccountTheme } from '../theme';
 import type { ActionsProps, ExitMenuProps, IconName } from '../types';
 import { Button } from '../ui/Button';
 import { Field } from '../ui/Field';
+import { SettingsGroup } from '../ui/Group';
+import { SettingRow } from '../ui/Row';
 import { CENTER } from '../ui/layout';
 
 /** The ⋯ button on Account (7.17.0): the app's own `components.Menu`, or the kit's round button with a small list under it. */
@@ -68,6 +70,21 @@ export function SignOutPage({ onSignOut, action, onStay }: { onSignOut: NonNulla
       <Hero icon="log-out" title={strings.signOutTitle} body={strings.signOutBody} />
       <Button variant="solid" label={strings.signOut} busy={action.busy} onPress={() => action.run('sign-out', onSignOut, () => strings.couldNot(strings.signOutAction))} />
       <Button variant="quiet" small label={strings.stayIn} onPress={onStay} disabled={action.busy} />
+    </View>
+  );
+}
+
+/** The Access page (7.24.0, `exitMenu.place: 'page'`): a Sign out row and a red Delete account row, each opening its own page, and a short line under them. */
+export function AccessPage({ onSignOut, onDeleteAccount }: { onSignOut?: () => void; onDeleteAccount?: () => void }) {
+  const { theme, strings, components } = useLook();
+  const styles = useStyles(makeStyles);
+  return (
+    <View style={styles.page}>
+      <SettingsGroup>
+        {onSignOut ? <SettingRow last={!onDeleteAccount} icon="log-out" tint={theme.muted} label={strings.signOut} onPress={onSignOut} /> : null}
+        {onDeleteAccount ? <SettingRow last danger icon="trash-2" tint={theme.danger} label={strings.deleteAccount} onPress={onDeleteAccount} /> : null}
+      </SettingsGroup>
+      <components.Text style={styles.accessNote}>{strings.accessNote}</components.Text>
     </View>
   );
 }
@@ -186,6 +203,7 @@ const makeStyles = (t: AccountTheme) => ({
   lossText: { color: t.text, fontSize: 15, flex: 1 },
   small: { color: t.muted, fontSize: 13, lineHeight: 18, marginTop: 4 },
   break: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 10, padding: 14, borderRadius: 16, backgroundColor: t.field, borderWidth: 1, borderColor: t.border },
+  accessNote: { color: t.muted, fontSize: 13, lineHeight: 18, paddingHorizontal: 6 },
   grow: { flex: 1 },
   breakTitle: { color: t.text, fontSize: 14 },
   breakAction: { color: t.accent, fontSize: 15, fontWeight: '700' as const, marginTop: 2 },

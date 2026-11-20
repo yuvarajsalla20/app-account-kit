@@ -20,10 +20,12 @@ interface Props {
   dataPages?: readonly ExtraPage[];
   /** Opens a page under Your data by its id. */
   onOpen?: (page: string) => void;
+  /** 7.24.0 (`exitMenu.place: 'page'`): opens the Access page from a row at the bottom. Leave out for no row. */
+  onOpenAccess?: () => void;
 }
 
-/** Picture and name, then one card: the nickname, the email (read only) and Change password; then a card of the app's data features (such as Data Export), with no heading of its own. Delete account lives on the main list. */
-export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, dataPages = [], onOpen }: Props) {
+/** Picture and name, then one card: the nickname, the email (read only) and Change password; then a card of the app's data features (such as Data Export), with no heading of its own; then, with `onOpenAccess`, one Access row (Sign out and Delete account). */
+export function AccountPage({ profile, nickname, photo, password, action, onOpenPassword, dataPages = [], onOpen, onOpenAccess }: Props) {
   const { theme, strings } = useLook();
   const hasPassword = !!(password && profile.email);
   return (
@@ -39,6 +41,11 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
           {dataPages.map((p, i) => (
             <SettingRow key={p.id} last={i === dataPages.length - 1} icon={p.icon} tint={p.tint ?? theme.tints.data} label={p.label} value={p.value} badge={p.badge} onPress={() => onOpen?.(p.id)} />
           ))}
+        </SettingsGroup>
+      ) : null}
+      {onOpenAccess ? (
+        <SettingsGroup>
+          <SettingRow last icon="log-out" tint={theme.muted} label={strings.access} onPress={onOpenAccess} />
         </SettingsGroup>
       ) : null}
     </View>
