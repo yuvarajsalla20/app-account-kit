@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.22.0
+
+- **Centred profile photo (opt-in):** `profile.centered: true` puts a bigger photo (96 pt) in the middle of Account, with a small round pencil (Feather `edit-2`, in `accent`) on its corner in place of the "Change photo" link. Tapping the photo or pencil opens the same Take photo / Choose / Remove choices. The name is not shown beside it; the nickname stays in its field. Nothing changes for apps that leave it out.
+
 ## 7.21.0
 
 - **Drawn logo on About (opt-in):** `about.logo` can now be a React element as well as an image source. An element is drawn as it is, at its own size, above the app name, so a logo that is not square or has a glow shows in full. An image source keeps the 84 pt rounded square. Nothing changes for apps that pass an image.

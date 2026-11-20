@@ -208,6 +208,22 @@ describe('ProfileHeader', () => {
     expect(withPhoto.has(S.removePhoto)).toBe(true);
   });
 
+  it('centred: a pencil on the photo opens the same choices, with no name or Change photo text beside it', async () => {
+    const p = photo();
+    const h = setup(p, { ...profile, name: 'Sam', centered: true });
+    expect(h.has('Sam')).toBe(false);
+    expect(h.byText(S.changePhoto)).toBeNull();
+    await press(h.byLabel(S.changePhoto));
+    expect(h.has(S.library)).toBe(true);
+    await press(h.byLabel(S.library));
+    expect(p.onChange).toHaveBeenCalledWith('data:image/png;base64,AAAA');
+  });
+
+  it('centred without photo support: just the picture, no pencil', () => {
+    const h = setup(undefined, { ...profile, centered: true });
+    expect(h.byLabel(S.changePhoto)).toBeUndefined();
+  });
+
   it('saves a picked photo', async () => {
     const p = photo();
     const h = setup(p);

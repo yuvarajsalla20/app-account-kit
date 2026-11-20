@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.21.0** (tag `v7.21.0`)
+**Current version: 7.22.0** (tag `v7.22.0`)
 
 Part of a family of shared kits used by every app:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -119,7 +119,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `top` | `ReactNode \| (page) => ReactNode` | Optional (7.17.0). Drawn at the very top of the main list, under the header (the app's logo and tagline, say). A function gets the page id, to draw it differently per page |
 | `topOnEveryPage` | `boolean` | Optional (7.17.0). Also draw `top` at the top of every other Settings page. Default false |
 | `exitMenu` | `ExitMenuProps` | Opt-in (7.17.0). Sign out and Delete account leave the main list and sit behind a ⋯ button on Account, each on its own page. Delete goes through steps: the app's optional `unlock(onUnlocked)` (Face ID or PIN, drawn by the app), what will be lost (`losses`) with "Sign out instead", typing DELETE, then the password (or Apple / Google) before `onDeleteAccount`. `components.Menu` can draw the ⋯ menu in the app's own style. Leave out and nothing changes |
-| `profile` | `ProfileInfo` | **Required.** `{ name, fallbackName, email, photo, fallbackPhoto? }` |
+| `profile` | `ProfileInfo` | **Required.** `{ name, fallbackName, email, photo, fallbackPhoto?, centered? }`. `centered` (7.22.0): a bigger photo in the middle with a pencil on its corner, no name or "Change photo" beside it |
 | `nickname` | `NicknameProps` | **Required.** `{ max, onSave(name) }` |
 | `photo` | `PhotoProps` | `{ pick(source), onChange(photo), cameraSupported, maxChars? }`. Leave out to hide Change photo |
 | `password` | `PasswordProps` | `{ onChange(current, next), minLength? }` (default 8). Leave out for Apple or Google sign-in |
