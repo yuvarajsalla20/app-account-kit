@@ -1,5 +1,5 @@
 import type Feather from '@expo/vector-icons/Feather';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import type { ImageSourcePropType } from 'react-native';
 
 export type IconName = keyof typeof Feather.glyphMap;
@@ -67,8 +67,12 @@ export interface KitInfo {
 
 export interface AboutProps {
   appName: string;
-  /** The app's picture, shown above its name. Pass `require('./assets/icon.png')` or `{ uri }`. Leave out for no picture. */
-  logo?: ImageSourcePropType;
+  /**
+   * The app's picture, shown above its name. Pass `require('./assets/icon.png')` or `{ uri }` for the 84 pt rounded square,
+   * or (7.21.0) a drawn element such as `<MyLogo />`, shown as it is at its own size (for a logo that is not square, or has a glow).
+   * Leave out for no picture.
+   */
+  logo?: ImageSourcePropType | ReactElement;
   /**
    * Whether About opens with the app's name (and `logo`) at the top. Default true. Pass false when the app already shows its
    * own brand elsewhere on the page (for example a `footer`), so the name and logo are not shown twice.

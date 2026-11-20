@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.20.0** (tag `v7.20.0`)
+**Current version: 7.21.0** (tag `v7.21.0`)
 
 Part of a family of shared kits used by every app:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -138,7 +138,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | Field | Notes |
 |---|---|
 | `appName` | Shown under the logo, in `theme.brand` |
-| `logo` | `require('./assets/icon.png')` or `{ uri }` |
+| `logo` | `require('./assets/icon.png')` or `{ uri }` (84 pt rounded square), or (7.21.0) a drawn element such as `<MyLogo />`, shown at its own size |
 | `showHeader` | Optional (7.16.0). `false` leaves out the logo and name at the top of About (when the app shows its brand elsewhere, like `footer`). The page then keeps its normal header with the title About (7.16.1). Default true |
 | `version` | `{ number, label, lines? }`. `number` goes into support emails; the Version row shows `lines` (one per line), or `label` |
 | `privacyUrl` | https only |

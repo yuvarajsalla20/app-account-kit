@@ -1,3 +1,4 @@
+import { isValidElement } from 'react';
 import { Image, Linking, Platform, Share, View } from 'react-native';
 import { useLook, useStyles } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
@@ -38,7 +39,8 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
     <View style={STACK}>
       {showHeader ? (
         <View style={styles.hero}>
-          {logo ? <Image source={logo} style={styles.logo} accessible={false} /> : null}
+          {/* A drawn logo (7.21.0) goes in as it is, at its own size; an image keeps the 84 pt rounded square. */}
+          {isValidElement(logo) ? logo : logo ? <Image source={logo} style={styles.logo} accessible={false} /> : null}
           <components.Text style={styles.name} accessibilityRole="header">{appName}</components.Text>
         </View>
       ) : null}

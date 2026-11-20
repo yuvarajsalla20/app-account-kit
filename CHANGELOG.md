@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.21.0
+
+- **Drawn logo on About (opt-in):** `about.logo` can now be a React element as well as an image source. An element is drawn as it is, at its own size, above the app name, so a logo that is not square or has a glow shows in full. An image source keeps the 84 pt rounded square. Nothing changes for apps that pass an image.
+
 ## 7.20.0
 
 - **Plain headers on every page (opt-in):** `plainHeaders` on `SettingsScreen` gives every page, the main list included, the 7.19.0 plain header: no `brand`, and the page title in the top row on the left beside Back. About keeps its own picture as the header. Nothing changes for apps that leave it out.
