@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useLook, useStyles } from '../../look';
@@ -8,7 +9,11 @@ import type { AccountTheme } from '../../theme';
 import type { PhotoProps, PhotoSource, ProfileInfo } from '../../types';
 import { Avatar } from '../../ui/Avatar';
 import { Button } from '../../ui/Button';
-import { ROW_CENTER } from '../../ui/layout';
+import { CENTER, ROW_CENTER } from '../../ui/layout';
+
+/** The centred photo's size, and the pencil on its corner. */
+const BIG = 96;
+const PENCIL = 32;
 
 interface Props {
   profile: ProfileInfo;
@@ -16,11 +21,16 @@ interface Props {
   action: ActionRunner;
 }
 
-/** The picture, the name and Change photo. The email is its own row below the nickname. */
+/**
+ * The picture, the name and Change photo. The email is its own row below the nickname.
+ * With `profile.centered`, a bigger picture in the middle with a pencil on its corner instead of the name and the link.
+ */
 export function ProfileHeader({ profile, photo, action }: Props) {
-  const { strings, components } = useLook();
+  const { strings, components, theme } = useLook();
   const styles = useStyles(makeStyles);
   const [menu, setMenu] = useState(false);
+  const toggle = () => setMenu((m) => !m);
+  const initial = initialOf(profile.name, profile.email);
 
   const change = async (source: PhotoSource | 'remove') => {
     if (!photo) return;
@@ -38,26 +48,50 @@ export function ProfileHeader({ profile, photo, action }: Props) {
     );
   };
 
+  const choices =
+    photo && menu ? (
+      <View style={styles.menu}>
+        {photo.cameraSupported ? <Button small grow icon="camera" label={strings.takePhoto} onPress={() => change('camera')} disabled={action.busy} /> : null}
+        <Button small grow icon="image" label={strings.library} onPress={() => change('library')} disabled={action.busy} />
+        {profile.photo ? <Button small grow variant="danger" icon="x" label={strings.removePhoto} onPress={() => change('remove')} disabled={action.busy} /> : null}
+      </View>
+    ) : null;
+
+  if (profile.centered) {
+    const picture = <Avatar photo={profile.photo || profile.fallbackPhoto} initial={initial} size={BIG} />;
+    return (
+      <View style={styles.wrap}>
+        <View style={styles.middle}>
+          {photo ? (
+            <Pressable onPress={toggle} accessibilityRole="button" accessibilityLabel={strings.changePhoto} accessibilityState={{ expanded: menu }} hitSlop={8} style={({ pressed }) => pressed && styles.pressed}>
+              {picture}
+              <View style={styles.pencil}>
+                <Feather name="edit-2" size={15} color={theme.ink} />
+              </View>
+            </Pressable>
+          ) : (
+            picture
+          )}
+        </View>
+        {choices}
+      </View>
+    );
+  }
+
   return (
     <View style={styles.wrap}>
       <View style={styles.who}>
-        <Avatar photo={profile.photo || profile.fallbackPhoto} initial={initialOf(profile.name, profile.email)} size={72} />
+        <Avatar photo={profile.photo || profile.fallbackPhoto} initial={initial} size={72} />
         <View style={styles.grow}>
           <components.Text style={styles.name} numberOfLines={1}>{profile.name || profile.fallbackName}</components.Text>
           {photo ? (
-            <Pressable onPress={() => setMenu((m) => !m)} accessibilityRole="button" accessibilityState={{ expanded: menu }} hitSlop={8} style={styles.linkHit}>
+            <Pressable onPress={toggle} accessibilityRole="button" accessibilityState={{ expanded: menu }} hitSlop={8} style={styles.linkHit}>
               <components.Text style={styles.link}>{strings.changePhoto}</components.Text>
             </Pressable>
           ) : null}
         </View>
       </View>
-      {photo && menu ? (
-        <View style={styles.menu}>
-          {photo.cameraSupported ? <Button small grow icon="camera" label={strings.takePhoto} onPress={() => change('camera')} disabled={action.busy} /> : null}
-          <Button small grow icon="image" label={strings.library} onPress={() => change('library')} disabled={action.busy} />
-          {profile.photo ? <Button small grow variant="danger" icon="x" label={strings.removePhoto} onPress={() => change('remove')} disabled={action.busy} /> : null}
-        </View>
-      ) : null}
+      {choices}
     </View>
   );
 }
@@ -70,4 +104,8 @@ const makeStyles = (t: AccountTheme) => ({
   linkHit: { minHeight: 44, justifyContent: 'center' as const },
   link: { color: t.accent, fontSize: 14, fontWeight: '600' as const },
   menu: { flexDirection: 'row' as const, gap: 8 },
+  middle: { alignItems: 'center' as const, paddingTop: 4 },
+  pressed: { opacity: 0.8 },
+  // Ringed in `ink` (the text colour on accent, usually the page colour) so it reads as sitting on top of the photo.
+  pencil: { ...CENTER, position: 'absolute' as const, right: -2, bottom: -2, width: PENCIL, height: PENCIL, borderRadius: PENCIL / 2, backgroundColor: t.accent, borderWidth: 3, borderColor: t.ink },
 });

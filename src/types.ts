@@ -16,6 +16,11 @@ export interface ProfileInfo {
   photo: string;
   /** A picture from the sign-in provider, used when `photo` is empty. */
   fallbackPhoto?: string;
+  /**
+   * Centred profile (opt-in): a bigger photo in the middle, with a small round pencil on its corner in place of the
+   * "Change photo" link, and no name beside it (the nickname stays in its field below). Default: photo left, name and link beside it.
+   */
+  centered?: boolean;
 }
 
 export interface NicknameProps {
