@@ -171,6 +171,12 @@ export interface ExitMenuProps {
   unlock?: (onUnlocked: () => void) => ReactNode;
   /** The lines under "You will lose, forever:", such as "Every piece and its photos". Leave out to show only `strings.deleteWarning`. */
   losses?: readonly string[];
+  /**
+   * Opt-in (7.24.0): where the two actions sit. `'menu'` (the default) is the ⋯ at the top right of Account. `'page'` drops the ⋯
+   * and puts one row at the bottom of Account (`strings.access`, "Access") that opens its own page with a Sign out row and a red
+   * Delete account row. Each still opens the same Sign out and Delete account pages.
+   */
+  place?: 'menu' | 'page';
 }
 
 export interface SettingsScreenProps {

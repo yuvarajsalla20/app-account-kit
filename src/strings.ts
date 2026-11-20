@@ -69,6 +69,10 @@ export interface AccountStrings {
   keepAccount: string;
   /** 7.17.0, `exitMenu` only. What VoiceOver says for the ⋯ button on Account. */
   moreOptions: string;
+  /** 7.24.0, `exitMenu.place: 'page'` only. The row on Account and the title of the page that holds Sign out and Delete account. */
+  access: string;
+  /** 7.24.0, `exitMenu.place: 'page'` only. The short line under the two rows on that page. */
+  accessNote: string;
   signOutTitle: string;
   signOutBody: string;
   stayIn: string;
@@ -159,6 +163,8 @@ export const DEFAULT_STRINGS: AccountStrings = {
   deleteEverything: 'Delete everything',
   keepAccount: 'Keep my account',
   moreOptions: 'More options',
+  access: 'Access',
+  accessNote: 'Signing out keeps your data safe in your account. Deleting your account erases it for good, after a few checks.',
   signOutTitle: 'Sign out?',
   signOutBody: 'Your data stays safe in your account. Sign in any time to see it again.',
   stayIn: 'Stay signed in',

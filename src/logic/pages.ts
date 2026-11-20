@@ -1,15 +1,18 @@
 /** The kit's own pages. */
-export type BuiltinPage = 'hub' | 'account' | 'data' | 'app' | 'about' | 'password' | 'support' | 'signOut' | 'deleteAccount';
+export type BuiltinPage = 'hub' | 'account' | 'data' | 'app' | 'about' | 'password' | 'support' | 'signOut' | 'deleteAccount' | 'access';
 
-/** The pages of the Settings screen: the kit's own, or the id of a page the app added (`extraPages`). `hub` is the main list; `password` opens from Account, `support` (Contact Support) from About; `signOut` and `deleteAccount` (7.17.0, with `exitMenu`) open from Account's ⋯ menu. */
+/** The pages of the Settings screen: the kit's own, or the id of a page the app added (`extraPages`). `hub` is the main list; `password` opens from Account, `support` (Contact Support) from About; `signOut` and `deleteAccount` (7.17.0, with `exitMenu`) open from Account's ⋯ menu, or from `access` (7.24.0, `exitMenu.place: 'page'`), a page under Account. */
 export type Page = BuiltinPage | (string & {});
 
 /**
  * Where Back goes from a page: the page above it, or null from the hub (the app handles that one).
+ * With `exitOnPage` (7.24.0, `exitMenu.place: 'page'`), Sign out and Delete account go back to the Access page instead of Account.
  * `accountPages` are the ids of the app's pages that live inside Account (`under: 'account'`), `appPages` those inside App (`under: 'app'`).
  */
-export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = []): Page | null {
+export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = [], exitOnPage = false): Page | null {
   if (page === 'hub') return null;
+  if (exitOnPage && (page === 'signOut' || page === 'deleteAccount')) return 'access';
+  if (page === 'access') return 'account';
   if (page === 'password' || page === 'signOut' || page === 'deleteAccount' || accountPages.includes(page)) return 'account';
   if (page === 'support') return 'about';
   return appPages.includes(page) ? 'app' : 'hub';

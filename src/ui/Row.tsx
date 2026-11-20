@@ -33,10 +33,12 @@ interface Props {
   locked?: boolean;
   /** An icon in place of the usual arrow, such as "download" on a row that makes a file. */
   trailing?: IconName;
+  /** 7.24.0: a row that cannot be undone, such as Delete account: the label is drawn in `danger`. */
+  danger?: boolean;
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
@@ -55,7 +57,7 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
           <Feather name={icon} size={18} color={tint} />
         </View>
         <View style={styles.grow}>
-          <components.Text style={styles.label}>{label}</components.Text>
+          <components.Text style={[styles.label, danger && { color: theme.danger }]}>{label}</components.Text>
           {detail ? <components.Text style={styles.detail}>{detail}</components.Text> : null}
         </View>
         {badge ? (

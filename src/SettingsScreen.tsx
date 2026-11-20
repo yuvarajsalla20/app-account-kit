@@ -9,7 +9,7 @@ import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
 import { AppPage } from './sections/AppPage';
 import { HubPage } from './sections/HubPage';
-import { DeleteAccountPage, ExitMenuButton, SignOutPage } from './sections/ExitPages';
+import { AccessPage, DeleteAccountPage, ExitMenuButton, SignOutPage } from './sections/ExitPages';
 import { DataRow } from './sections/profile/DataRow';
 import { PasswordPage } from './sections/profile/PasswordPage';
 import { SupportPage } from './sections/SupportPage';
@@ -26,7 +26,7 @@ type Props = SettingsScreenProps & {
   components?: Partial<AccountComponents>;
 };
 
-const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount']);
+const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount', 'access']);
 
 function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
@@ -42,7 +42,10 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   // The App page shows when the app has settings of its own or a page that lives there.
   const hasApp = !!app || appRows.length > 0;
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
-  const missing = (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (asked === 'signOut' && !(exitMenu && actions.onSignOut)) || (asked === 'deleteAccount' && !(exitMenu && actions.onDeleteAccount)) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
+  // 7.24.0 exitMenu.place 'page': no ⋯; an Access row on Account opens a page with both actions, and Back from them returns there.
+  const exitOnPage = !!exitMenu && exitMenu.place === 'page' && !!(actions.onSignOut || actions.onDeleteAccount);
+  const exitHome: Page = exitOnPage ? 'access' : 'account';
+  const missing = (asked === 'access' && !exitOnPage) || (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (asked === 'signOut' && !(exitMenu && actions.onSignOut)) || (asked === 'deleteAccount' && !(exitMenu && actions.onDeleteAccount)) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
@@ -54,7 +57,7 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
     Keyboard.dismiss(); // leaving a text box saves what was typed in it
-    const up = returnTo ?? parentOf(page, accountPages, appPages);
+    const up = returnTo ?? parentOf(page, accountPages, appPages, exitOnPage);
     if (!up) return false;
     go(up);
     return true;
@@ -87,9 +90,9 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const extra = extraPages?.find((p) => p.id === page);
   // 7.20.0 plainHeaders: every page gets the plain header that 7.19.0 gave one added page.
   const plain = !!(plainHeaders || extra?.plainHeader);
-  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport, signOut: strings.signOut, deleteAccount: strings.deleteAccount };
+  const titles: Record<string, string> = { hub: strings.settings, account: strings.account, data: strings.myData, app: strings.app, password: strings.changePassword, support: strings.contactSupport, signOut: strings.signOut, deleteAccount: strings.deleteAccount, access: strings.access };
   // 7.17.0 exitMenu: Sign out and Delete account behind a ⋯ on Account instead of on the main list.
-  const exitItems = exitMenu
+  const exitItems = exitMenu && !exitOnPage
     ? [
         ...(actions.onSignOut ? [{ id: 'signOut', label: strings.signOut, icon: 'log-out' }] : []),
         ...(actions.onDeleteAccount ? [{ id: 'deleteAccount', label: strings.deleteAccount, icon: 'trash-2', danger: true }] : []),
@@ -108,11 +111,12 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
         {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={exitMenu ? undefined : actions.onSignOut} onDeleteAccount={exitMenu ? undefined : actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'hub' && footer ? <View style={styles.footer}>{footer}</View> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} onOpenAccess={exitOnPage ? () => go('access') : undefined} />
         ) : null}
-        {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go('account')} /> : null}
+        {page === 'access' && exitOnPage ? <AccessPage onSignOut={actions.onSignOut ? () => go('signOut') : undefined} onDeleteAccount={actions.onDeleteAccount ? () => go('deleteAccount') : undefined} /> : null}
+        {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go(exitHome)} /> : null}
         {page === 'deleteAccount' && exitMenu && actions.onDeleteAccount ? (
-          <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go('account')} />
+          <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go(exitHome)} />
         ) : null}
         {page === 'password' && password ? <PasswordPage {...password} action={action} onDone={() => go('account')} /> : null}
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}

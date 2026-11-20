@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.24.0
+
+- **Access page for Sign out and Delete account (opt-in):** `exitMenu.place: 'page'` drops the ⋯ on Account. Account gets one row at the bottom, **Access** (`strings.access`), that opens its own page with a Sign out row and a red Delete account row, and a short line under them (`strings.accessNote`). Each row opens the same Sign out and Delete account pages as before, with every step kept; Back and "Stay signed in" return to Access. `SettingRow` takes `danger` for a red label. `place: 'menu'` (the default) keeps the ⋯, so nothing changes for apps that leave it out.
+
 ## 7.23.0
 
 - **Avatar in the app's own look (opt-in):** `Avatar` takes `style` (added to the circle, photo and initial alike) and `initialStyle` (added to the initial's text). An app can draw the same avatar outside Settings, inside `AccountProvider`, with its own fill, edge and type. Nothing changes for apps that leave them out.
