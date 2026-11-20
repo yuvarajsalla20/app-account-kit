@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ElementRef } from 'react';
 import { AccessibilityInfo, BackHandler, Keyboard, Platform, ScrollView, View } from 'react-native';
 import { AccountProvider, type AccountComponents } from './context';
-import { useLook, useStyles } from './look';
+import { useLook, useStyles, type PickerStyle } from './look';
 import { useAction } from './hooks/useAction';
 import { parentOf, type Page } from './logic/pages';
 import { SettingsNavContext, type SettingsNav } from './nav';
@@ -24,6 +24,8 @@ type Props = SettingsScreenProps & {
   theme: AccountTheme;
   strings?: Partial<AccountStrings>;
   components?: Partial<AccountComponents>;
+  /** 7.26.0: 'pullDown' draws every value row (PickerRow, here and on the app's own pages) as a grey pill with a pull-down menu. Default 'sheet'. */
+  pickers?: PickerStyle;
 };
 
 const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount', 'access']);
@@ -46,6 +48,10 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const exitOnPage = !!exitMenu && exitMenu.place === 'page' && !!(actions.onSignOut || actions.onDeleteAccount);
   // 7.25.0 signOutOnAccount: Sign out is its own row on Account; the group page holds only Delete account.
   const signOutOnAccount = exitOnPage && !!exitMenu?.signOutOnAccount && !!actions.onSignOut;
+  // 7.26.0 signOutMenu: that row opens a small menu (Sign out / Stay) instead of the confirm page.
+  const signOutMenu = signOutOnAccount && !!exitMenu?.signOutMenu;
+  // 7.26.0 deleteOnAccess: the group page shows the Delete account steps itself, not one row that opens them.
+  const deleteOnAccess = signOutOnAccount && !!exitMenu?.deleteOnAccess && !!actions.onDeleteAccount;
   const hasAccess = exitOnPage && !!(actions.onDeleteAccount || (actions.onSignOut && !signOutOnAccount));
   const exitHome: Page = hasAccess ? 'access' : 'account';
   const signOutHome: Page = signOutOnAccount ? 'account' : exitHome;
@@ -115,9 +121,12 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
         {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={exitMenu ? undefined : actions.onSignOut} onDeleteAccount={exitMenu ? undefined : actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'hub' && footer ? <View style={styles.footer}>{footer}</View> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} onOpenAccess={hasAccess ? () => go('access') : undefined} onOpenSignOut={signOutOnAccount ? () => go('signOut') : undefined} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} onOpenAccess={hasAccess ? () => go('access') : undefined} onOpenSignOut={signOutOnAccount && !signOutMenu ? () => go('signOut') : undefined} onSignOutNow={signOutMenu && actions.onSignOut ? () => action.run('sign-out', actions.onSignOut!, () => strings.couldNot(strings.signOutAction)) : undefined} />
         ) : null}
-        {page === 'access' && hasAccess ? <AccessPage onSignOut={actions.onSignOut && !signOutOnAccount ? () => go('signOut') : undefined} onDeleteAccount={actions.onDeleteAccount ? () => go('deleteAccount') : undefined} /> : null}
+        {page === 'access' && hasAccess && deleteOnAccess && exitMenu && actions.onDeleteAccount ? (
+          <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go('account')} />
+        ) : null}
+        {page === 'access' && hasAccess && !deleteOnAccess ? <AccessPage onSignOut={actions.onSignOut && !signOutOnAccount ? () => go('signOut') : undefined} onDeleteAccount={actions.onDeleteAccount ? () => go('deleteAccount') : undefined} /> : null}
         {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go(signOutHome)} /> : null}
         {page === 'deleteAccount' && exitMenu && actions.onDeleteAccount ? (
           <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go(exitHome)} />
@@ -142,9 +151,9 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
  * An app page with `under: 'account'` is a row on Account, and one with `under: 'app'` a row on the App page (Preferences), instead of on the main list.
  * The app draws its own page background around it; the kit draws the headers and cards through the theme and `components`.
  */
-export function SettingsScreen({ theme, strings, components, ...props }: Props) {
+export function SettingsScreen({ theme, strings, components, pickers, ...props }: Props) {
   return (
-    <AccountProvider theme={theme} strings={strings} components={components}>
+    <AccountProvider theme={theme} strings={strings} components={components} pickers={pickers}>
       <Body {...props} />
     </AccountProvider>
   );

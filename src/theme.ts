@@ -39,4 +39,6 @@ export interface AccountTheme {
   backSize?: number;
   /** The padlock on a picker option that needs the paid plan: its color and the soft circle behind it. Defaults to `muted` on `field`. */
   lock?: { icon: string; circle: string };
+  /** 7.26.0: the fill of a pull-down menu, such as a slightly see-through card color. Defaults to `surface`. */
+  menu?: string;
 }

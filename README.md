@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.25.0** (tag `v7.25.0`)
+**Current version: 7.26.0** (tag `v7.26.0`)
 
 Part of a family of shared kits used by every app:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·

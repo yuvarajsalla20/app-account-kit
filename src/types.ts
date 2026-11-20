@@ -1,3 +1,4 @@
+import type { PullDownItem } from './ui/PullDown';
 import type Feather from '@expo/vector-icons/Feather';
 import type { ReactElement, ReactNode } from 'react';
 import type { ImageSourcePropType } from 'react-native';
@@ -155,6 +156,11 @@ export interface ExtraPage {
    * right beside Back (no logo row, no title line under it). Other pages keep the brand. Default false.
    */
   plainHeader?: boolean;
+  /**
+   * Opt-in (7.26.0): the row opens a pull-down menu in place instead of a page (`content` is then not shown). `pill` is the
+   * grey value pill on the row; leave it out for a small up/down chevron. A tap on a line calls `onPick` with its id.
+   */
+  menu?: { pill?: string; head?: string; items: readonly PullDownItem[]; onPick: (id: string) => void };
 }
 
 /**
@@ -183,6 +189,16 @@ export interface ExitMenuProps {
    * say "Deactivate"). Default false: both live on the group page.
    */
   signOutOnAccount?: boolean;
+  /**
+   * Opt-in (7.26.0), with `signOutOnAccount`: the Sign out row opens a small pull-down menu (`strings.signOutBody`, then a red
+   * Sign out and Stay) instead of its own confirm page.
+   */
+  signOutMenu?: boolean;
+  /**
+   * Opt-in (7.26.0), with `signOutOnAccount`: the group page shows the Delete account steps itself (what you will lose, type
+   * DELETE, last sign-in check) instead of a single Delete account row that opens them.
+   */
+  deleteOnAccess?: boolean;
 }
 
 export interface SettingsScreenProps {

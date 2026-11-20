@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
+import type { IconName } from '../types';
 import { ROW_CENTER } from './layout';
 
 /** `V` is the kind of value an option stands for: text (the default) or a number. */
@@ -11,6 +12,10 @@ export interface Choice<V extends string | number = string> {
   label: string;
   /** A smaller line beside the label, such as "US dollar". */
   detail?: string;
+  /** 7.26.0, pull-down pickers only: a small icon at the right of the menu line. */
+  icon?: IconName;
+  /** 7.26.0, pull-down pickers only: a shorter word for the pill on the row when this one is chosen. Default: `label`. */
+  pill?: string;
 }
 
 interface Props<V extends string | number> {

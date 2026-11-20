@@ -73,6 +73,17 @@ export interface AccountStrings {
   access: string;
   /** 7.24.0, `exitMenu.place: 'page'` only. The short line under the two rows on that page. */
   accessNote: string;
+  /**
+   * 7.26.0: optional grey headings over the cards. Empty (the default) draws no heading.
+   * Account: the profile card, the data card (Data Export) and the Sign out card. About: the Features/Rate/Share card, the
+   * Support/Privacy card and the Kits/Version card (with a heading there, Version comes first).
+   */
+  profileGroup: string;
+  dataGroup: string;
+  exitGroup: string;
+  aboutAppGroup: string;
+  aboutHelpGroup: string;
+  aboutInfoGroup: string;
   signOutTitle: string;
   signOutBody: string;
   stayIn: string;
@@ -165,6 +176,12 @@ export const DEFAULT_STRINGS: AccountStrings = {
   moreOptions: 'More options',
   access: 'Access',
   accessNote: 'Signing out keeps your data safe in your account. Deleting your account erases it for good, after a few checks.',
+  profileGroup: '',
+  dataGroup: '',
+  exitGroup: '',
+  aboutAppGroup: '',
+  aboutHelpGroup: '',
+  aboutInfoGroup: '',
   signOutTitle: 'Sign out?',
   signOutBody: 'Your data stays safe in your account. Sign in any time to see it again.',
   stayIn: 'Stay signed in',

@@ -2,6 +2,14 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.26.0
+
+- **Pull-down pickers (opt-in):** `pickers="pullDown"` on `SettingsScreen` (or `AccountProvider`) draws every `PickerRow` as a grey value pill with a small up/down chevron. A tap floats an iOS-style menu right under the row (above it near the bottom of the screen), with a tick on the chosen line, instead of a sheet from the bottom. A row can override with `style`. `Choice` takes `icon` and `pill` (a shorter word for the pill). `theme.menu` sets the menu fill (default `surface`). New exports: `MenuRow`, `PullDownMenu`, `PullDownPill`, `UpDown`, `useAnchor`, `placeMenu`.
+- **Menu rows for app pages:** an `ExtraPage` with `menu: { pill, head, items, onPick }` opens a pull-down menu in place instead of a page (Data Export with one tap).
+- **Sign out as a menu (opt-in):** with `signOutOnAccount`, `exitMenu.signOutMenu: true` makes the Sign out row open a small menu (`signOutBody`, a red Sign out, Stay) instead of its confirm page.
+- **Delete steps on the group page (opt-in):** with `signOutOnAccount`, `exitMenu.deleteOnAccess: true` shows the Delete account steps on the group page itself (no single row in between). Keep my account returns to Account.
+- **Card headings (opt-in):** new strings `profileGroup`, `dataGroup`, `exitGroup` (Account) and `aboutAppGroup`, `aboutHelpGroup`, `aboutInfoGroup` (About) draw grey headings over those cards. Empty by default, so nothing changes. With `aboutInfoGroup`, Version comes before Kits.
+
 ## 7.25.0
 
 - **Sign out on Account, Delete account on its own page (opt-in):** with `exitMenu.place: 'page'`, `exitMenu.signOutOnAccount: true` makes Sign out its own row on Account, in the same card just above the group row. The group page then holds only Delete account, and the group row gets a `user-x` icon. Name the group through `strings.access` (an app might say "Deactivate"). Back and "Stay signed in" from Sign out return to Account. Nothing changes for apps that leave it out.

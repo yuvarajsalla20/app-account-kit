@@ -30,10 +30,15 @@ export interface MenuItem {
   danger?: boolean;
 }
 
+/** 7.26.0: how a value row (PickerRow) lets the person choose: a sheet from the bottom (the default) or an iOS-style pull-down menu right under the row, with the value in a grey pill. */
+export type PickerStyle = 'sheet' | 'pullDown';
+
 export interface Look {
   theme: AccountTheme;
   strings: AccountStrings;
   components: AccountComponents;
+  /** 7.26.0. Default 'sheet'. */
+  pickers: PickerStyle;
 }
 
 /** Filled by `AccountProvider` (context.tsx). Lives here so the pieces that read it never import the provider. */

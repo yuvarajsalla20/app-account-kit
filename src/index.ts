@@ -3,7 +3,9 @@ export { AccountProvider } from './context';
 export { useSettingsNav } from './nav';
 export type { SettingsNav } from './nav';
 export type { AccountComponents } from './context';
-export type { MenuItem } from './look';
+export type { MenuItem, PickerStyle } from './look';
+export { MenuRow, PullDownMenu, PullDownPill, UpDown, useAnchor } from './ui/PullDown';
+export type { PullDownItem } from './ui/PullDown';
 export { KIT_NAME, KIT_VERSION } from './kit';
 export { DEFAULT_STRINGS } from './strings';
 export type { AccountStrings } from './strings';
@@ -19,8 +21,8 @@ export { Button } from './ui/Button';
 export { Field } from './ui/Field';
 export { useAction } from './hooks/useAction';
 export type { ActionRunner } from './hooks/useAction';
-export { CSV_BOM, DEFAULT_PHOTO_MAX_CHARS, MIN_PASSWORD, hubPages, isEmail, isHttps, parentOf, buildShareMessage, canConfirmDelete, typedWordMatches, canRate, canShare, cleanNickname, csvFileName, initialOf, kitLines, kitListLines, kitsLine, kitsMailLine, passwordProblem, reviewUrl, reviewWebUrl, safePhoto, supportMailUrl, themeContrast, toCsv } from './logic';
-export type { ContrastProblem, Page, PasswordProblem } from './logic';
+export { CSV_BOM, DEFAULT_PHOTO_MAX_CHARS, MIN_PASSWORD, hubPages, isEmail, isHttps, parentOf, buildShareMessage, canConfirmDelete, typedWordMatches, canRate, canShare, cleanNickname, csvFileName, initialOf, kitLines, kitListLines, kitsLine, kitsMailLine, passwordProblem, reviewUrl, reviewWebUrl, safePhoto, supportMailUrl, themeContrast, toCsv, placeMenu } from './logic';
+export type { Box, ContrastProblem, Page, PasswordProblem } from './logic';
 export type {
   AboutProps,
   KitInfo,
