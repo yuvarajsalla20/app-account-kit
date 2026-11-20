@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.23.0
+
+- **Avatar in the app's own look (opt-in):** `Avatar` takes `style` (added to the circle, photo and initial alike) and `initialStyle` (added to the initial's text). An app can draw the same avatar outside Settings, inside `AccountProvider`, with its own fill, edge and type. Nothing changes for apps that leave them out.
+
 ## 7.22.0
 
 - **Centred profile photo (opt-in):** `profile.centered: true` puts a bigger photo (96 pt) in the middle of Account, with a small round pencil (Feather `edit-2`, in `accent`) on its corner in place of the "Change photo" link. Tapping the photo or pencil opens the same Take photo / Choose / Remove choices. The name is not shown beside it; the nickname stays in its field. Nothing changes for apps that leave it out.
