@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.22.0** (tag `v7.22.0`)
+**Current version: 7.23.0** (tag `v7.23.0`)
 
 Part of a family of shared kits used by every app:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -183,7 +183,7 @@ Use these on the app's own pages (inside `app.content` or an added page) so they
 | `PickerRow` | A row showing the current choice; a tap opens a `ChoiceSheet`. `options`, `value`, `onChange`, `title?`, `detail?` |
 | `ExpandRow` | A row that opens its content right below it |
 | `ChoiceSheet` | A bottom sheet of options. Add `onConfirm` to ask before keeping (✕ and ✓), `locked(value)` and `onLocked` for paid options, `onPick` (for example to play a sound), `note` |
-| `Avatar`, `Button`, `Field` | The kit's picture, button (`solid`, `quiet`, `danger`, `outline`, `line`) and text box |
+| `Avatar`, `Button`, `Field` | The kit's picture (7.23.0: `style` and `initialStyle` let an app use it outside Settings in its own look, inside `AccountProvider`), button (`solid`, `quiet`, `danger`, `outline`, `line`) and text box |
 | `AccountProvider` | Gives these pieces the theme when they are used outside `SettingsScreen` |
 | `useAction()` | The "busy, then done or failed" runner every part uses, with a timeout and a double-tap guard |
 
