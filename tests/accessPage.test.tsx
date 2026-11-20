@@ -78,4 +78,35 @@ describe("exitMenu.place 'page' (7.24.0)", () => {
     expect(parentOf('deleteAccount', [], [], true)).toBe('access');
     expect(parentOf('signOut')).toBe('account');
   });
+
+  it('signOutOnAccount (7.25.0): Sign out is a row on Account; the group page holds only Delete account', async () => {
+    const p = make({ exitMenu: { place: 'page', signOutOnAccount: true, losses: ['Every piece'] }, strings: { access: 'Deactivate' } });
+    const h = mount(<SettingsScreen theme={THEME} {...p} />);
+    await press(h.byLabel(S.account));
+    expect(h.has(S.moreOptions)).toBe(false);
+    expect(h.has('Deactivate')).toBe(true);
+    await press(h.byLabel(S.signOut));
+    expect(h.has(S.stayIn)).toBe(true);
+    await press(h.byLabel(S.stayIn));
+    expect(h.has('Deactivate')).toBe(true);
+    await press(h.byLabel(S.signOut));
+    await press(h.byLabel(S.back));
+    expect(h.has('Deactivate')).toBe(true);
+    await press(h.byLabel('Deactivate'));
+    expect(h.has(S.signOut)).toBe(false);
+    expect(h.has(S.deleteAccount)).toBe(true);
+    await press(h.byLabel(S.deleteAccount));
+    expect(shows(h, S.deleteLoseTitle)).toBe(true);
+    await press(h.byLabel(S.back));
+    expect(h.has(S.deleteAccount)).toBe(true);
+    await press(h.byLabel(S.back));
+    expect(h.has('Deactivate')).toBe(true);
+  });
+
+  it('signOutOnAccount with no delete: only the Sign out row, no group row', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...make({ exitMenu: { place: 'page', signOutOnAccount: true }, actions: { confirmsWithPassword: true, onSignOut: vi.fn(async () => {}) } })} />);
+    await press(h.byLabel(S.account));
+    expect(h.has(S.signOut)).toBe(true);
+    expect(h.has(S.access)).toBe(false);
+  });
 });

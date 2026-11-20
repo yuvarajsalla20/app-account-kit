@@ -44,8 +44,12 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
   // 7.24.0 exitMenu.place 'page': no ⋯; an Access row on Account opens a page with both actions, and Back from them returns there.
   const exitOnPage = !!exitMenu && exitMenu.place === 'page' && !!(actions.onSignOut || actions.onDeleteAccount);
-  const exitHome: Page = exitOnPage ? 'access' : 'account';
-  const missing = (asked === 'access' && !exitOnPage) || (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (asked === 'signOut' && !(exitMenu && actions.onSignOut)) || (asked === 'deleteAccount' && !(exitMenu && actions.onDeleteAccount)) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
+  // 7.25.0 signOutOnAccount: Sign out is its own row on Account; the group page holds only Delete account.
+  const signOutOnAccount = exitOnPage && !!exitMenu?.signOutOnAccount && !!actions.onSignOut;
+  const hasAccess = exitOnPage && !!(actions.onDeleteAccount || (actions.onSignOut && !signOutOnAccount));
+  const exitHome: Page = hasAccess ? 'access' : 'account';
+  const signOutHome: Page = signOutOnAccount ? 'account' : exitHome;
+  const missing = (asked === 'access' && !hasAccess) || (asked === 'password' && !password) || (asked === 'data' && !data) || (asked === 'app' && !hasApp) || (asked === 'signOut' && !(exitMenu && actions.onSignOut)) || (asked === 'deleteAccount' && !(exitMenu && actions.onDeleteAccount)) || (!BUILTIN.has(asked) && !extraPages?.some((p) => p.id === asked));
   const page: Page = missing ? 'hub' : asked;
   const go = (next: Page) => {
     action.setNote(null);
@@ -57,7 +61,7 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
     Keyboard.dismiss(); // leaving a text box saves what was typed in it
-    const up = returnTo ?? parentOf(page, accountPages, appPages, exitOnPage);
+    const up = returnTo ?? (page === 'signOut' && exitOnPage ? signOutHome : parentOf(page, accountPages, appPages, hasAccess));
     if (!up) return false;
     go(up);
     return true;
@@ -111,10 +115,10 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
         {page === 'hub' ? <HubPage data={data} app={app} hasApp={hasApp} hubOrder={hubOrder} extraPages={extraPages} onSignOut={exitMenu ? undefined : actions.onSignOut} onDeleteAccount={exitMenu ? undefined : actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} action={action} onOpen={go} onReveal={() => scroll.current?.scrollToEnd({ animated: true })} /> : null}
         {page === 'hub' && footer ? <View style={styles.footer}>{footer}</View> : null}
         {page === 'account' ? (
-          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} onOpenAccess={exitOnPage ? () => go('access') : undefined} />
+          <AccountPage profile={profile} nickname={nickname} photo={photo} password={password} action={action} onOpenPassword={() => go('password')} dataPages={extraPages?.filter((p) => p.under === 'account')} onOpen={go} onOpenAccess={hasAccess ? () => go('access') : undefined} onOpenSignOut={signOutOnAccount ? () => go('signOut') : undefined} />
         ) : null}
-        {page === 'access' && exitOnPage ? <AccessPage onSignOut={actions.onSignOut ? () => go('signOut') : undefined} onDeleteAccount={actions.onDeleteAccount ? () => go('deleteAccount') : undefined} /> : null}
-        {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go(exitHome)} /> : null}
+        {page === 'access' && hasAccess ? <AccessPage onSignOut={actions.onSignOut && !signOutOnAccount ? () => go('signOut') : undefined} onDeleteAccount={actions.onDeleteAccount ? () => go('deleteAccount') : undefined} /> : null}
+        {page === 'signOut' && exitMenu && actions.onSignOut ? <SignOutPage onSignOut={actions.onSignOut} action={action} onStay={() => go(signOutHome)} /> : null}
         {page === 'deleteAccount' && exitMenu && actions.onDeleteAccount ? (
           <DeleteAccountPage onDeleteAccount={actions.onDeleteAccount} confirmsWithPassword={actions.confirmsWithPassword} exit={exitMenu} action={action} onSignOutInstead={actions.onSignOut ? () => go('signOut') : undefined} onCancel={() => go(exitHome)} />
         ) : null}

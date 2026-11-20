@@ -177,6 +177,12 @@ export interface ExitMenuProps {
    * Delete account row. Each still opens the same Sign out and Delete account pages.
    */
   place?: 'menu' | 'page';
+  /**
+   * Opt-in (7.25.0), with `place: 'page'`: Sign out becomes its own row on Account, just above the group row, and the group
+   * page holds only Delete account. The group row then shows a `user-x` icon; name it through `strings.access` (an app might
+   * say "Deactivate"). Default false: both live on the group page.
+   */
+  signOutOnAccount?: boolean;
 }
 
 export interface SettingsScreenProps {
