@@ -1,3 +1,4 @@
+import { Text } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { DEFAULT_STRINGS as S } from '../src/strings';
@@ -36,5 +37,16 @@ describe('About header (7.16.0)', () => {
     const h = mount(<SettingsScreen theme={THEME} {...base} about={{ ...base.about, showHeader: false }} />);
     await press(h.byLabel(S.about));
     expect(titled(h)).toBeGreaterThan(0);
+  });
+});
+
+describe('About drawn logo (7.21.0)', () => {
+  it('draws an element logo as it is, above the name', async () => {
+    const logo = <Text testID="drawn-logo">logo</Text>;
+    const h = mount(<SettingsScreen theme={THEME} {...base} about={{ ...base.about, logo }} />);
+    await press(h.byLabel(S.about));
+    expect(h.root.root.findAll((n) => n.props.testID === 'drawn-logo').length).toBeGreaterThan(0);
+    expect(h.root.root.findAll((n) => n.type === 'Image' || (n.type as { displayName?: string }).displayName === 'Image').length).toBe(0);
+    expect(named(h)).toBeGreaterThan(0);
   });
 });
