@@ -101,6 +101,17 @@ describe('group headings (7.26.0)', () => {
     expect(shows(h, 'Sign-in')).toBe(true);
     const plain = mount(<SettingsScreen theme={THEME} {...make()} />);
     await press(plain.byLabel(S.account));
-    expect(shows(plain, 'Profile')).toBe(false);
+    // 7.28.0: the page itself is called Profile now, so check a heading the page title cannot be.
+    expect(shows(plain, 'Sign-in')).toBe(false);
+  });
+});
+
+describe('Profile is the word (7.28.0)', () => {
+  it('names the row and page Profile, with no Account anywhere on the list or page', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...make()} />);
+    expect(shows(h, 'Profile')).toBe(true);
+    expect(shows(h, 'Account')).toBe(false);
+    await press(h.byLabel('Profile'));
+    expect(shows(h, 'Account')).toBe(false);
   });
 });
