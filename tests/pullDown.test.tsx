@@ -83,6 +83,13 @@ describe('exitMenu.signOutMenu and deleteOnAccess (7.26.0)', () => {
     await press(h.byLabel(S.keepAccount));
     expect(h.has(S.access)).toBe(true);
   });
+  it('the Delete account row has the user-x icon, not a second log-out (7.27.1)', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...make({ exitMenu: exit })} />);
+    await press(h.byLabel(S.account));
+    const icons = h.root.root.findAll((n) => typeof n.props.name === 'string' && ['log-out', 'user-x'].includes(n.props.name)).map((n) => n.props.name);
+    expect(icons).toContain('user-x');
+    expect(new Set(icons)).toEqual(new Set(['log-out', 'user-x']));
+  });
 });
 
 describe('group headings (7.26.0)', () => {

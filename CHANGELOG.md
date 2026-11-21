@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.27.1
+
+- **Fix:** with `exitMenu.signOutMenu`, the Delete account group row showed the same `log-out` icon as the Sign out row above it, so it looked like a second Sign out. It now shows `user-x`, as 7.25.0 describes. Nothing to change in apps.
+
 ## 7.27.0
 
 - **Rate on Android (opt-in):** `rate.playPackage` (the app's Google Play package name, such as `com.example.app`) shows the Rate row on Android too. It opens the app's Play Store page (`market://details?id=…`), and the web page on play.google.com if the Play Store app cannot be opened. New string `openPlayStore`. Without `playPackage`, Rate stays hidden on Android as before, and iPhone is unchanged.

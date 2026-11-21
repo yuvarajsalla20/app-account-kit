@@ -62,7 +62,7 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
               {(show) => <SettingRow last={!onOpenAccess} icon="log-out" tint={theme.muted} label={strings.signOut} opensMenu onPress={show} />}
             </MenuRow>
           ) : onOpenSignOut ? <SettingRow last={!onOpenAccess} icon="log-out" tint={theme.muted} label={strings.signOut} onPress={onOpenSignOut} /> : null}
-          {onOpenAccess ? <SettingRow last icon={onOpenSignOut ? 'user-x' : 'log-out'} tint={theme.muted} label={strings.access} onPress={onOpenAccess} /> : null}
+          {onOpenAccess ? <SettingRow last icon={onOpenSignOut || onSignOutNow ? 'user-x' : 'log-out'} tint={theme.muted} label={strings.access} onPress={onOpenAccess} /> : null}
         </SettingsGroup>
       ) : null}
     </View>
