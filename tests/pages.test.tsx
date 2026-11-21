@@ -316,7 +316,7 @@ describe('AboutSection', () => {
   });
 
   it('lists the rows in order: Features, Rate, Share, then Contact support, Privacy policy, then Kits, Version', () => {
-    const h = setup({ share: {}, rate: {}, kits: 'core 1.4.0', featuresUrl: 'https://x.y/features' });
+    const h = setup({ share: { url: 'https://apps.apple.com/app/id6740123456' }, rate: { appStoreId: '6740123456' }, kits: 'core 1.4.0', featuresUrl: 'https://x.y/features' });
     const labels = [S.features, S.rate, S.share, S.contactSupport, S.privacy, S.kits, S.version];
     const order = h.root.root.findAll((n) => typeof n.type === 'string' && labels.includes(String(n.props.accessibilityLabel))).map((n) => n.props.accessibilityLabel);
     expect(order).toEqual(labels);
@@ -334,23 +334,22 @@ describe('AboutSection', () => {
     expect(h.held.action.note).toBe(S.couldNot(S.openLink));
   });
 
-  it('shows Share and Rate whenever the app passes them (Rate on iPhone only), and says so when there is nothing to open yet', async () => {
+  it('7.29.0: shows Share and Rate only when there is somewhere to go (Rate on iPhone needs an App Store number)', async () => {
     expect(setup().has(S.share)).toBe(false);
     expect(setup().has(S.rate)).toBe(false);
-    const h = setup({ share: {}, rate: {} });
+    for (const empty of [{ share: {}, rate: {} }, { share: { url: '' }, rate: { appStoreId: '' } }, { share: { url: undefined }, rate: { appStoreId: undefined } }, { share: { url: 'http://insecure.example' }, rate: { appStoreId: 'id6740123456' } }]) {
+      const h = setup(empty);
+      expect(h.has(S.share)).toBe(false);
+      expect(h.has(S.rate)).toBe(false);
+    }
+    const share = vi.spyOn(Share, 'share');
+    const h = setup({ share: { url: 'https://apps.apple.com/app/id6740123456' }, rate: { appStoreId: '6740123456' } });
     expect(h.has(S.share) && h.has(S.rate)).toBe(true);
     await press(h.byLabel(S.share));
-    expect(h.held.action.note).toBe(S.notOnStoreYet);
-    h.held.action.setNote(null);
-    await press(h.byLabel(S.rate));
-    expect(h.held.action.note).toBe(S.notOnStoreYet);
-    const insecure = setup({ share: { url: 'http://insecure.example' }, rate: { appStoreId: 'id6740123456' } });
-    await press(insecure.byLabel(S.share));
-    expect(insecure.held.action.note).toBe(S.notOnStoreYet);
-    await press(insecure.byLabel(S.rate));
-    expect(insecure.held.action.note).toBe(S.notOnStoreYet);
+    expect(share).toHaveBeenCalledTimes(1);
+    expect(h.held.action.note).toBeNull();
     Platform.OS = 'android';
-    expect(setup({ rate: {} }).has(S.rate)).toBe(false);
+    expect(setup({ rate: { appStoreId: '6740123456' } }).has(S.rate)).toBe(false);
   });
 
   it('opens the App Store review screen, and the web page if that fails', async () => {

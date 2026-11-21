@@ -93,7 +93,10 @@ export interface AboutProps {
   /** The Features row appears when this is passed: a secure web page listing what the app does. */
   featuresUrl?: string;
   supportEmail: string;
-  /** The Share row appears when this is passed. It shares once `url` is a secure App Store address; until then a tap says it is not available yet. `message` replaces the default wording. */
+  /**
+   * The Share row appears only when `url` is a secure (https) address, such as the App Store page (7.29.0: an empty object, an
+   * empty or http `url` shows no row). Pass the app's store constant always; the row comes when it is filled. `message` replaces the default wording.
+   */
   share?: { url?: string; message?: string };
   /**
    * All the kits in use. Shown as a Kits row in About that opens one line per kit, and added to support emails.
@@ -102,9 +105,9 @@ export interface AboutProps {
    */
   kits?: string | readonly KitInfo[];
   /**
-   * The Rate row appears on iPhone when this is passed. It opens the App Store's own review screen once `appStoreId` is set;
-   * until then a tap says it is not available yet. 7.27.0: on Android it appears only when `playPackage` (the app's
-   * Google Play package name, such as com.example.app) is set, and opens the app's Play Store page.
+   * The Rate row appears on iPhone only when `appStoreId` is the app's App Store number (digits, such as 6740123456), and opens
+   * the App Store's own review screen (7.29.0: an empty object or a missing or malformed id shows no row). 7.27.0: on Android
+   * it appears only when `playPackage` (the app's Google Play package name, such as com.example.app) is set, and opens the app's Play Store page.
    */
   rate?: { appStoreId?: string; playPackage?: string };
 }

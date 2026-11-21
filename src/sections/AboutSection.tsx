@@ -30,10 +30,10 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
   const playPackage = rate?.playPackage;
   // iPhone: the App Store review screen. Android (7.27.0): the app's Play Store page, only once the app passes its package name.
   const onAndroid = Platform.OS === 'android';
-  const showRate = !!rate && (Platform.OS === 'ios' || (onAndroid && canRatePlay(playPackage)));
-
-  // Before the app is on the App Store there is nothing to share or rate: say so instead of doing nothing.
-  const notYet = () => action.setNote(strings.notOnStoreYet, true);
+  // 7.29.0: each row shows only when it has somewhere to go (a secure link to share, a real App Store number or Play package),
+  // so an app can always pass its store constants and nothing shows before the app is on the store.
+  const showRate = Platform.OS === 'ios' ? canRate(storeId) : onAndroid && canRatePlay(playPackage);
+  const showShare = canShare(shareUrl);
   const openPage = (key: string, url: string) =>
     action.run(key, () => (isHttps(url) ? Linking.openURL(url) : Promise.reject(new Error('not-https'))).then(() => undefined), () => strings.couldNot(strings.openLink));
   const lines = (list: readonly string[]) => list.map((line) => <components.Text key={line} style={styles.line}>{line}</components.Text>);
@@ -47,12 +47,12 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
           <components.Text style={styles.name} accessibilityRole="header">{appName}</components.Text>
         </View>
       ) : null}
-      {featuresUrl || share || showRate ? (
+      {featuresUrl || showShare || showRate ? (
         <SettingsGroup title={strings.aboutAppGroup || undefined}>
-          {featuresUrl ? <SettingRow last={!showRate && !share} external icon="layers" tint={theme.tints.features ?? theme.tints.about} label={strings.features} onPress={() => openPage('features', featuresUrl)} /> : null}
+          {featuresUrl ? <SettingRow last={!showRate && !showShare} external icon="layers" tint={theme.tints.features ?? theme.tints.about} label={strings.features} onPress={() => openPage('features', featuresUrl)} /> : null}
           {showRate ? (
             <SettingRow
-              last={!share}
+              last={!showShare}
               icon="star"
               tint={theme.tints.rate}
               label={strings.rate}
@@ -61,21 +61,17 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
                   ? action.run('rate', () => Linking.openURL(playReviewUrl(playPackage)).catch(() => Linking.openURL(playReviewWebUrl(playPackage))).then(() => undefined), () => strings.couldNot(strings.openPlayStore))
                   : canRate(storeId)
                   ? action.run('rate', () => Linking.openURL(reviewUrl(storeId)).catch(() => Linking.openURL(reviewWebUrl(storeId))).then(() => undefined), () => strings.couldNot(strings.openStore))
-                  : notYet()
+                  : undefined
               }
             />
           ) : null}
-          {share ? (
+          {showShare ? (
             <SettingRow
               last
               icon="share"
               tint={theme.tints.share}
               label={strings.share}
-              onPress={() =>
-                canShare(shareUrl)
-                  ? action.run('share', () => Share.share({ message: buildShareMessage(strings.shareMessage, appName, shareUrl, share.message) }).then(() => undefined), () => strings.couldNot(strings.shareApp), { patient: true })
-                  : notYet()
-              }
+              onPress={() => action.run('share', () => Share.share({ message: buildShareMessage(strings.shareMessage, appName, shareUrl, share?.message) }).then(() => undefined), () => strings.couldNot(strings.shareApp), { patient: true })}
             />
           ) : null}
         </SettingsGroup>
