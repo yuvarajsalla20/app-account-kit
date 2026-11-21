@@ -130,7 +130,11 @@ export interface AppPageProps {
 
 /** A page the app adds to the main list. */
 export interface ExtraPage {
-  /** Unique, and not one of the kit's names (`hub`, `account`, `data`, `app`, `about`, `password`). */
+  /**
+   * Unique, and not one of the kit's own page names (`RESERVED_PAGE_IDS`): `hub`, `account`, `data`, `app`, `about`, `password`,
+   * `support`, `signOut`, `deleteAccount`, `access`. 7.29.0: a page with one of those ids is left out, reported through `onError`
+   * (`'extraPages'`) and, in development, with a console warning.
+   */
   id: string;
   /** The row's name and the page title. */
   label: string;

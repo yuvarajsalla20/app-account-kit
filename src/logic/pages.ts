@@ -1,5 +1,19 @@
+/** The ids of the kit's own pages (7.29.0). An app page (`extraPages`) may not use one: such a page is left out, with a warning. */
+export const RESERVED_PAGE_IDS = ['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount', 'access'] as const;
+
 /** The kit's own pages. */
-export type BuiltinPage = 'hub' | 'account' | 'data' | 'app' | 'about' | 'password' | 'support' | 'signOut' | 'deleteAccount' | 'access';
+export type BuiltinPage = (typeof RESERVED_PAGE_IDS)[number];
+
+const RESERVED = new Set<string>(RESERVED_PAGE_IDS);
+
+/** True for an id the kit uses for a page of its own. */
+export const isReservedPageId = (id: string): boolean => RESERVED.has(id);
+
+/** The app's pages the screen can show, and the ids it had to leave out because the kit uses them (7.29.0). */
+export function usableExtraPages<P extends { id: string }>(pages: readonly P[] = []): { pages: readonly P[]; clashes: readonly string[] } {
+  const clashes = pages.filter((p) => RESERVED.has(p.id)).map((p) => p.id);
+  return { pages: clashes.length ? pages.filter((p) => !RESERVED.has(p.id)) : pages, clashes };
+}
 
 /** The pages of the Settings screen: the kit's own, or the id of a page the app added (`extraPages`). `hub` is the main list; `password` opens from Account, `support` (Contact Support) from About; `signOut` and `deleteAccount` (7.17.0, with `exitMenu`) open from Account's ⋯ menu, or from `access` (7.24.0, `exitMenu.place: 'page'`), a page under Account. */
 export type Page = BuiltinPage | (string & {});
