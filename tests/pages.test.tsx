@@ -386,7 +386,7 @@ describe('AboutSection', () => {
     const h = withAction((action) => <AboutSection {...about} share={{ url: 'https://x.y/z' }} action={action} />, { timeoutMs: 1000 });
     act(() => void h.byLabel(S.share).props.onPress());
     await act(async () => void (await vi.advanceTimersByTimeAsync(60_000)));
-    expect(share).toHaveBeenCalledWith({ message: 'Try My App: https://x.y/z' });
+    expect(share).toHaveBeenCalledWith({ message: 'Discover My App: https://x.y/z' });
     expect(h.held.action.note).toBeNull();
     await act(async () => close());
   });
