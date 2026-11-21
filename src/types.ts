@@ -31,11 +31,11 @@ export interface NicknameProps {
 }
 
 export interface PhotoProps {
-  /** Picks or takes a photo and returns it as a small picture, or null when cancelled. Throw an Error saying "permission" if access was refused. */
+  /** Picks or takes a photo and returns it as a small picture, or null when cancelled. Throw an Error saying "permission" if access was refused. 7.29.0: `pickProfilePhoto` from `app-account-kit/photo` does all this. */
   pick: (source: PhotoSource) => Promise<string | null>;
   /** Saves the picked photo (an empty string removes it). */
   onChange: (photo: string) => Promise<void> | void;
-  /** The most characters a picked photo may have (default about 300 KB as a data address). Anything bigger, or not a jpeg/png/webp data address or https link, is refused. */
+  /** The most characters a picked photo may have (default `DEFAULT_PHOTO_MAX_CHARS`, 80,000 since 7.29.0, the limit in both apps' Firestore rules). Anything bigger, or not a jpeg/png/webp data address or https link, is refused. */
   maxChars?: number;
   cameraSupported: boolean;
 }

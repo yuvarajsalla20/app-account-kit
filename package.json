@@ -7,6 +7,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./logic": "./src/logic/index.ts",
+    "./photo": "./src/photo/index.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -22,12 +23,24 @@
   "peerDependencies": {
     "@expo/vector-icons": ">=14",
     "react": ">=18",
-    "react-native": ">=0.74"
+    "react-native": ">=0.74",
+    "expo-image-manipulator": ">=13",
+    "expo-image-picker": ">=16"
+  },
+  "peerDependenciesMeta": {
+    "expo-image-manipulator": {
+      "optional": true
+    },
+    "expo-image-picker": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@types/react": "~19.3.0",
     "@types/react-test-renderer": "^19.3.1",
+    "expo-image-manipulator": "~58.0.16",
+    "expo-image-picker": "~58.0.10",
     "react": "19.3.0",
     "react-native": "0.88.1",
     "react-test-renderer": "^19.3.0",
