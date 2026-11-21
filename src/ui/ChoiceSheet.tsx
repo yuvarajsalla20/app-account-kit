@@ -14,6 +14,8 @@ export interface Choice<V extends string | number = string> {
   detail?: string;
   /** 7.26.0, pull-down pickers only: a small icon at the right of the menu line. */
   icon?: IconName;
+  /** 7.33.0, pull-down pickers only: a small icon before the label, as in the iOS menus. */
+  lead?: IconName;
   /** 7.26.0, pull-down pickers only: a shorter word for the pill on the row when this one is chosen. Default: `label`. */
   pill?: string;
 }

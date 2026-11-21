@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.32.0** (tag `v7.32.0`)
+**Current version: 7.33.0** (tag `v7.33.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,14 +28,14 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.32.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.33.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v7.32.0"
+  "app-account-kit": "v7.33.0"
 }
 ```
 
-Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.32.0`.
+Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.33.0`.
 
 **Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported). Optional, only for `app-account-kit/photo`: `expo-image-picker` and `expo-image-manipulator`.
 
@@ -187,7 +187,7 @@ Use these on the app's own pages (inside `app.content` or an added page) so they
 |---|---|
 | `SettingsGroup` | A card that holds rows |
 | `SettingRow` | `icon`, `tint`, `label`, plus `detail`, `value`, `badge`, `onPress`, `toggle: { value, onChange }`, `external` (slanted arrow), `expanded`, `locked` (padlock), `trailing` (icon in place of the arrow), `disabled`, `last`, `children` |
-| `PickerRow` | A row showing the current choice; a tap opens a `ChoiceSheet`. `options`, `value`, `onChange`, `title?`, `detail?` |
+| `PickerRow` | A row showing the current choice; a tap opens a `ChoiceSheet`, or the pull-down menu with `pickers: 'pullDown'`. `options`, `value`, `onChange`, `title?`, `detail?`. 7.33.0: `onPick` (every pick, e.g., to play a sound), `locked` and `onLocked` for paid options (a padlock in the menu), `note` (a line at the top of the menu), and `lead` on an option (an icon before its label) |
 | `ExpandRow` | A row that opens its content right below it |
 | `MenuRow`, `PullDownMenu`, `PullDownPill`, `useAnchor` | The iOS-style pull-down menu. It opens over the row that opened it, with a tick on the chosen line. 7.32.0: each `PullDownItem` can take `lead` (an icon before the label), `dot` (a color dot), `locked` (a padlock) and `group` (a thin line above) |
 | `ChoiceSheet` | A bottom sheet of options. Add `onConfirm` to ask before keeping (✕ and ✓), `locked(value)` and `onLocked` for paid options, `onPick` (for example to play a sound), `note` |

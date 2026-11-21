@@ -2,6 +2,11 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.33.0 (2026-11-21)
+
+- **Paid options in pull-down pickers.** `PickerRow` takes `onPick` (called on every pick, e.g., to play the sound just picked), `locked(value)` and `onLocked(value)` (a padlock on each paid option, which is not kept when picked; the paid options start their own group) and `note` (a line at the top of the menu, or under the options in the sheet). An option can take `lead`, an icon before its label. An app no longer needs its own sheet for a picker with paid options, such as Default Sound or Repeat Alerts.
+- **Fix: `KIT_VERSION` reads 7.33.0.** 7.32.0 still reported 7.31.0 in the kits line.
+
 ## 7.32.0 (2026-11-21)
 
 - **Fix: the Profile photo is no longer cut off at the top.** 7.27.1 pulled the centred photo up with a negative top margin, and the page's scroll view hid the part drawn above its top edge, so the top of the circle was cut off flat on iPhone and Android. The photo now starts at the top of the page content, uncut.
