@@ -15,7 +15,8 @@ export function DataRow({ label, formats, action }: Props) {
   const { theme, strings } = useLook();
   const [open, setOpen] = useState(false);
   const after = useAfterClose();
-  const run = (format: DataFormat) => action.run('download', format.onDownload, () => strings.couldNot(strings.download));
+  // Patient: making the file ends in the share sheet, which waits for the person, so it is never cut off as "taking too long".
+  const run = (format: DataFormat) => action.run('download', format.onDownload, () => strings.couldNot(strings.download), { patient: true });
   const [only, ...others] = formats;
   const many = others.length > 0;
   return (

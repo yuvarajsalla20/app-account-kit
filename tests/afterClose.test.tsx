@@ -84,3 +84,21 @@ describe('picks run after the menu or sheet has closed', () => {
     expect(onPick).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('My data download waits for the person (7.29.0)', () => {
+  it('is never cut off while the share sheet stays open', async () => {
+    vi.useFakeTimers();
+    const onError = vi.fn();
+    let release!: () => void;
+    const onDownload = () => new Promise<void>((r) => (release = r));
+    const h = withAction((action) => <DataRow label="Download" formats={[{ id: 'csv', label: 'CSV', onDownload }]} action={action} />, { timeoutMs: 1000, tookTooLong: 'Slow.', onError });
+    await press(h.byLabel('Download'));
+    await act(async () => void vi.advanceTimersByTime(5000));
+    expect(h.held.action.note).toBeNull();
+    expect(onError).not.toHaveBeenCalled();
+    expect(h.held.action.busy).toBe(true);
+    await act(async () => void release());
+    expect(h.held.action.busy).toBe(false);
+    expect(h.held.action.note).toBeNull();
+  });
+});
