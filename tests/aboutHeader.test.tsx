@@ -50,3 +50,20 @@ describe('About drawn logo (7.21.0)', () => {
     expect(named(h)).toBeGreaterThan(0);
   });
 });
+
+describe("About logo only (7.30.0)", () => {
+  const titled = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'header' && n.props.children === S.about).length;
+  it("keeps the About title and shows the logo under it, without the name", async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...base} about={{ ...base.about, showHeader: 'logo', logo: { uri: 'https://x.y/logo.png' } }} />);
+    await press(h.byLabel(S.about));
+    expect(titled(h)).toBeGreaterThan(0);
+    expect(h.byLabel('My Unique App logo')).toBeTruthy();
+    expect(named(h)).toBe(0);
+  });
+  it("shows nothing at the top when there is no logo", async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...base} about={{ ...base.about, showHeader: 'logo' }} />);
+    await press(h.byLabel(S.about));
+    expect(titled(h)).toBeGreaterThan(0);
+    expect(named(h)).toBe(0);
+  });
+});

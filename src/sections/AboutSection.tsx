@@ -40,7 +40,17 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
 
   return (
     <View style={STACK}>
-      {showHeader ? (
+      {showHeader === 'logo' ? (
+        logo ? (
+          <View style={styles.hero}>
+            {isValidElement(logo) ? logo : (
+              <View style={styles.logoShadow}>
+                <Image source={logo} style={styles.logoLarge} accessibilityLabel={`${appName} logo`} accessibilityIgnoresInvertColors />
+              </View>
+            )}
+          </View>
+        ) : null
+      ) : showHeader ? (
         <View style={styles.hero}>
           {/* A drawn logo (7.21.0) goes in as it is, at its own size; an image keeps the 84 pt rounded square. */}
           {isValidElement(logo) ? logo : logo ? <Image source={logo} style={styles.logo} accessible={false} /> : null}
@@ -111,6 +121,9 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
 const makeStyles = (t: AccountTheme) => ({
   hero: { alignItems: 'center' as const, paddingTop: 0, paddingBottom: 12, gap: 6 },
   logo: { width: 84, height: 84, borderRadius: 20, marginBottom: 6 },
+  // 7.30.0: the logo on its own under the About title, at 104 pt with the home screen's rounded corners (22.5%) and a soft shadow.
+  logoShadow: { marginTop: 4, marginBottom: 6, borderRadius: 23.4, shadowColor: t.brand, shadowOpacity: 0.22, shadowRadius: 14, shadowOffset: { width: 0, height: 8 } },
+  logoLarge: { width: 104, height: 104, borderRadius: 23.4 },
   name: { color: t.brand, fontSize: 34, fontWeight: '800' as const, letterSpacing: -0.6, textAlign: 'center' as const },
   line: { color: t.muted, fontSize: 14, lineHeight: 22, paddingLeft: 46 },
 });
