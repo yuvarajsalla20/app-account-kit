@@ -6,3 +6,12 @@ export const reviewUrl = (appStoreId: string): string => `itms-apps://itunes.app
 
 /** The same page on the web, used when the App Store address cannot be opened. */
 export const reviewWebUrl = (appStoreId: string): string => `https://apps.apple.com/app/id${appStoreId.trim()}?action=write-review`;
+
+/** 7.27.0: a Google Play package name, such as com.example.app (letters, digits and underscores in at least two dot-separated parts). */
+export const canRatePlay = (playPackage?: string): playPackage is string => !!playPackage && /^[A-Za-z][\w]*(\.[A-Za-z][\w]*)+$/.test(playPackage.trim());
+
+/** Opens the Play Store app on the app's own page, where the person can rate it. */
+export const playReviewUrl = (playPackage: string): string => `market://details?id=${playPackage.trim()}`;
+
+/** The same page on the web, used when the Play Store app cannot be opened. */
+export const playReviewWebUrl = (playPackage: string): string => `https://play.google.com/store/apps/details?id=${playPackage.trim()}`;

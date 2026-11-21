@@ -113,6 +113,8 @@ export interface AccountStrings {
   download: string;
   shareApp: string;
   openStore: string;
+  /** 7.27.0: "Couldn't open Google Play", for Rate on Android. */
+  openPlayStore: string;
 }
 
 export const DEFAULT_STRINGS: AccountStrings = {
@@ -207,4 +209,5 @@ export const DEFAULT_STRINGS: AccountStrings = {
   download: 'create the file',
   shareApp: 'share the app',
   openStore: 'open the App Store',
+  openPlayStore: 'open Google Play',
 };

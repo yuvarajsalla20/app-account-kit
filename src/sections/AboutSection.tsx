@@ -4,7 +4,7 @@ import { useLook, useStyles } from '../look';
 import type { ActionRunner } from '../hooks/useAction';
 import { kitListLines } from '../logic/kits';
 import { isHttps } from '../logic/links';
-import { canRate, reviewUrl, reviewWebUrl } from '../logic/rate';
+import { canRate, canRatePlay, playReviewUrl, playReviewWebUrl, reviewUrl, reviewWebUrl } from '../logic/rate';
 import { buildShareMessage, canShare } from '../logic/share';
 import type { AccountTheme } from '../theme';
 import type { AboutProps } from '../types';
@@ -27,7 +27,10 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
   const styles = useStyles(makeStyles);
   const shareUrl = share?.url;
   const storeId = rate?.appStoreId;
-  const showRate = !!rate && Platform.OS === 'ios';
+  const playPackage = rate?.playPackage;
+  // iPhone: the App Store review screen. Android (7.27.0): the app's Play Store page, only once the app passes its package name.
+  const onAndroid = Platform.OS === 'android';
+  const showRate = !!rate && (Platform.OS === 'ios' || (onAndroid && canRatePlay(playPackage)));
 
   // Before the app is on the App Store there is nothing to share or rate: say so instead of doing nothing.
   const notYet = () => action.setNote(strings.notOnStoreYet, true);
@@ -54,7 +57,9 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
               tint={theme.tints.rate}
               label={strings.rate}
               onPress={() =>
-                canRate(storeId)
+                onAndroid && canRatePlay(playPackage)
+                  ? action.run('rate', () => Linking.openURL(playReviewUrl(playPackage)).catch(() => Linking.openURL(playReviewWebUrl(playPackage))).then(() => undefined), () => strings.couldNot(strings.openPlayStore))
+                  : canRate(storeId)
                   ? action.run('rate', () => Linking.openURL(reviewUrl(storeId)).catch(() => Linking.openURL(reviewWebUrl(storeId))).then(() => undefined), () => strings.couldNot(strings.openStore))
                   : notYet()
               }
