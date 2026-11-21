@@ -107,11 +107,14 @@ interface DeleteProps extends Pick<ActionsProps, 'confirmsWithPassword'> {
 export function DeleteAccountPage({ onDeleteAccount, confirmsWithPassword, exit, action, onSignOutInstead, onCancel }: DeleteProps) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
-  const steps: Step[] = exit.unlock ? ['unlock', 'lose', 'final'] : ['lose', 'final'];
-  const [step, setStep] = useState<Step>(steps[0]!);
+  // The steps are fixed when the page opens (7.29.0): if the app stops passing `unlock` part way, the bar keeps its count and no
+  // later step is skipped. An unlock step with nothing left to draw moves on to "what you will lose", never past typing DELETE.
+  const [steps] = useState<readonly Step[]>(() => (exit.unlock ? ['unlock', 'lose', 'final'] : ['lose', 'final']));
+  const [asked, setStep] = useState<Step>(steps[0]!);
+  const step: Step = asked === 'unlock' && !exit.unlock ? 'lose' : asked;
   const [typed, setTyped] = useState('');
   const [password, setPassword] = useState('');
-  const at = steps.indexOf(step);
+  const at = Math.max(0, steps.indexOf(step));
   const word = strings.deleteTypeWord;
 
   const bar = (
@@ -165,6 +168,7 @@ export function DeleteAccountPage({ onDeleteAccount, confirmsWithPassword, exit,
     );
   }
 
+  if (step !== 'final') return null;
   return (
     <View style={styles.page}>
       {bar}
