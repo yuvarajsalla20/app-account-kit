@@ -46,7 +46,7 @@ describe('toCsv', () => {
 
 describe('share', () => {
   it('uses the default wording, or the app message with the link added', () => {
-    expect(buildShareMessage(DEFAULT_STRINGS.shareMessage, 'App', 'https://x.y/z')).toBe('Try App: https://x.y/z');
+    expect(buildShareMessage(DEFAULT_STRINGS.shareMessage, 'App', 'https://x.y/z')).toBe('Discover App: https://x.y/z');
     expect(buildShareMessage(DEFAULT_STRINGS.shareMessage, 'App', 'https://x.y/z', ' Come try it. ')).toBe('Come try it. https://x.y/z');
   });
 

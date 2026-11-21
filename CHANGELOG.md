@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.31.0 (2026-11-21)
+
+- **Professional default words.** The locked-row hint screen readers hear is now "Available with Premium" (was "Needs the paid plan"), the nickname placeholder "Add a Nickname", the Support title "How Can We Help?" and the Share message "Discover <App>: <link>". An app that passed its own words still wins where the settings kit allows it.
+
 ## 7.30.0 (2026-11-21)
 
 - **About can show the logo on its own.** `about.showHeader: 'logo'` keeps the page title "About" in the header and shows the app's logo under it at 104 pt, with the home screen's rounded corners and a soft shadow, without the app name. A drawn element logo shows as it is. Without a logo nothing is drawn at the top. `true` and `false` work as before.

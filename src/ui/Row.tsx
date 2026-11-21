@@ -30,7 +30,7 @@ interface Props {
   /** The last row in a card has no line under it. */
   last?: boolean;
   disabled?: boolean;
-  /** Needs the paid plan: a padlock on a soft circle (`theme.lock`) in place of the arrow, and screen readers hear `strings.lockedHint`. A tap still calls `onPress` (open the plans). */
+  /** Locked (Premium): a padlock on a soft circle (`theme.lock`) in place of the arrow, and screen readers hear `strings.lockedHint`. A tap still calls `onPress` (open the plans). */
   locked?: boolean;
   /** An icon in place of the usual arrow, such as "download" on a row that makes a file. */
   trailing?: IconName;
