@@ -20,6 +20,11 @@ export interface AccountComponents {
    * what VoiceOver says) and opens a list of `items`; a tap calls `onPick(id)`. Default: the kit's round ⋯ and a small list under it.
    */
   Menu?: ComponentType<{ label: string; items: readonly MenuItem[]; onPick: (id: string) => void }>;
+  /**
+   * Optional (7.32.0): drawn behind every pull-down menu, filling it, such as the app's frosted blur (expo-blur's BlurView), so
+   * the menu reads as glass. Pair it with a see-through `theme.menu`. Default: none, the menu is the plain `theme.menu` fill.
+   */
+  MenuBackdrop?: ComponentType<{ style: ViewStyle }>;
 }
 
 /** One line of the ⋯ menu on Account (7.17.0). `danger` lines are drawn in the danger color. */

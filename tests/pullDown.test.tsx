@@ -18,19 +18,39 @@ const make = (over: Partial<SettingsScreenProps> = {}): SettingsScreenProps => (
   ...over,
 });
 
-describe('placeMenu (7.26.0)', () => {
+describe('placeMenu (7.32.0: opens over the row)', () => {
   const screen = { width: 390, height: 844 };
   const menu = { width: 250, height: 150 };
-  it('sits under the row, right edges lined up', () => {
-    expect(placeMenu({ x: 16, y: 200, width: 358, height: 50 }, menu, screen)).toEqual({ top: 256, left: 112 });
+  it('covers the row and grows upward, bottom edges and right edges lined up', () => {
+    expect(placeMenu({ x: 16, y: 400, width: 358, height: 50 }, menu, screen)).toEqual({ top: 450 - 150, left: 112 });
   });
-  it('flips above the row near the bottom of the screen', () => {
-    expect(placeMenu({ x: 16, y: 760, width: 358, height: 50 }, menu, screen).top).toBe(760 - 6 - 150);
+  it('grows downward from the row top when there is no room above', () => {
+    expect(placeMenu({ x: 16, y: 120, width: 358, height: 50 }, menu, screen).top).toBe(120);
+  });
+  it('never runs off the bottom', () => {
+    const tall = { width: 250, height: 700 };
+    expect(placeMenu({ x: 16, y: 300, width: 358, height: 50 }, tall, screen).top).toBe(844 - 700 - 12);
   });
   it('stays on screen and centres with no row', () => {
     const p = placeMenu(null, menu, screen);
     expect(p.left).toBe(70);
     expect(p.top).toBeGreaterThan(0);
+  });
+});
+
+describe('PullDownMenu lines (7.32.0)', () => {
+  it('draws a lead icon or a dot, a padlock on a locked line, and says it is locked', async () => {
+    const { PullDownMenu } = await import('../src/ui/PullDown');
+    const { AccountProvider } = await import('../src/context');
+    const items = [
+      { id: 'a', label: 'Daily', lead: 'sun' as const, checked: true },
+      { id: 'b', label: 'Work', dot: '#1d4ed8' },
+      { id: 'c', label: 'Chime', locked: true, group: true },
+    ];
+    const h = mount(<AccountProvider theme={THEME}><PullDownMenu anchor={null} items={items} onPick={() => {}} onClose={() => {}} /></AccountProvider>);
+    const lines = h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'menuitem');
+    expect(lines.map((l) => l.props.accessibilityLabel)).toEqual(['Daily', 'Work', `Chime, ${S.lockedHint}`]);
+    expect(lines.map((l) => l.props.accessibilityState.selected)).toEqual([true, false, false]);
   });
 });
 

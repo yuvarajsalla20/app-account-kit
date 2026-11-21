@@ -104,8 +104,9 @@ const makeStyles = (t: AccountTheme) => ({
   linkHit: { minHeight: 44, justifyContent: 'center' as const },
   link: { color: t.accent, fontSize: 14, fontWeight: '600' as const },
   menu: { flexDirection: 'row' as const, gap: 8 },
-  // 7.27.1: pulled up under the page title and closer to the first card, so the photo doesn't float in empty space.
-  middle: { alignItems: 'center' as const, marginTop: -12, marginBottom: -6 },
+  // 7.32.0: no negative top margin. The page scrolls, and a scroll view hides whatever is drawn above its top edge, so the
+  // 7.27.1 pull-up (-12) cut the top of the circle off flat. The space below the photo stays tight.
+  middle: { alignItems: 'center' as const, marginBottom: -6 },
   pressed: { opacity: 0.8 },
   // Ringed in `ink` (the text colour on accent, usually the page colour) so it reads as sitting on top of the photo.
   pencil: { ...CENTER, position: 'absolute' as const, right: -2, bottom: -2, width: PENCIL, height: PENCIL, borderRadius: PENCIL / 2, backgroundColor: t.accent, borderWidth: 3, borderColor: t.ink },
