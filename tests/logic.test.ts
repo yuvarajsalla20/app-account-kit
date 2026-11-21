@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import { KIT_NAME, KIT_VERSION } from '../src/kit';
 import { hubPages, parentOf } from '../src/logic/pages';
 import { kitLines, kitsLine } from '../src/logic/kits';
-import { csvFileName, toCsv } from '../src/logic/csv';
 import { canConfirmDelete } from '../src/logic/deleteRules';
 import { supportMailUrl } from '../src/logic/mail';
 import { cleanNickname, initialOf } from '../src/logic/nickname';
@@ -23,24 +22,6 @@ describe('nickname', () => {
     expect(initialOf('  ', 'a@b.com')).toBe('A');
     expect(initialOf('', null)).toBe('?');
     expect(initialOf('', null, 'T')).toBe('T');
-  });
-});
-
-describe('toCsv', () => {
-  it('joins rows and quotes commas, quotes and new lines', () => {
-    expect(toCsv([['Name', 'Note'], ['Rent', 'Pay, then "relax"\nok']])).toBe('Name,Note\nRent,"Pay, then ""relax""\nok"');
-  });
-
-  it('neutralises formulas', () => {
-    expect(toCsv([['=SUM(A1)', '-1+2', '+cmd', '@x', 'fine']])).toBe("'=SUM(A1),'-1+2,'+cmd,'@x,fine");
-  });
-
-  it('is empty for no rows', () => {
-    expect(toCsv([])).toBe('');
-  });
-
-  it('makes file-safe names', () => {
-    expect(csvFileName('Hring Nring', 'reminders')).toBe('hringnring-reminders.csv');
   });
 });
 
@@ -152,7 +133,7 @@ describe('canConfirmDelete', () => {
 describe('logic entry', () => {
   it('exposes the pure functions without React Native', async () => {
     const logic = await import('../src/logic');
-    expect(Object.keys(logic).sort()).toEqual(['CSV_BOM', 'DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'RESERVED_PAGE_IDS', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'csvFileName', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'isReservedPageId', 'kitLines', 'kitListLines', 'kitsLine', 'kitsMailLine', 'parentOf', 'passwordProblem', 'placeMenu', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'toCsv', 'typedWordMatches', 'usableExtraPages']);
+    expect(Object.keys(logic).sort()).toEqual(['DEFAULT_ACTION_TIMEOUT_MS', 'DEFAULT_PHOTO_MAX_CHARS', 'MIN_PASSWORD', 'RESERVED_PAGE_IDS', 'buildShareMessage', 'canConfirmDelete', 'canRate', 'canShare', 'cleanNickname', 'createActionGuard', 'createSaveTracker', 'hubPages', 'initialOf', 'isEmail', 'isHttps', 'isPermissionError', 'isReservedPageId', 'kitLines', 'kitListLines', 'kitsLine', 'kitsMailLine', 'parentOf', 'passwordProblem', 'placeMenu', 'reviewUrl', 'reviewWebUrl', 'safePhoto', 'supportMailUrl', 'themeContrast', 'typedWordMatches', 'usableExtraPages']);
   });
 });
 
@@ -192,11 +173,7 @@ describe('settings pages', () => {
   });
 });
 
-describe('csv and nicknames, review fixes', () => {
-  it('quotes a value with a carriage return, so a row cannot split', () => {
-    expect(toCsv([['a\rb', 'c']])).toBe('"a\rb",c');
-  });
-
+describe('nicknames, review fixes', () => {
   it('cuts a nickname by whole characters, never inside an emoji', () => {
     expect(cleanNickname('ab😀cd', 3)).toBe('ab😀');
   });
