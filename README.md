@@ -254,6 +254,7 @@ Exported from both `app-account-kit` and `app-account-kit/logic`:
 | `supportMailUrl` | The support email with app, version, device and kits filled in |
 | `kitLines`, `kitListLines`, `kitsLine`, `kitsMailLine` | Kit lines for About and support emails |
 | `themeContrast` | The contrast check above |
+| `toCsv`, `csvFileName`, `CSV_BOM` | **Deprecated**: use [app-export-kit](https://github.com/yuvarajsalla20/app-export-kit). Removed in 8.0.0 |
 
 `app-account-kit/logic` also exports `createActionGuard`, `DEFAULT_ACTION_TIMEOUT_MS`, `createSaveTracker` and `isPermissionError`.
 

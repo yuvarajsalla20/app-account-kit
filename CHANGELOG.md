@@ -13,7 +13,7 @@ Release notes for app-account-kit, newest first. Each version is tagged in git (
 - **Photo limit 80,000.** `DEFAULT_PHOTO_MAX_CHARS` drops from 400,000 to 80,000, the limit in both apps' Firestore rules, so a photo the kit accepts is not refused by the server.
 - **Photo picker in the kit (opt-in):** `app-account-kit/photo` exports `pickProfilePhoto` and `cameraSupported`, the picker both apps copied into `src/shared/photo.ts`. Square, 256 px, JPEG under the limit (it saves at lower quality if needed), throws `permission` when the camera is refused. Needs `expo-image-picker` and `expo-image-manipulator` (optional peers; only this entry loads them).
 - **`initialOf` for avatars outside Settings.** Call `initialOf(nickname, email)` for the Home avatar so it shows the same letter as Settings. It keeps a whole emoji where the platform can tell (`Intl.Segmenter`).
-- **Removed: `CSV_BOM`, `toCsv`, `csvFileName`**, deprecated since 7.9.0. Use app-export-kit. Neither app imports them from this kit.
+- **Still deprecated: `CSV_BOM`, `toCsv`, `csvFileName`** (since 7.9.0). They stay in 7.29.0 so no app breaks in a minor release, and go away in 8.0.0. Use app-export-kit; neither app imports them from this kit.
 
 ## 7.28.0 (2026-11-21)
 

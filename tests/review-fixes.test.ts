@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { CSV_BOM, csvFileName, toCsv } from '../src/logic/csv';
 import { createActionGuard } from '../src/logic/actionGuard';
 import { isEmail, isHttps } from '../src/logic/links';
 import { supportMailUrl } from '../src/logic/mail';
@@ -6,10 +7,21 @@ import { initialOf } from '../src/logic/nickname';
 import { isPermissionError, safePhoto } from '../src/logic/photo';
 import { createSaveTracker } from '../src/logic/saveTracker';
 
-describe('csv helpers are gone (7.29.0)', () => {
-  it('neither entry exports a CSV helper: use app-export-kit', async () => {
-    const names = [...Object.keys(await import('../src')), ...Object.keys(await import('../src/logic'))];
-    expect(names.filter((n) => /csv/i.test(n))).toEqual([]);
+describe('csv', () => {
+  it('keeps plain numbers as numbers, including negatives', () => {
+    expect(toCsv([['-12.50', '+3', '-0.5', '.5', '7']])).toBe('-12.50,+3,-0.5,.5,7');
+  });
+  it('still marks anything that could run as a formula', () => {
+    expect(toCsv([['-1+2', '=1+1', '@SUM', '+cmd|x', '-']])).toBe("'-1+2,'=1+1,'@SUM,'+cmd|x,'-");
+  });
+  it('adds the Excel marker only when asked, and never to an empty file', () => {
+    expect(toCsv([['é']])).toBe('é');
+    expect(toCsv([['é']], { bom: true })).toBe(`${CSV_BOM}é`);
+    expect(toCsv([], { bom: true })).toBe('');
+  });
+  it('falls back to a safe file name', () => {
+    expect(csvFileName('!!!', 'reminders')).toBe('app-reminders.csv');
+    expect(csvFileName('My App', '../x y')).toBe('myapp-xy.csv');
   });
 });
 
