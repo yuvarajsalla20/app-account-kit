@@ -1,4 +1,4 @@
-import { createElement, forwardRef } from 'react';
+import { createElement, forwardRef, useEffect, useRef } from 'react';
 
 // A tiny stand-in for react-native so the real screens can be rendered in tests: every component is a plain named element.
 const host = (name: string) => forwardRef<unknown, Record<string, unknown>>((props, ref) => createElement(name, { ...props, ref }, props.children as never));
@@ -11,8 +11,15 @@ export const ScrollView = host('ScrollView');
 export const Switch = host('Switch');
 export const Image = host('Image');
 export const useWindowDimensions = () => ({ width: 390, height: 844, scale: 3, fontScale: 1 });
-// A real Modal draws nothing while it is closed.
-export const Modal = (props: { visible?: boolean; children?: unknown }) => (props.visible ? createElement('Modal', props as never, props.children as never) : null);
+// A real Modal draws nothing while it is closed. Like iOS, it calls onDismiss once it has closed (not when it is taken away while open).
+export const Modal = (props: { visible?: boolean; onDismiss?: () => void; children?: unknown }) => {
+  const was = useRef(false);
+  useEffect(() => {
+    if (was.current && !props.visible) props.onDismiss?.();
+    was.current = !!props.visible;
+  }, [props.visible]);
+  return props.visible ? createElement('Modal', props as never, props.children as never) : null;
+};
 export const ActivityIndicator = host('ActivityIndicator');
 export const StyleSheet = { create: <T,>(styles: T): T => styles };
 export const Platform = { OS: 'ios', Version: '18' };
