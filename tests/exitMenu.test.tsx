@@ -128,3 +128,18 @@ describe('Delete steps stay fixed once started (7.29.0)', () => {
     expect(barLabel(h)).toBe(S.stepOf(1, 2));
   });
 });
+
+describe('the kit ⋯ list floats above the page (7.29.0)', () => {
+  it('opens in a Modal, so iPhone draws it over the first cards, and picking still opens the page', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...make({ exitMenu: {} })} />);
+    await press(h.byLabel(S.account));
+    await press(h.byLabel(S.moreOptions));
+    const modal = h.root.root.findAll((n) => n.type === 'Modal');
+    expect(modal).toHaveLength(1);
+    expect(modal[0]!.findAll((n) => n.props.accessibilityRole === 'menuitem' && typeof n.type === 'string').map((n) => n.props.accessibilityLabel)).toEqual([S.signOut, S.deleteAccount]);
+    expect(h.byLabel(S.moreOptions).props.accessibilityState).toMatchObject({ expanded: true });
+    await press(h.byLabel(S.deleteAccount));
+    expect(h.root.root.findAll((n) => n.type === 'Modal')).toHaveLength(0);
+    expect(h.has(S.deleteTypeLabel('DELETE'))).toBe(true);
+  });
+});
