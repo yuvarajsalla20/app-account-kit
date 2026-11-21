@@ -41,4 +41,6 @@ export interface AccountTheme {
   lock?: { icon: string; circle: string };
   /** 7.26.0: the fill of a pull-down menu, such as a slightly see-through card color. Defaults to `surface`. */
   menu?: string;
+  /** 7.32.0: the thin outline around a pull-down menu. Defaults to `text` at 55% (or `border` when `text` is not a #rrggbb color). */
+  menuEdge?: string;
 }

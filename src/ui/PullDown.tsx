@@ -20,6 +20,14 @@ export interface PullDownItem {
   danger?: boolean;
   /** The chosen line: a tick on its left. */
   checked?: boolean;
+  /** 7.32.0: a small icon before the label, as in the iOS menus. */
+  lead?: IconName;
+  /** 7.32.0: a small color dot before the label, such as a workspace or type color. Takes the place of `lead`. */
+  dot?: string;
+  /** 7.32.0: needs the paid plan: a padlock on the right in the theme's lock colors. The line can still be picked; the app decides what a pick does. */
+  locked?: boolean;
+  /** 7.32.0: starts a new group: a thin line and a little space above it. */
+  group?: boolean;
 }
 
 interface MenuProps {
@@ -39,45 +47,75 @@ interface MenuProps {
 }
 
 const MENU_WIDTH = 250;
-const ITEM_HEIGHT = 46;
-const MAX_HEIGHT = 380;
+const ITEM_HEIGHT = 44;
+/** Room the menu leaves above and below it on the screen; a longer list scrolls inside it. */
+const SCREEN_MARGIN = 120;
+const PAD = 8;
+const GROUP_GAP = 9;
+
+/** `#rrggbb` at `alpha`, as `#rrggbbaa`. Any other color comes back unchanged (null), so the caller can fall back. */
+const withAlpha = (color: string, alpha: number): string | null =>
+  /^#[0-9a-f]{6}$/i.test(color) ? `${color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}` : null;
 
 /**
- * The iOS-style pull-down menu (7.26.0): a small rounded card that floats right under (or, near the bottom, right above) the row
- * that opened it, with a tick on the chosen line. A tap on a line closes the menu and then picks it; a tap anywhere else only closes.
+ * The iOS-style pull-down menu (7.26.0; glass look 7.32.0): a well-rounded card with a thin outline that opens over the row that
+ * opened it, with a tick on the chosen line and, optionally, an icon or color dot before each label. With
+ * `components.MenuBackdrop` and a see-through `theme.menu` it reads as frosted glass. A tap on a line closes the menu and then
+ * picks it; a tap anywhere else only closes.
  */
 export function PullDownMenu({ anchor, head, items, onPick, onClose, visible = true }: MenuProps) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const screen = useWindowDimensions();
-  const height = Math.min(MAX_HEIGHT, items.length * ITEM_HEIGHT + (head ? 52 : 0) + 8);
+  const maxHeight = Math.max(ITEM_HEIGHT * 3, screen.height - SCREEN_MARGIN);
+  const groups = items.filter((it, i) => i > 0 && it.group).length;
+  const height = Math.min(maxHeight, items.length * ITEM_HEIGHT + groups * GROUP_GAP + (head ? 52 : 0) + PAD * 2);
   const spot = placeMenu(anchor, { width: MENU_WIDTH, height }, screen);
   const after = useAfterClose();
+  const Backdrop = components.MenuBackdrop;
+  const lock = theme.lock ?? { icon: theme.muted, circle: theme.field };
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} onDismiss={after.onDismiss} statusBarTranslucent>
       <Pressable style={styles.scrim} onPress={onClose} accessibilityRole="button" accessibilityLabel={strings.close} />
-      <View style={[styles.menu, { top: spot.top, left: spot.left, width: MENU_WIDTH, maxHeight: MAX_HEIGHT }]} accessibilityViewIsModal accessibilityRole="menu">
-        {head ? <components.Text style={styles.head}>{head}</components.Text> : null}
-        <ScrollView bounces={false}>
-          {items.map((item, i) => (
-            <Pressable
-              key={item.id}
-              onPress={() => {
-                onClose();
-                after.later(() => onPick(item.id));
-              }}
-              accessibilityRole="menuitem"
-              accessibilityLabel={item.detail ? `${item.label}, ${item.detail}` : item.label}
-              accessibilityState={{ selected: !!item.checked }}
-              style={({ pressed }) => [styles.item, i > 0 && styles.line, pressed && styles.pressed]}
-            >
-              <View style={styles.tick}>{item.checked ? <Feather name="check" size={16} color={theme.text} /> : null}</View>
-              <components.Text style={[styles.label, item.danger && { color: theme.danger }]} numberOfLines={1}>{item.label}</components.Text>
-              {item.detail ? <components.Text style={styles.detail}>{item.detail}</components.Text> : null}
-              {item.icon ? <Feather name={item.icon} size={17} color={item.danger ? theme.danger : theme.muted} /> : null}
-            </Pressable>
-          ))}
-        </ScrollView>
+      <View style={[styles.shadow, { top: spot.top, left: spot.left, width: MENU_WIDTH, maxHeight }]}>
+        <View style={[styles.menu, { maxHeight }]} accessibilityViewIsModal accessibilityRole="menu">
+          {Backdrop ? <Backdrop style={styles.fill} /> : null}
+          {head ? <components.Text style={styles.head}>{head}</components.Text> : null}
+          <ScrollView bounces={false} contentContainerStyle={styles.list}>
+            {items.map((item, i) => (
+              <Pressable
+                key={item.id}
+                onPress={() => {
+                  onClose();
+                  after.later(() => onPick(item.id));
+                }}
+                accessibilityRole="menuitem"
+                accessibilityLabel={[item.label, item.detail, item.locked ? strings.lockedHint : undefined].filter(Boolean).join(', ')}
+                accessibilityState={{ selected: !!item.checked }}
+                style={({ pressed }) => [styles.item, i > 0 && item.group && styles.group, pressed && styles.pressed]}
+              >
+                <View style={styles.tick}>{item.checked ? <Feather name="check" size={16} color={theme.text} /> : null}</View>
+                {item.dot ? (
+                  <View style={styles.leadBox}>
+                    <View style={[styles.dot, { backgroundColor: item.dot }]} />
+                  </View>
+                ) : item.lead ? (
+                  <View style={styles.leadBox}>
+                    <Feather name={item.lead} size={17} color={item.danger ? theme.danger : theme.text} />
+                  </View>
+                ) : null}
+                <components.Text style={[styles.label, item.checked && styles.chosen, item.danger && { color: theme.danger }]} numberOfLines={1}>{item.label}</components.Text>
+                {item.detail ? <components.Text style={styles.detail}>{item.detail}</components.Text> : null}
+                {item.icon ? <Feather name={item.icon} size={17} color={item.danger ? theme.danger : theme.muted} /> : null}
+                {item.locked ? (
+                  <View style={[styles.lock, { backgroundColor: lock.circle }]}>
+                    <Feather name="lock" size={12} color={lock.icon} />
+                  </View>
+                ) : null}
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </Modal>
   );
@@ -143,28 +181,39 @@ export function MenuRow({ pill, head, items, onPick, children }: { pill?: string
   );
 }
 
+const MENU_RADIUS = 28;
+
 const makeStyles = (t: AccountTheme) => ({
   scrim: { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent' },
-  menu: {
+  // The shadow sits on an outer view: iOS drops the shadow of a view that clips its children.
+  shadow: {
     position: 'absolute' as const,
-    backgroundColor: t.menu ?? t.surface,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: t.border,
-    overflow: 'hidden' as const,
-    paddingVertical: 4,
+    borderRadius: MENU_RADIUS,
     shadowColor: t.scrim,
-    shadowOpacity: 0.28,
-    shadowRadius: 22,
-    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 12 },
     elevation: 12,
   },
-  head: { color: t.muted, fontSize: 13, lineHeight: 18, paddingHorizontal: 14, paddingTop: 8, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: t.line },
-  item: { ...ROW_CENTER, gap: 8, minHeight: ITEM_HEIGHT, paddingLeft: 8, paddingRight: 14 },
-  line: { borderTopWidth: 1, borderTopColor: t.line },
+  menu: {
+    backgroundColor: t.menu ?? t.surface,
+    borderRadius: MENU_RADIUS,
+    borderWidth: 0.75,
+    borderColor: t.menuEdge ?? withAlpha(t.text, 0.55) ?? t.border,
+    overflow: 'hidden' as const,
+  },
+  fill: { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0 },
+  list: { paddingVertical: PAD },
+  head: { color: t.muted, fontSize: 13, lineHeight: 18, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: t.line },
+  item: { ...ROW_CENTER, gap: 8, minHeight: ITEM_HEIGHT, paddingLeft: 10, paddingRight: 16 },
+  group: { marginTop: GROUP_GAP, borderTopWidth: 1, borderTopColor: t.line },
   pressed: { backgroundColor: t.field },
   tick: { width: 20, alignItems: 'center' as const },
+  leadBox: { width: 22, alignItems: 'center' as const, marginRight: 2 },
+  dot: { width: 12, height: 12, borderRadius: 6 },
+  lock: { width: 24, height: 24, borderRadius: 12, alignItems: 'center' as const, justifyContent: 'center' as const },
   label: { flex: 1, color: t.text, fontSize: 16 },
+  chosen: { fontWeight: '600' as const },
   detail: { color: t.muted, fontSize: 14 },
   pill: { ...ROW_CENTER, gap: 6, paddingVertical: 6, paddingLeft: 12, paddingRight: 10, borderRadius: 999, backgroundColor: t.field, maxWidth: 180 },
   pillText: { color: t.text, fontSize: 15, fontWeight: '500' as const, flexShrink: 1 },

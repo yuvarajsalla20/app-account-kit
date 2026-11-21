@@ -2,6 +2,12 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.32.0 (2026-11-21)
+
+- **Fix: the Profile photo is no longer cut off at the top.** 7.27.1 pulled the centred photo up with a negative top margin, and the page's scroll view hid the part drawn above its top edge, so the top of the circle was cut off flat on iPhone and Android. The photo now starts at the top of the page content, uncut.
+- **Glass pull-down menus.** `PullDownMenu` (and every picker, `MenuRow` and Home menu built on it) now opens over the row that opened it, as iOS does: it covers the row and grows upward, or grows downward from the row's top when there is no room above. The card is more rounded (28 pt), has a thin outline (`theme.menuEdge`, default `text` at 55%) and no lines between choices; the chosen line is a little bolder. `components.MenuBackdrop` draws behind it, so an app can pass its frosted blur and a see-through `theme.menu` for a glass look. A long list now uses the height of the screen and scrolls.
+- **Richer menu lines.** `PullDownItem` takes `lead` (an icon before the label), `dot` (a color dot), `locked` (a padlock in the theme's lock colors; screen readers hear the locked hint) and `group` (a thin line and a little space above, to start a new group).
+
 ## 7.31.0 (2026-11-21)
 
 - **Professional default words.** The locked-row hint screen readers hear is now "Available with Premium" (was "Needs the paid plan"), the nickname placeholder "Add a Nickname", the Support title "How Can We Help?" and the Share message "Discover <App>: <link>". An app that passed its own words still wins where the settings kit allows it.
