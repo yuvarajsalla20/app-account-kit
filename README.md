@@ -2,16 +2,22 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.29.0** (tag `v7.29.0`)
+**Current version: 7.30.0** (tag `v7.30.0`)
 
-Part of a family of shared kits used by every app:
+Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
 [app-auth-kit](https://github.com/yuvarajsalla20/app-auth-kit) ·
 **app-account-kit** ·
 [app-settings-kit](https://github.com/yuvarajsalla20/app-settings-kit) ·
 [app-subscriptions-kit](https://github.com/yuvarajsalla20/app-subscriptions-kit) ·
 [app-payments-kit](https://github.com/yuvarajsalla20/app-payments-kit) ·
-[app-export-kit](https://github.com/yuvarajsalla20/app-export-kit)
+[app-export-kit](https://github.com/yuvarajsalla20/app-export-kit) ·
+[app-guard-kit](https://github.com/yuvarajsalla20/app-guard-kit) ·
+[app-theme-kit](https://github.com/yuvarajsalla20/app-theme-kit) ·
+[app-invite-kit](https://github.com/yuvarajsalla20/app-invite-kit) ·
+[app-goldrates-api-kit](https://github.com/yuvarajsalla20/app-goldrates-api-kit)
+
+Tools that work alongside them: [code-review-kit](https://github.com/yuvarajsalla20/code-review-kit) (reviews) and app-insights-kit (store numbers, private).
 
 > Most apps should not use this kit directly. [app-settings-kit](https://github.com/yuvarajsalla20/app-settings-kit) builds the standard Settings (About, Profile, Preferences, Premium) on top of it from one config. Use this kit directly when you need a page layout the settings kit does not offer, or its building blocks (`SettingRow`, `PickerRow`, `ChoiceSheet`) on your own pages.
 
@@ -22,14 +28,14 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.12.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.30.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v7.12.0"
+  "app-account-kit": "v7.30.0"
 }
 ```
 
-Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.12.0`.
+Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.30.0`.
 
 **Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported). Optional, only for `app-account-kit/photo`: `expo-image-picker` and `expo-image-manipulator`.
 
@@ -86,7 +92,7 @@ export function Settings() {
         supportEmail: 'support@example.com',
         share: { url: APP_STORE_URL },
         rate: { appStoreId: APP_STORE_ID },
-        kits: [{ name: 'Account Kit', version: '7.12.0', build: '874b317' }],
+        kits: [{ name: 'Account Kit', version: '7.30.0', build: 'da25d6e' }],
       }}
       actions={{ onSignOut: auth.signOut, onDeleteAccount: auth.deleteAccount, confirmsWithPassword: auth.confirmsWithPassword() }}
       describeError={auth.message}
@@ -140,14 +146,14 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 |---|---|
 | `appName` | Shown under the logo, in `theme.brand` |
 | `logo` | `require('./assets/icon.png')` or `{ uri }` (84 pt rounded square), or (7.21.0) a drawn element such as `<MyLogo />`, shown at its own size |
-| `showHeader` | Optional (7.16.0). `false` leaves out the logo and name at the top of About (when the app shows its brand elsewhere, like `footer`). The page then keeps its normal header with the title About (7.16.1). Default true |
+| `showHeader` | Optional (7.16.0). `false` leaves out the logo and name at the top of About (when the app shows its brand elsewhere, e.g., in `footer`). The page then keeps its normal header with the title About (7.16.1). `'logo'` (7.30.0) keeps the title About in the header and shows the logo alone under it at 104 pt, with rounded corners and a soft shadow, without the app name; app-settings-kit uses this. Default true |
 | `version` | `{ number, label, lines? }`. `number` goes into support emails; the Version row shows `lines` (one per line), or `label` |
 | `privacyUrl` | https only |
 | `featuresUrl` | Adds a Features row that opens this https page |
 | `supportEmail` | Used by Contact Support. It cannot add a second recipient |
 | `share` | `{ url?, message? }`. 7.29.0: the Share row shows only when `url` is an https link; an empty object or an empty or http `url` shows nothing |
 | `rate` | `{ appStoreId?, playPackage? }`. 7.29.0: the Rate row shows on iPhone only when `appStoreId` is the App Store number (digits), and opens the App Store's own review screen; on Android only with `playPackage` |
-| `kits` | A list of `{ name, version, build? }`, shown as "Account Kit \| v7.12.0 \| Build 874b317", or the older one-line text from `kitsLine`. Also added to support emails |
+| `kits` | A list of `{ name, version, build? }`, shown as "Account Kit \| v7.30.0 \| Build da25d6e", or the older one-line text from `kitsLine`. Also added to support emails |
 
 ### Added pages (`extraPages`)
 
@@ -299,6 +305,10 @@ To release: bump `version` in `package.json` and `KIT_VERSION` in `src/kit.ts` (
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for every release and the upgrade guides between major versions.
+
+## Writing rule
+
+Every word this kit shows, and every line of its documentation, follows the shared [Writing rule](https://github.com/yuvarajsalla20/app-settings-kit#writing-rule-every-word-is-professional): Title Case for titles, rows and buttons; calm, complete sentences for captions and messages; "e.g.," for examples; no chatty fragments, slang or exclamation marks. Apps do not override these words; a change is made in the kit so that every app receives it.
 
 ## License
 
