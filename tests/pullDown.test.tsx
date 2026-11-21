@@ -54,6 +54,33 @@ describe('PullDownMenu lines (7.32.0)', () => {
   });
 });
 
+describe('pull-down PickerRow with paid options (7.33.0)', () => {
+  const options = [{ value: 'Bell', label: 'Bell' }, { value: 'Chime', label: 'Chime' }, { value: 'Harp', label: 'Harp' }];
+  const open = async () => {
+    const onChange = vi.fn();
+    const onPick = vi.fn();
+    const onLocked = vi.fn();
+    const extra = { id: 'sec', label: 'Alerts', icon: 'bell' as const, content: <PickerRow icon="volume-2" tint="#000000" label="Default Sound" note="Plays when picked." options={options} value="Bell" onChange={onChange} onPick={onPick} locked={(v) => v !== 'Bell'} onLocked={onLocked} /> };
+    const h = mount(<SettingsScreen theme={THEME} pickers="pullDown" {...make({ extraPages: [extra] })} />);
+    await press(h.byLabel('Alerts'));
+    await press(h.byLabel('Default Sound'));
+    return { h, onChange, onPick, onLocked };
+  };
+  it('shows the note and a padlock on each paid option', async () => {
+    const { h } = await open();
+    expect(shows(h, 'Plays when picked.')).toBe(true);
+    const lines = h.root.root.findAll((n) => typeof n.type === 'string' && n.props.accessibilityRole === 'menuitem');
+    expect(lines.map((l) => l.props.accessibilityLabel)).toEqual(['Bell', `Chime, ${S.lockedHint}`, `Harp, ${S.lockedHint}`]);
+  });
+  it('a paid option plays, is not kept, and calls onLocked with it', async () => {
+    const { h, onChange, onPick, onLocked } = await open();
+    await press(h.root.root.findAll((n) => n.props.accessibilityRole === 'menuitem' && n.props.accessibilityLabel === `Chime, ${S.lockedHint}`)[0]!);
+    expect(onPick).toHaveBeenCalledWith('Chime');
+    expect(onLocked).toHaveBeenCalledWith('Chime');
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
 describe('pull-down pickers (7.26.0)', () => {
   const options = [{ value: 0, label: 'Immediately' }, { value: 30, label: '30 s' }];
   const screen = (onChange = vi.fn()) => {
