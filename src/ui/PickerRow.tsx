@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLook } from '../look';
 import type { IconName } from '../types';
+import { useAfterClose } from './afterClose';
 import { ChoiceSheet, type Choice } from './ChoiceSheet';
 import { MenuRow } from './PullDown';
 import { SettingRow } from './Row';
@@ -29,6 +30,7 @@ interface Props<V extends string | number> {
 export function PickerRow<V extends string | number = string>({ options, value, onChange, title, style, ...row }: Props<V>) {
   const { pickers } = useLook();
   const [open, setOpen] = useState(false);
+  const after = useAfterClose();
   const chosen = options.find((o) => o.value === value);
   const current = chosen?.label ?? String(value);
   if ((style ?? pickers) === 'pullDown') {
@@ -55,9 +57,11 @@ export function PickerRow<V extends string | number = string>({ options, value, 
         value={value}
         onChoose={(next) => {
           setOpen(false);
-          if (next !== value) onChange(next);
+          // 7.29.0: once the sheet has gone, so a change that opens something of its own (a prompt, a sheet) is shown on iPhone.
+          if (next !== value) after.later(() => onChange(next));
         }}
         onClose={() => setOpen(false)}
+        onDismiss={after.onDismiss}
       />
     </>
   );

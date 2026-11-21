@@ -5,6 +5,7 @@ import { placeMenu, type Box } from '../logic/menuPlace';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
+import { useAfterClose } from './afterClose';
 import { ROW_CENTER } from './layout';
 
 /** One line of a pull-down menu (7.26.0). */
@@ -27,8 +28,14 @@ interface MenuProps {
   /** A short muted line at the top, such as what Log Out keeps. */
   head?: string;
   items: readonly PullDownItem[];
+  /** A tap on a line. Called once the menu has finished closing (7.29.0), so it can open a share sheet on iPhone. */
   onPick: (id: string) => void;
   onClose: () => void;
+  /**
+   * 7.29.0: keep the menu mounted and pass `open` here, so it can fade out before `onPick` runs. Default true (a menu that is
+   * taken away on close still works; `onPick` then waits a moment instead).
+   */
+  visible?: boolean;
 }
 
 const MENU_WIDTH = 250;
@@ -37,16 +44,17 @@ const MAX_HEIGHT = 380;
 
 /**
  * The iOS-style pull-down menu (7.26.0): a small rounded card that floats right under (or, near the bottom, right above) the row
- * that opened it, with a tick on the chosen line. A tap on a line picks it and closes; a tap anywhere else only closes.
+ * that opened it, with a tick on the chosen line. A tap on a line closes the menu and then picks it; a tap anywhere else only closes.
  */
-export function PullDownMenu({ anchor, head, items, onPick, onClose }: MenuProps) {
+export function PullDownMenu({ anchor, head, items, onPick, onClose, visible = true }: MenuProps) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const screen = useWindowDimensions();
   const height = Math.min(MAX_HEIGHT, items.length * ITEM_HEIGHT + (head ? 52 : 0) + 8);
   const spot = placeMenu(anchor, { width: MENU_WIDTH, height }, screen);
+  const after = useAfterClose();
   return (
-    <Modal visible transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} onDismiss={after.onDismiss} statusBarTranslucent>
       <Pressable style={styles.scrim} onPress={onClose} accessibilityRole="button" accessibilityLabel={strings.close} />
       <View style={[styles.menu, { top: spot.top, left: spot.left, width: MENU_WIDTH, maxHeight: MAX_HEIGHT }]} accessibilityViewIsModal accessibilityRole="menu">
         {head ? <components.Text style={styles.head}>{head}</components.Text> : null}
@@ -56,7 +64,7 @@ export function PullDownMenu({ anchor, head, items, onPick, onClose }: MenuProps
               key={item.id}
               onPress={() => {
                 onClose();
-                onPick(item.id);
+                after.later(() => onPick(item.id));
               }}
               accessibilityRole="menuitem"
               accessibilityLabel={item.detail ? `${item.label}, ${item.detail}` : item.label}
@@ -102,19 +110,25 @@ export function useAnchor() {
   const ref = useRef<ElementRef<typeof View>>(null);
   const [anchor, setAnchor] = useState<Box | null>(null);
   const [open, setOpen] = useState(false);
+  // 7.29.0: true once the menu has opened, so it can stay mounted and fade out (render `<PullDownMenu visible={open} />` while `opened`).
+  const [opened, setOpened] = useState(false);
+  const reveal = () => {
+    setOpened(true);
+    setOpen(true);
+  };
   const show = () => {
     const node = ref.current as unknown as { measureInWindow?: (cb: (x: number, y: number, width: number, height: number) => void) => void } | null;
     if (node?.measureInWindow) {
       node.measureInWindow((x, y, width, height) => {
         setAnchor({ x, y, width, height });
-        setOpen(true);
+        reveal();
       });
     } else {
       setAnchor(null);
-      setOpen(true);
+      reveal();
     }
   };
-  return { ref, anchor, open, show, hide: () => setOpen(false) };
+  return { ref, anchor, open, opened, show, hide: () => setOpen(false) };
 }
 
 /** A row that opens a pull-down menu in place (7.26.0): with `pill`, the grey value pill on the right; without, the small up/down chevron. */
@@ -123,7 +137,8 @@ export function MenuRow({ pill, head, items, onPick, children }: { pill?: string
   return (
     <View ref={a.ref} collapsable={false}>
       {children(a.show, pill !== undefined ? <PullDownPill value={pill} /> : null)}
-      {a.open ? <PullDownMenu anchor={a.anchor} head={head} items={items} onPick={onPick} onClose={a.hide} /> : null}
+      {/* Kept mounted once opened, so it fades out before onPick runs (7.29.0). */}
+      {a.opened ? <PullDownMenu visible={a.open} anchor={a.anchor} head={head} items={items} onPick={onPick} onClose={a.hide} /> : null}
     </View>
   );
 }

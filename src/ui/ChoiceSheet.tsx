@@ -40,6 +40,8 @@ interface Props<V extends string | number> {
   onLocked?: () => void;
   /** A line of explanation under the options. */
   note?: string;
+  /** 7.29.0: called once the sheet has finished closing (the Modal's `onDismiss`), such as to open a share sheet after a choice. */
+  onDismiss?: () => void;
 }
 
 /**
@@ -80,13 +82,13 @@ function useLockedTap(visible: boolean) {
   return [tapped, setTapped] as const;
 }
 
-function ListSheet<V extends string | number>({ visible, title, options, value, onChoose, onClose, onPick, locked, onLocked, note }: Props<V>) {
+function ListSheet<V extends string | number>({ visible, title, options, value, onChoose, onClose, onPick, locked, onLocked, note, onDismiss }: Props<V>) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const marks = useMarks();
   const [lockedTap, setLockedTap] = useLockedTap(visible);
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} onDismiss={onDismiss} statusBarTranslucent>
       <View style={styles.fill}>
         <Pressable style={styles.scrim} onPress={onClose} accessibilityRole="button" accessibilityLabel={strings.close} />
         <View style={styles.sheet} accessibilityViewIsModal>
@@ -126,7 +128,7 @@ function ListSheet<V extends string | number>({ visible, title, options, value, 
   );
 }
 
-function ConfirmSheet<V extends string | number>({ visible, title, options, value, onClose, onConfirm, onPick, locked, onLocked, note }: Props<V> & { onConfirm: (value: V) => void }) {
+function ConfirmSheet<V extends string | number>({ visible, title, options, value, onClose, onConfirm, onPick, locked, onLocked, note, onDismiss }: Props<V> & { onConfirm: (value: V) => void }) {
   const { strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const marks = useMarks();
@@ -178,7 +180,7 @@ function ConfirmSheet<V extends string | number>({ visible, title, options, valu
     );
   }
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} onDismiss={onDismiss} statusBarTranslucent>
       <View style={styles.fill}>
         <Pressable style={styles.scrim} onPress={onClose} accessibilityRole="button" accessibilityLabel={strings.close} />
         <View style={styles.sheet} accessibilityViewIsModal>

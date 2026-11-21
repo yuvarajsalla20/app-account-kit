@@ -3,7 +3,7 @@ import { AccessibilityInfo, BackHandler, Keyboard, Platform, ScrollView, View } 
 import { AccountProvider, type AccountComponents } from './context';
 import { useLook, useStyles, type PickerStyle } from './look';
 import { useAction } from './hooks/useAction';
-import { parentOf, type Page } from './logic/pages';
+import { RESERVED_PAGE_IDS, parentOf, usableExtraPages, type Page } from './logic/pages';
 import { SettingsNavContext, type SettingsNav } from './nav';
 import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
@@ -28,12 +28,21 @@ type Props = SettingsScreenProps & {
   pickers?: PickerStyle;
 };
 
-const BUILTIN = new Set<string>(['hub', 'account', 'data', 'app', 'about', 'password', 'support', 'signOut', 'deleteAccount', 'access']);
+const BUILTIN = new Set<string>(RESERVED_PAGE_IDS);
 
-function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages: givenPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 }, top: { alignItems: 'center' } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
+  // 7.29.0: an app page named like one of the kit's own pages would draw both at once, so it is left out and reported.
+  const { pages: extraPages, clashes } = useMemo(() => usableExtraPages(givenPages), [givenPages]);
+  const clashKey = clashes.join(',');
+  useEffect(() => {
+    if (!clashKey) return;
+    const error = new Error(`extraPages: ${clashKey} ${clashes.length > 1 ? 'are' : 'is'} the kit's own page name; that page is left out. Pick another id.`);
+    onError?.('extraPages', error);
+    if (typeof __DEV__ !== 'undefined' && __DEV__) console.warn(`[app-account-kit] ${error.message}`);
+  }, [clashKey]);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
   const [asked, setPage] = useState<Page>('hub');
   // Set when an app's page opened another one through useSettingsNav: Back returns there instead of the usual parent.

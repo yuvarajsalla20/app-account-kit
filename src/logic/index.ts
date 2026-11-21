@@ -1,4 +1,4 @@
-export { hubPages, parentOf } from './pages';
+export { RESERVED_PAGE_IDS, hubPages, isReservedPageId, parentOf, usableExtraPages } from './pages';
 export type { Page } from './pages';
 export { canConfirmDelete, typedWordMatches } from './deleteRules';
 export { CSV_BOM, csvFileName, toCsv } from './csv';

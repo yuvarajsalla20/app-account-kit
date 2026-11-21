@@ -95,3 +95,51 @@ describe('top (7.17.0)', () => {
     expect(seen).toContain('account');
   });
 });
+
+describe('Delete steps stay fixed once started (7.29.0)', () => {
+  const unlockPage = () => make({ exitMenu: { unlock: (done) => <View accessibilityLabel="unlock-now" onPress={done} /> } });
+  const open = async (h: ReturnType<typeof mount>) => {
+    await press(h.byLabel(S.account));
+    await press(h.byLabel(S.moreOptions));
+    await press(h.byLabel(S.deleteAccount));
+  };
+  const barLabel = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && String(n.props.accessibilityLabel ?? '').startsWith('Step'))[0]?.props.accessibilityLabel;
+
+  it('unlock taken away on the unlock step: the type-DELETE step still comes next, and the bar keeps its count', async () => {
+    const p = unlockPage();
+    const h = mount(<SettingsScreen theme={THEME} {...p} />);
+    await open(h);
+    expect(h.has('unlock-now')).toBe(true);
+    expect(barLabel(h)).toBe(S.stepOf(1, 3));
+    h.rerender(<SettingsScreen theme={THEME} {...p} exitMenu={{}} />);
+    expect(h.has(S.deleteTypeLabel('DELETE'))).toBe(true);
+    expect(h.has(S.deleteForever)).toBe(false);
+    expect(barLabel(h)).toBe(S.stepOf(2, 3));
+    expect(barLabel(h)).not.toBe(S.stepOf(0, 2));
+  });
+
+  it('unlock passed only after the page opened: no step is added part way', async () => {
+    const p = make({ exitMenu: {} });
+    const h = mount(<SettingsScreen theme={THEME} {...p} />);
+    await open(h);
+    expect(barLabel(h)).toBe(S.stepOf(1, 2));
+    h.rerender(<SettingsScreen theme={THEME} {...unlockPage()} />);
+    expect(h.has(S.deleteTypeLabel('DELETE'))).toBe(true);
+    expect(barLabel(h)).toBe(S.stepOf(1, 2));
+  });
+});
+
+describe('the kit ⋯ list floats above the page (7.29.0)', () => {
+  it('opens in a Modal, so iPhone draws it over the first cards, and picking still opens the page', async () => {
+    const h = mount(<SettingsScreen theme={THEME} {...make({ exitMenu: {} })} />);
+    await press(h.byLabel(S.account));
+    await press(h.byLabel(S.moreOptions));
+    const modal = h.root.root.findAll((n) => n.type === 'Modal');
+    expect(modal).toHaveLength(1);
+    expect(modal[0]!.findAll((n) => n.props.accessibilityRole === 'menuitem' && typeof n.type === 'string').map((n) => n.props.accessibilityLabel)).toEqual([S.signOut, S.deleteAccount]);
+    expect(h.byLabel(S.moreOptions).props.accessibilityState).toMatchObject({ expanded: true });
+    await press(h.byLabel(S.deleteAccount));
+    expect(h.root.root.findAll((n) => n.type === 'Modal')).toHaveLength(0);
+    expect(h.has(S.deleteTypeLabel('DELETE'))).toBe(true);
+  });
+});

@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.28.0** (tag `v7.28.0`)
+**Current version: 7.29.0** (tag `v7.29.0`)
 
 Part of a family of shared kits used by every app:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -31,7 +31,7 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 
 Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.12.0`.
 
-**Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported).
+**Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported). Optional, only for `app-account-kit/photo`: `expo-image-picker` and `expo-image-manipulator`.
 
 ## Entry points
 
@@ -39,6 +39,7 @@ Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-k
 |---|---|
 | `app-account-kit` | The screen, the provider, the UI pieces, the hooks and every helper |
 | `app-account-kit/logic` | The pure helpers only. Loads no React Native, so an app's tests can import them in plain Node |
+| `app-account-kit/photo` | 7.29.0: `pickProfilePhoto` and `cameraSupported`, the profile photo picker (a 256 px square JPEG under `DEFAULT_PHOTO_MAX_CHARS`). Pass them as `photo={{ pick: pickProfilePhoto, cameraSupported, onChange }}` |
 | `app-account-kit/package.json` | The kit's own `version`, for an About > Kits list |
 
 ## What you get
@@ -144,8 +145,8 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `privacyUrl` | https only |
 | `featuresUrl` | Adds a Features row that opens this https page |
 | `supportEmail` | Used by Contact Support. It cannot add a second recipient |
-| `share` | `{ url?, message? }`. Shows the Share row. It shares only a real https link; until then a tap says it is not on the App Store yet |
-| `rate` | `{ appStoreId? }`. Shows the Rate row on iPhone. Opens the App Store's own review screen once the id is set |
+| `share` | `{ url?, message? }`. 7.29.0: the Share row shows only when `url` is an https link; an empty object or an empty or http `url` shows nothing |
+| `rate` | `{ appStoreId?, playPackage? }`. 7.29.0: the Rate row shows on iPhone only when `appStoreId` is the App Store number (digits), and opens the App Store's own review screen; on Android only with `playPackage` |
 | `kits` | A list of `{ name, version, build? }`, shown as "Account Kit \| v7.12.0 \| Build 874b317", or the older one-line text from `kitsLine`. Also added to support emails |
 
 ### Added pages (`extraPages`)
@@ -166,7 +167,7 @@ extraPages={[
 ]}
 ```
 
-`id` must be unique and not one of the kit's own pages (`hub`, `account`, `data`, `app`, `about`, `password`, `support`). Rows keep the order of `extraPages`.
+`id` must be unique and not one of the kit's own pages (`RESERVED_PAGE_IDS`: `hub`, `account`, `data`, `app`, `about`, `password`, `support`, `signOut`, `deleteAccount`, `access`). Since 7.29.0 a page with one of those ids is left out and reported through `onError('extraPages', …)` (and a console warning in development). Rows keep the order of `extraPages`.
 
 `plainHeader: true` (7.19.0) gives that one page a plain header: no `brand`, and the page title in the top row on the left, beside Back. Other pages keep the brand. `plainHeaders` on `SettingsScreen` (7.20.0) does the same on every page, the main list included.
 
@@ -245,15 +246,15 @@ Exported from both `app-account-kit` and `app-account-kit/logic`:
 | `hubPages`, `parentOf` | Which rows the main list shows, and where Back goes from a page |
 | `passwordProblem`, `MIN_PASSWORD` | Checks a new password (8 characters by default) |
 | `canConfirmDelete` | Whether the delete button can be pressed yet |
-| `cleanNickname`, `initialOf` | Tidies a nickname; the letter shown when there is no photo |
-| `safePhoto`, `DEFAULT_PHOTO_MAX_CHARS` | Accepts only small jpeg, png or webp data, or https links |
+| `cleanNickname`, `initialOf` | Tidies a nickname; the letter shown when there is no photo. Call `initialOf(nickname, email)` for an avatar outside Settings so it matches |
+| `safePhoto`, `DEFAULT_PHOTO_MAX_CHARS` | Accepts only small jpeg, png or webp data (80,000 characters by default since 7.29.0, the apps' Firestore limit), or https links |
 | `isHttps`, `isEmail` | Link checks |
 | `buildShareMessage`, `canShare` | The Share text, and whether the link is real |
 | `canRate`, `reviewUrl`, `reviewWebUrl` | The App Store review links |
 | `supportMailUrl` | The support email with app, version, device and kits filled in |
 | `kitLines`, `kitListLines`, `kitsLine`, `kitsMailLine` | Kit lines for About and support emails |
 | `themeContrast` | The contrast check above |
-| `toCsv`, `csvFileName`, `CSV_BOM` | **Deprecated**: use [app-export-kit](https://github.com/yuvarajsalla20/app-export-kit). Removed in the next major version |
+| `toCsv`, `csvFileName`, `CSV_BOM` | **Deprecated**: use [app-export-kit](https://github.com/yuvarajsalla20/app-export-kit). Removed in 8.0.0 |
 
 `app-account-kit/logic` also exports `createActionGuard`, `DEFAULT_ACTION_TIMEOUT_MS`, `createSaveTracker` and `isPermissionError`.
 

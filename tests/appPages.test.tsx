@@ -87,3 +87,38 @@ describe("pages under 'app' (Preferences)", () => {
     expect(h.has('Home Screen Widgets')).toBe(true);
   });
 });
+
+describe('reserved page ids (7.29.0)', () => {
+  it('the ExtraPage.id doc names every reserved id, and the screen uses the same list', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { RESERVED_PAGE_IDS } = await import('../src/logic/pages');
+    const types = readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
+    const doc = types.slice(types.indexOf('export interface ExtraPage'), types.indexOf('  id: string;', types.indexOf('export interface ExtraPage')));
+    const named = [...doc.matchAll(/`(\w+)`/g)].map((m) => m[1]).filter((w) => w !== 'onError' && w !== 'extraPages' && w !== 'RESERVED_PAGE_IDS');
+    expect(new Set(named)).toEqual(new Set(RESERVED_PAGE_IDS));
+    const screenSrc = readFileSync(new URL('../src/SettingsScreen.tsx', import.meta.url), 'utf8');
+    expect(screenSrc).toContain('new Set<string>(RESERVED_PAGE_IDS)');
+  });
+
+  it("an app page called 'support' is left out and reported; the kit's Contact Support shows alone", async () => {
+    const onError = vi.fn();
+    const clash = { id: 'support', label: 'Help', icon: 'help-circle', content: <Text>App help page</Text> } as const;
+    const h = screen(props({ extraPages: [clash], onError }));
+    expect(h.has('Help')).toBe(false);
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError.mock.calls[0]![0]).toBe('extraPages');
+    expect(String(onError.mock.calls[0]![1])).toContain('support');
+    await press(h.byLabel(S.about));
+    await press(h.byLabel(S.contactSupport));
+    expect(shown(h, 'App help page')).toBe(false);
+    await press(h.byLabel(S.back));
+    expect(h.has(S.contactSupport)).toBe(true);
+  });
+
+  it('pages with their own ids are kept, and nothing is reported', () => {
+    const onError = vi.fn();
+    const h = screen(props({ extraPages: [{ ...family, under: undefined }], onError }));
+    expect(h.has('Connect as Family')).toBe(true);
+    expect(onError).not.toHaveBeenCalled();
+  });
+});

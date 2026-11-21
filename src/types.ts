@@ -31,11 +31,11 @@ export interface NicknameProps {
 }
 
 export interface PhotoProps {
-  /** Picks or takes a photo and returns it as a small picture, or null when cancelled. Throw an Error saying "permission" if access was refused. */
+  /** Picks or takes a photo and returns it as a small picture, or null when cancelled. Throw an Error saying "permission" if access was refused. 7.29.0: `pickProfilePhoto` from `app-account-kit/photo` does all this. */
   pick: (source: PhotoSource) => Promise<string | null>;
   /** Saves the picked photo (an empty string removes it). */
   onChange: (photo: string) => Promise<void> | void;
-  /** The most characters a picked photo may have (default about 300 KB as a data address). Anything bigger, or not a jpeg/png/webp data address or https link, is refused. */
+  /** The most characters a picked photo may have (default `DEFAULT_PHOTO_MAX_CHARS`, 80,000 since 7.29.0, the limit in both apps' Firestore rules). Anything bigger, or not a jpeg/png/webp data address or https link, is refused. */
   maxChars?: number;
   cameraSupported: boolean;
 }
@@ -93,7 +93,10 @@ export interface AboutProps {
   /** The Features row appears when this is passed: a secure web page listing what the app does. */
   featuresUrl?: string;
   supportEmail: string;
-  /** The Share row appears when this is passed. It shares once `url` is a secure App Store address; until then a tap says it is not available yet. `message` replaces the default wording. */
+  /**
+   * The Share row appears only when `url` is a secure (https) address, such as the App Store page (7.29.0: an empty object, an
+   * empty or http `url` shows no row). Pass the app's store constant always; the row comes when it is filled. `message` replaces the default wording.
+   */
   share?: { url?: string; message?: string };
   /**
    * All the kits in use. Shown as a Kits row in About that opens one line per kit, and added to support emails.
@@ -102,9 +105,9 @@ export interface AboutProps {
    */
   kits?: string | readonly KitInfo[];
   /**
-   * The Rate row appears on iPhone when this is passed. It opens the App Store's own review screen once `appStoreId` is set;
-   * until then a tap says it is not available yet. 7.27.0: on Android it appears only when `playPackage` (the app's
-   * Google Play package name, such as com.example.app) is set, and opens the app's Play Store page.
+   * The Rate row appears on iPhone only when `appStoreId` is the app's App Store number (digits, such as 6740123456), and opens
+   * the App Store's own review screen (7.29.0: an empty object or a missing or malformed id shows no row). 7.27.0: on Android
+   * it appears only when `playPackage` (the app's Google Play package name, such as com.example.app) is set, and opens the app's Play Store page.
    */
   rate?: { appStoreId?: string; playPackage?: string };
 }
@@ -130,7 +133,11 @@ export interface AppPageProps {
 
 /** A page the app adds to the main list. */
 export interface ExtraPage {
-  /** Unique, and not one of the kit's names (`hub`, `account`, `data`, `app`, `about`, `password`). */
+  /**
+   * Unique, and not one of the kit's own page names (`RESERVED_PAGE_IDS`): `hub`, `account`, `data`, `app`, `about`, `password`,
+   * `support`, `signOut`, `deleteAccount`, `access`. 7.29.0: a page with one of those ids is left out, reported through `onError`
+   * (`'extraPages'`) and, in development, with a console warning.
+   */
   id: string;
   /** The row's name and the page title. */
   label: string;

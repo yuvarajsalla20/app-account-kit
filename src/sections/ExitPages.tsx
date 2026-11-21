@@ -8,39 +8,33 @@ import type { AccountTheme } from '../theme';
 import type { ActionsProps, ExitMenuProps, IconName } from '../types';
 import { Button } from '../ui/Button';
 import { Field } from '../ui/Field';
+import { PullDownMenu, useAnchor } from '../ui/PullDown';
 import { SettingsGroup } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
 import { CENTER } from '../ui/layout';
 
-/** The ⋯ button on Account (7.17.0): the app's own `components.Menu`, or the kit's round button with a small list under it. */
+/**
+ * The ⋯ button on Account (7.17.0): the app's own `components.Menu`, or the kit's round button with a small list under it.
+ * 7.29.0: the list floats in a Modal (the pull-down menu), so it is drawn above the page's cards on iPhone instead of under them.
+ */
 export function ExitMenuButton({ items, onPick }: { items: readonly MenuItem[]; onPick: (id: string) => void }) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
-  const [open, setOpen] = useState(false);
+  const a = useAnchor();
   if (components.Menu) return <components.Menu label={strings.moreOptions} items={items} onPick={onPick} />;
   return (
-    <View>
-      <Pressable onPress={() => setOpen((o) => !o)} accessibilityRole="button" accessibilityLabel={strings.moreOptions} accessibilityState={{ expanded: open }} hitSlop={6} style={styles.dots}>
+    <View ref={a.ref} collapsable={false}>
+      <Pressable onPress={() => (a.open ? a.hide() : a.show())} accessibilityRole="button" accessibilityLabel={strings.moreOptions} accessibilityState={{ expanded: a.open }} hitSlop={6} style={styles.dots}>
         <Feather name="more-horizontal" size={20} color={theme.text} />
       </Pressable>
-      {open ? (
-        <View style={styles.list} accessibilityRole="menu">
-          {items.map((item, i) => (
-            <Pressable
-              key={item.id}
-              accessibilityRole="menuitem"
-              accessibilityLabel={item.label}
-              onPress={() => {
-                setOpen(false);
-                onPick(item.id);
-              }}
-              style={[styles.item, i < items.length - 1 && styles.itemLine]}
-            >
-              <components.Text style={[styles.itemText, item.danger && { color: theme.danger }]}>{item.label}</components.Text>
-              {item.icon ? <Feather name={item.icon as IconName} size={16} color={item.danger ? theme.danger : theme.text} /> : null}
-            </Pressable>
-          ))}
-        </View>
+      {a.opened ? (
+        <PullDownMenu
+          visible={a.open}
+          anchor={a.anchor}
+          items={items.map((item) => ({ id: item.id, label: item.label, icon: item.icon as IconName | undefined, danger: item.danger }))}
+          onPick={onPick}
+          onClose={a.hide}
+        />
       ) : null}
     </View>
   );
@@ -107,11 +101,14 @@ interface DeleteProps extends Pick<ActionsProps, 'confirmsWithPassword'> {
 export function DeleteAccountPage({ onDeleteAccount, confirmsWithPassword, exit, action, onSignOutInstead, onCancel }: DeleteProps) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
-  const steps: Step[] = exit.unlock ? ['unlock', 'lose', 'final'] : ['lose', 'final'];
-  const [step, setStep] = useState<Step>(steps[0]!);
+  // The steps are fixed when the page opens (7.29.0): if the app stops passing `unlock` part way, the bar keeps its count and no
+  // later step is skipped. An unlock step with nothing left to draw moves on to "what you will lose", never past typing DELETE.
+  const [steps] = useState<readonly Step[]>(() => (exit.unlock ? ['unlock', 'lose', 'final'] : ['lose', 'final']));
+  const [asked, setStep] = useState<Step>(steps[0]!);
+  const step: Step = asked === 'unlock' && !exit.unlock ? 'lose' : asked;
   const [typed, setTyped] = useState('');
   const [password, setPassword] = useState('');
-  const at = steps.indexOf(step);
+  const at = Math.max(0, steps.indexOf(step));
   const word = strings.deleteTypeWord;
 
   const bar = (
@@ -165,6 +162,7 @@ export function DeleteAccountPage({ onDeleteAccount, confirmsWithPassword, exit,
     );
   }
 
+  if (step !== 'final') return null;
   return (
     <View style={styles.page}>
       {bar}
@@ -186,10 +184,6 @@ export function DeleteAccountPage({ onDeleteAccount, confirmsWithPassword, exit,
 
 const makeStyles = (t: AccountTheme) => ({
   dots: { width: 40, height: 40, borderRadius: 20, ...CENTER, backgroundColor: t.surface, borderWidth: 1, borderColor: t.border },
-  list: { position: 'absolute' as const, right: 0, top: 46, minWidth: 210, backgroundColor: t.surface, borderRadius: 16, borderWidth: 1, borderColor: t.border, zIndex: 10, elevation: 6, shadowColor: t.scrim, shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 } },
-  item: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'space-between' as const, gap: 12, paddingHorizontal: 16, minHeight: 48 },
-  itemLine: { borderBottomWidth: 1, borderBottomColor: t.line },
-  itemText: { color: t.text, fontSize: 16, fontWeight: '600' as const },
   page: { gap: 12 },
   hero: { alignItems: 'center' as const, paddingVertical: 12, paddingHorizontal: 8, gap: 8 },
   circle: { width: 72, height: 72, borderRadius: 36, borderWidth: 1, ...CENTER, marginBottom: 4 },

@@ -2,10 +2,23 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.29.0 (2026-11-21)
+
+- **Fix: Data Export opens the share sheet on iPhone.** A pick from a pull-down menu (`PullDownMenu`, `MenuRow`, pull-down `PickerRow`) or a sheet (`DataRow`, sheet `PickerRow`) ran while its Modal was still fading out, and iPhone often does not show a share sheet asked for then. The pick now runs once the Modal has closed (its `onDismiss`, with a short fallback). `PullDownMenu` takes `visible` and `useAnchor` returns `opened`: an app that draws its own menu should keep it mounted with `{opened ? <PullDownMenu visible={open} … /> : null}`; one that removes it on close still works, a moment later. `ChoiceSheet` takes `onDismiss`.
+- **Fix: My data download is patient.** It ends in the share sheet, which waits for the person, so it is no longer reported as "taking too long" after 45 s.
+- **Fix: the Delete account steps stay fixed once the page opens.** If the app stopped passing `exitMenu.unlock` part way, the type-DELETE step could be skipped and the bar read "Step 0 of 2". Now the unlock step moves on to "what you will lose", never past typing DELETE, and the bar keeps its count. An `unlock` passed only after the page opened is not added part way.
+- **Fix: the kit's ⋯ list on Account floats above the page.** Without `components.Menu` it was drawn inside the header, so on iPhone the first cards covered it. It is now the same pull-down menu as the pickers, in a Modal under the ⋯.
+- **Reserved page ids, checked.** `RESERVED_PAGE_IDS` (new export, with `isReservedPageId`) lists every kit page: `hub`, `account`, `data`, `app`, `about`, `password`, `support`, `signOut`, `deleteAccount`, `access`. The `ExtraPage.id` doc named only six. An extra page with one of these ids drew on top of the kit's own page; it is now left out and reported through `onError('extraPages', …)`, with a console warning in development.
+- **Share and Rate show only when they go somewhere.** Share needs an https `share.url`; Rate on iPhone needs a real `rate.appStoreId` (digits). An empty object, an empty or missing value no longer shows a row that only says "not on the store yet". Apps can always pass their store constants. `strings.notOnStoreYet` is no longer shown.
+- **Photo limit 80,000.** `DEFAULT_PHOTO_MAX_CHARS` drops from 400,000 to 80,000, the limit in both apps' Firestore rules, so a photo the kit accepts is not refused by the server.
+- **Photo picker in the kit (opt-in):** `app-account-kit/photo` exports `pickProfilePhoto` and `cameraSupported`, the picker both apps copied into `src/shared/photo.ts`. Square, 256 px, JPEG under the limit (it saves at lower quality if needed), throws `permission` when the camera is refused. Needs `expo-image-picker` and `expo-image-manipulator` (optional peers; only this entry loads them).
+- **`initialOf` for avatars outside Settings.** Call `initialOf(nickname, email)` for the Home avatar so it shows the same letter as Settings. It keeps a whole emoji where the platform can tell (`Intl.Segmenter`).
+- **Still deprecated: `CSV_BOM`, `toCsv`, `csvFileName`** (since 7.9.0). They stay in 7.29.0 so no app breaks in a minor release, and go away in 8.0.0. Use app-export-kit; neither app imports them from this kit.
 
 ## 7.28.0 (2026-11-21)
 
 **Profile, not Account.** The Account row and page are called **Profile** by default (`strings.account`), and the Log Out lines no longer say "safe in your account". Only the delete steps still say "account", because the account is really deleted. Reword through `strings.account` as before.
+
 ## 7.27.1
 
 - **Fix:** with `exitMenu.signOutMenu`, the Delete account group row showed the same `log-out` icon as the Sign out row above it, so it looked like a second Sign out. It now shows `user-x`, as 7.25.0 describes. Nothing to change in apps.
