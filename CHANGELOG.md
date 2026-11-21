@@ -5,6 +5,7 @@ Release notes for app-account-kit, newest first. Each version is tagged in git (
 ## 7.27.1
 
 - **Fix:** with `exitMenu.signOutMenu`, the Delete account group row showed the same `log-out` icon as the Sign out row above it, so it looked like a second Sign out. It now shows `user-x`, as 7.25.0 describes. Nothing to change in apps.
+- **Tighter centred photo:** with `profile.centered`, the photo sits closer to the page title above it and to the first card below it (12 pt less above, 6 pt less below).
 
 ## 7.27.0
 
