@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+
+## 7.28.0 (2026-11-21)
+
+**Profile, not Account.** The Account row and page are called **Profile** by default (`strings.account`), and the Log Out lines no longer say "safe in your account". Only the delete steps still say "account", because the account is really deleted. Reword through `strings.account` as before.
 ## 7.27.1
 
 - **Fix:** with `exitMenu.signOutMenu`, the Delete account group row showed the same `log-out` icon as the Sign out row above it, so it looked like a second Sign out. It now shows `user-x`, as 7.25.0 describes. Nothing to change in apps.

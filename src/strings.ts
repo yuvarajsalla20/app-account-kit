@@ -119,7 +119,7 @@ export interface AccountStrings {
 
 export const DEFAULT_STRINGS: AccountStrings = {
   settings: 'Settings',
-  account: 'Account',
+  account: 'Profile',
   myData: 'My data',
   yourData: 'Your data',
   app: 'App',
@@ -177,7 +177,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   keepAccount: 'Keep my account',
   moreOptions: 'More options',
   access: 'Access',
-  accessNote: 'Signing out keeps your data safe in your account. Deleting your account erases it for good, after a few checks.',
+  accessNote: 'Signing out keeps your data safe. Deleting your account erases it for good, after a few checks.',
   profileGroup: '',
   dataGroup: '',
   exitGroup: '',
@@ -185,7 +185,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   aboutHelpGroup: '',
   aboutInfoGroup: '',
   signOutTitle: 'Sign out?',
-  signOutBody: 'Your data stays safe in your account. Sign in any time to see it again.',
+  signOutBody: 'Your data stays safe. Sign in any time to see it again.',
   stayIn: 'Stay signed in',
   deleteLoseTitle: 'You will lose, forever:',
   deleteBreakTitle: 'Just want a break?',
