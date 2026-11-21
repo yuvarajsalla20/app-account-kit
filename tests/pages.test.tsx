@@ -362,6 +362,24 @@ describe('AboutSection', () => {
     expect(h.held.action.note).toBeNull();
   });
 
+  it('on Android, shows Rate only with a Play package name and opens the Play Store page, then the web page if that fails', async () => {
+    Platform.OS = 'android';
+    expect(setup({ rate: { appStoreId: '6740123456' } }).has(S.rate)).toBe(false);
+    expect(setup({ rate: { playPackage: 'not a package' } }).has(S.rate)).toBe(false);
+    const open = vi.spyOn(Linking, 'openURL').mockRejectedValueOnce(new Error('no store')).mockResolvedValue(true);
+    const h = setup({ rate: { appStoreId: '6740123456', playPackage: 'com.example.app' } });
+    await press(h.byLabel(S.rate));
+    expect(open).toHaveBeenNthCalledWith(1, 'market://details?id=com.example.app');
+    expect(open).toHaveBeenNthCalledWith(2, 'https://play.google.com/store/apps/details?id=com.example.app');
+    expect(h.held.action.note).toBeNull();
+  });
+
+  it('on iPhone, ignores the Play package name and keeps the App Store review screen', async () => {
+    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    await press(setup({ rate: { appStoreId: '6740123456', playPackage: 'com.example.app' } }).byLabel(S.rate));
+    expect(open).toHaveBeenCalledWith('itms-apps://itunes.apple.com/app/id6740123456?action=write-review');
+  });
+
   it('shares the message with the link, and waits for the person to finish with the share sheet', async () => {
     vi.useFakeTimers();
     let close!: () => void;

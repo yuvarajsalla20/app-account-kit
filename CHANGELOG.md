@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.27.0
+
+- **Rate on Android (opt-in):** `rate.playPackage` (the app's Google Play package name, such as `com.example.app`) shows the Rate row on Android too. It opens the app's Play Store page (`market://details?id=…`), and the web page on play.google.com if the Play Store app cannot be opened. New string `openPlayStore`. Without `playPackage`, Rate stays hidden on Android as before, and iPhone is unchanged.
+
 ## 7.26.0
 
 - **Pull-down pickers (opt-in):** `pickers="pullDown"` on `SettingsScreen` (or `AccountProvider`) draws every `PickerRow` as a grey value pill with a small up/down chevron. A tap floats an iOS-style menu right under the row (above it near the bottom of the screen), with a tick on the chosen line, instead of a sheet from the bottom. A row can override with `style`. `Choice` takes `icon` and `pill` (a shorter word for the pill). `theme.menu` sets the menu fill (default `surface`). New exports: `MenuRow`, `PullDownMenu`, `PullDownPill`, `UpDown`, `useAnchor`, `placeMenu`.

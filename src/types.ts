@@ -101,8 +101,12 @@ export interface AboutProps {
    * or the older one-line text built with `kitsLine`.
    */
   kits?: string | readonly KitInfo[];
-  /** The Rate row (iPhone only) appears when this is passed. It opens the App Store's own review screen once `appStoreId` is set; until then a tap says it is not available yet. */
-  rate?: { appStoreId?: string };
+  /**
+   * The Rate row appears on iPhone when this is passed. It opens the App Store's own review screen once `appStoreId` is set;
+   * until then a tap says it is not available yet. 7.27.0: on Android it appears only when `playPackage` (the app's
+   * Google Play package name, such as com.example.app) is set, and opens the app's Play Store page.
+   */
+  rate?: { appStoreId?: string; playPackage?: string };
 }
 
 export interface ActionsProps {

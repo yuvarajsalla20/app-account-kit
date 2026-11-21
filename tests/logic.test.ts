@@ -8,7 +8,7 @@ import { canConfirmDelete } from '../src/logic/deleteRules';
 import { supportMailUrl } from '../src/logic/mail';
 import { cleanNickname, initialOf } from '../src/logic/nickname';
 import { MIN_PASSWORD, passwordProblem } from '../src/logic/password';
-import { canRate, reviewUrl, reviewWebUrl } from '../src/logic/rate';
+import { canRate, canRatePlay, playReviewUrl, playReviewWebUrl, reviewUrl, reviewWebUrl } from '../src/logic/rate';
 import { buildShareMessage, canShare } from '../src/logic/share';
 import { DEFAULT_STRINGS } from '../src/strings';
 
@@ -98,6 +98,19 @@ describe('rate', () => {
   it('opens the App Store review screen, with a web fallback', () => {
     expect(reviewUrl('6740123456')).toBe('itms-apps://itunes.apple.com/app/id6740123456?action=write-review');
     expect(reviewWebUrl('6740123456')).toBe('https://apps.apple.com/app/id6740123456?action=write-review');
+  });
+});
+
+describe('rate on Google Play', () => {
+  it('takes only a package name, and opens the Play Store page with a web fallback', () => {
+    expect(canRatePlay('com.yuvarajsalla.moonpenny')).toBe(true);
+    expect(canRatePlay(' com.example.app ')).toBe(true);
+    expect(canRatePlay('moonpenny')).toBe(false);
+    expect(canRatePlay('')).toBe(false);
+    expect(canRatePlay(undefined)).toBe(false);
+    expect(canRatePlay('https://play.google.com/store/apps/details?id=com.example.app')).toBe(false);
+    expect(playReviewUrl('com.example.app')).toBe('market://details?id=com.example.app');
+    expect(playReviewWebUrl('com.example.app')).toBe('https://play.google.com/store/apps/details?id=com.example.app');
   });
 });
 
