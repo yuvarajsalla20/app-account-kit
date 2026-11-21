@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.30.0 (2026-11-21)
+
+- **About can show the logo on its own.** `about.showHeader: 'logo'` keeps the page title "About" in the header and shows the app's logo under it at 104 pt, with the home screen's rounded corners and a soft shadow, without the app name. A drawn element logo shows as it is. Without a logo nothing is drawn at the top. `true` and `false` work as before.
+
 ## 7.29.0 (2026-11-21)
 
 - **Fix: Data Export opens the share sheet on iPhone.** A pick from a pull-down menu (`PullDownMenu`, `MenuRow`, pull-down `PickerRow`) or a sheet (`DataRow`, sheet `PickerRow`) ran while its Modal was still fading out, and iPhone often does not show a share sheet asked for then. The pick now runs once the Modal has closed (its `onDismiss`, with a short fallback). `PullDownMenu` takes `visible` and `useAnchor` returns `opened`: an app that draws its own menu should keep it mounted with `{opened ? <PullDownMenu visible={open} … /> : null}`; one that removes it on close still works, a moment later. `ChoiceSheet` takes `onDismiss`.
