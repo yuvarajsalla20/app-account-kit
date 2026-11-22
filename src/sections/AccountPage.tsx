@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { useLook } from '../look';
+import { useSettingsNav } from '../nav';
 import type { ActionRunner } from '../hooks/useAction';
 import type { ExtraPage, NicknameProps, PasswordProps, PhotoProps, ProfileInfo } from '../types';
 import { SettingsGroup, STACK } from '../ui/Group';
@@ -71,8 +72,12 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
 
 /** One of the app's rows (Data Export): opens its page, or with `menu` (7.26.0) a pull-down menu in place. Shared with the App page. */
 export function PageRow({ page: p, last, tint, onOpen }: { page: ExtraPage; last: boolean; tint: string; onOpen: () => void }) {
+  const nav = useSettingsNav();
   // 7.34.0: a locked Premium row shows only the gold padlock; a tap opens the plans (or the page).
-  if (p.locked) return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} locked onPress={p.onLocked ?? onOpen} />;
+  // 7.35.0: with no onLocked, `lockedOpens` names the Settings page to open, such as the plan page.
+  const lockedOpens = p.lockedOpens;
+  const onLockedTap = p.onLocked ?? (lockedOpens && nav ? () => nav.open(lockedOpens) : onOpen);
+  if (p.locked) return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} locked onPress={onLockedTap} />;
   if (p.menu) {
     const m = p.menu;
     return (
