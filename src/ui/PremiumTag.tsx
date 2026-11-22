@@ -10,7 +10,7 @@ export const premiumGold = (t: AccountTheme): string => t.premium ?? t.tints.rat
 
 /**
  * 7.34.0: the small gold tag beside the name of a Premium feature, such as Data Export or Workspace: the award mark of the plan
- * page's Free and Premium comparison and the word "PREMIUM", gold on a soft gold fill with a gold edge. Shown to every account,
+ * page's Free and Premium comparison and the word "PREMIUM" in `ink` on solid gold, as on the approved mock. Shown to every account,
  * free and paid alike, so the person always knows which features the plan includes. Screen readers hear it from the row
  * (`SettingRow` adds `strings.premiumTag` to its label), so the tag itself is hidden from them.
  */
@@ -21,10 +21,10 @@ export function PremiumTag() {
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={{ ...ROW_CENTER, gap: 3, height: 20, paddingLeft: 6, paddingRight: 7, borderRadius: 10, borderWidth: 1, borderColor: gold, backgroundColor: withAlpha(gold, 0.14) ?? theme.field, flexShrink: 0 }}
+      style={{ ...ROW_CENTER, gap: 3, height: 20, paddingLeft: 6, paddingRight: 7, borderRadius: 10, backgroundColor: gold, flexShrink: 0 }}
     >
-      <Feather name="award" size={11} color={gold} />
-      <components.Text style={{ color: gold, fontSize: 10, fontWeight: '800', letterSpacing: 0.8 }}>{strings.premiumTag.toUpperCase()}</components.Text>
+      <Feather name="award" size={11} color={theme.ink} />
+      <components.Text style={{ color: theme.ink, fontSize: 10, fontWeight: '800', letterSpacing: 0.8 }}>{strings.premiumTag.toUpperCase()}</components.Text>
     </View>
   );
 }

@@ -4,7 +4,7 @@ Release notes for app-account-kit, newest first. Each version is tagged in git (
 
 ## 7.34.0 (2026-11-22)
 
-- **The Premium tag.** `SettingRow` takes `premium`: a small gold tag, the award mark and the word "PREMIUM", sits right after the row's name for every account, free and paid, so the person always knows which features the plan includes. Screen readers hear "Premium" after the name (`strings.premiumTag`). A `locked` premium row shows its padlock in the same gold. `PremiumTag`, `PremiumLock` and `premiumGold` are exported for an app's own rows.
+- **The Premium tag.** `SettingRow` takes `premium`: a small solid gold tag, the award mark and the word "PREMIUM" in `ink`, sits right after the row's name for every account, free and paid, so the person always knows which features the plan includes. Screen readers hear "Premium" after the name (`strings.premiumTag`). A `locked` premium row shows its padlock in the same gold. `PremiumTag`, `PremiumLock` and `premiumGold` are exported for an app's own rows.
 - **One Premium gold.** `theme.premium` (optional) colors the tag and the padlock. By default it is `tints.rate`, the gold of the plan page's Free and Premium comparison.
 - **Locked Premium pages.** `ExtraPage` takes `premium`, `locked` and `onLocked`. A locked row shows only the gold padlock on the right (no value, badge or menu), and a tap calls `onLocked` (open the plans), or opens the page when there is none.
 
