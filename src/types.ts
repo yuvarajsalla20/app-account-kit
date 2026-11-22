@@ -153,10 +153,12 @@ export interface ExtraPage {
   premium?: boolean;
   /**
    * 7.34.0: the account cannot use it yet: the gold padlock on the right instead of the value, badge or menu. A tap calls
-   * `onLocked` (open the plans), or opens the page when there is no `onLocked`.
+   * `onLocked` (open the plans), or opens `lockedOpens`, or opens the page when there is neither.
    */
   locked?: boolean;
   onLocked?: () => void;
+  /** 7.35.0: while `locked` and with no `onLocked`, a tap opens this Settings page instead, such as the plan page's id. */
+  lockedOpens?: string;
   /** Build the rows with SettingsGroup and SettingRow. */
   content: ReactNode;
   /**

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { SettingsNavContext } from '../src/nav';
 import { PageRow } from '../src/sections/AccountPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import { PremiumTag, premiumGold } from '../src/ui/PremiumTag';
@@ -37,6 +38,19 @@ describe('Premium tag (7.34.0)', () => {
     expect(onLocked).toHaveBeenCalledTimes(1);
     expect(onOpen).not.toHaveBeenCalled();
     expect(pick).not.toHaveBeenCalled();
+  });
+
+  it('7.35.0: a locked row with lockedOpens and no onLocked opens that Settings page', async () => {
+    const open = vi.fn();
+    const onOpen = vi.fn();
+    const h = mount(
+      <SettingsNavContext.Provider value={{ open }}>
+        <PageRow last tint="#000000" onOpen={onOpen} page={{ id: 'export', label: 'Data Export', icon: 'download', premium: true, locked: true, lockedOpens: 'premium', content: null }} />
+      </SettingsNavContext.Provider>,
+    );
+    await press(h.byLabel(`Data Export, ${S.premiumTag}, ${S.lockedHint}`));
+    expect(open).toHaveBeenCalledWith('premium');
+    expect(onOpen).not.toHaveBeenCalled();
   });
 
   it('an unlocked premium menu row keeps its menu pill and the tag', () => {

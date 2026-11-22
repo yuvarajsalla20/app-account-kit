@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.35.0 (2026-11-22)
+
+- **A locked row can open another Settings page.** `ExtraPage` takes `lockedOpens`, a Settings page id. While the row is `locked` and has no `onLocked`, a tap opens that page, such as the plan page, so an app needs no plans screen of its own. app-settings-kit 12.0.0 uses it to open the plan page from a locked Data Export row.
+
 ## 7.34.0 (2026-11-22)
 
 - **The Premium tag.** `SettingRow` takes `premium`: a small solid gold tag, the award mark and the word "PREMIUM" in `ink`, sits right after the row's name for every account, free and paid, so the person always knows which features the plan includes. Screen readers hear "Premium" after the name (`strings.premiumTag`). A `locked` premium row shows its padlock in the same gold. `PremiumTag`, `PremiumLock` and `premiumGold` are exported for an app's own rows.
