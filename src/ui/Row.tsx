@@ -5,6 +5,7 @@ import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
 import { CENTER, ROW_CENTER } from './layout';
+import { PremiumLock, PremiumTag } from './PremiumTag';
 import { UpDown } from './PullDown';
 
 interface Props {
@@ -38,10 +39,15 @@ interface Props {
   danger?: boolean;
   /** 7.26.0: the row opens a pull-down menu in place: a small up/down chevron instead of the arrow, or nothing beside a `badge` (the pill carries it). */
   opensMenu?: boolean;
+  /**
+   * 7.34.0: a Premium feature. The gold Premium tag sits right after the label, for every account, and a `locked` row shows the
+   * padlock in the same gold. Screen readers hear "Premium" after the label.
+   */
+  premium?: boolean;
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu, premium }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
@@ -51,7 +57,7 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
         onPress={press}
         disabled={!press || disabled}
         accessibilityRole={toggle ? 'switch' : press ? 'button' : undefined}
-        accessibilityLabel={[label, detail, locked ? strings.lockedHint : undefined].filter(Boolean).join(', ')}
+        accessibilityLabel={[label, premium ? strings.premiumTag : undefined, detail, locked ? strings.lockedHint : undefined].filter(Boolean).join(', ')}
         accessibilityValue={value ? { text: value } : undefined}
         accessibilityState={{ disabled: !!disabled, ...(toggle ? { checked: toggle.value } : null), ...(expanded === undefined ? null : { expanded }) }}
         style={styles.row}
@@ -60,13 +66,20 @@ export function SettingRow({ icon, tint, label, detail, value, badge, onPress, t
           <Feather name={icon} size={18} color={tint} />
         </View>
         <View style={styles.grow}>
-          <components.Text style={[styles.label, danger && { color: theme.danger }]}>{label}</components.Text>
+          {premium ? (
+            <View style={styles.named}>
+              <components.Text style={[styles.label, styles.shrink, danger && { color: theme.danger }]} numberOfLines={1}>{label}</components.Text>
+              <PremiumTag />
+            </View>
+          ) : <components.Text style={[styles.label, danger && { color: theme.danger }]}>{label}</components.Text>}
           {detail ? <components.Text style={styles.detail}>{detail}</components.Text> : null}
         </View>
         {badge ? (
           <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">{badge}</View>
         ) : value ? <components.Text style={styles.value} numberOfLines={2}>{value}</components.Text> : null}
-        {locked ? (
+        {locked && premium ? (
+          <PremiumLock />
+        ) : locked ? (
           <View style={styles.lock}>
             <Feather name="lock" size={17} color={theme.lock?.icon ?? theme.muted} />
           </View>
@@ -90,6 +103,8 @@ const makeStyles = (t: AccountTheme) => ({
   row: { ...ROW_CENTER, gap: 12, paddingVertical: 12, paddingHorizontal: 14 },
   tile: { width: 34, height: 34, borderRadius: 11, ...CENTER },
   grow: { flex: 1 },
+  named: { ...ROW_CENTER, gap: 8 },
+  shrink: { flexShrink: 1 },
   label: { color: t.text, fontSize: 16, fontWeight: '600' as const },
   detail: { color: t.muted, fontSize: 12, marginTop: 2 },
   value: { color: t.muted, fontSize: 15, flexShrink: 1, maxWidth: '65%' as const, textAlign: 'right' as const },

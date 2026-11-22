@@ -41,6 +41,11 @@ export interface AccountTheme {
   lock?: { icon: string; circle: string };
   /** 7.26.0: the fill of a pull-down menu, such as a slightly see-through card color. Defaults to `surface`. */
   menu?: string;
+  /**
+   * 7.34.0: the gold of the Premium tag beside a Premium feature's name, and of the padlock on a locked Premium row. Defaults to
+   * `tints.rate`, the gold of the plan page's Free and Premium comparison, so every Premium mark in an app is the same gold.
+   */
+  premium?: string;
   /** 7.32.0: the thin outline around a pull-down menu. Defaults to `text` at 55% (or `border` when `text` is not a #rrggbb color). */
   menuEdge?: string;
 }

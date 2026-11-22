@@ -2,6 +2,12 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.34.0 (2026-11-22)
+
+- **The Premium tag.** `SettingRow` takes `premium`: a small gold tag, the award mark and the word "PREMIUM", sits right after the row's name for every account, free and paid, so the person always knows which features the plan includes. Screen readers hear "Premium" after the name (`strings.premiumTag`). A `locked` premium row shows its padlock in the same gold. `PremiumTag`, `PremiumLock` and `premiumGold` are exported for an app's own rows.
+- **One Premium gold.** `theme.premium` (optional) colors the tag and the padlock. By default it is `tints.rate`, the gold of the plan page's Free and Premium comparison.
+- **Locked Premium pages.** `ExtraPage` takes `premium`, `locked` and `onLocked`. A locked row shows only the gold padlock on the right (no value, badge or menu), and a tap calls `onLocked` (open the plans), or opens the page when there is none.
+
 ## 7.33.0 (2026-11-21)
 
 - **Paid options in pull-down pickers.** `PickerRow` takes `onPick` (called on every pick, e.g., to play the sound just picked), `locked(value)` and `onLocked(value)` (a padlock on each paid option, which is not kept when picked; the paid options start their own group) and `note` (a line at the top of the menu, or under the options in the sheet). An option can take `lead`, an icon before its label. An app no longer needs its own sheet for a picker with paid options, such as Default Sound or Repeat Alerts.
