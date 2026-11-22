@@ -71,13 +71,15 @@ export function AccountPage({ profile, nickname, photo, password, action, onOpen
 
 /** One of the app's rows (Data Export): opens its page, or with `menu` (7.26.0) a pull-down menu in place. Shared with the App page. */
 export function PageRow({ page: p, last, tint, onOpen }: { page: ExtraPage; last: boolean; tint: string; onOpen: () => void }) {
+  // 7.34.0: a locked Premium row shows only the gold padlock; a tap opens the plans (or the page).
+  if (p.locked) return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} locked onPress={p.onLocked ?? onOpen} />;
   if (p.menu) {
     const m = p.menu;
     return (
       <MenuRow pill={m.pill} head={m.head} items={m.items} onPick={m.onPick}>
-        {(show, badge) => <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} value={p.value ?? m.pill} badge={badge ?? p.badge} opensMenu onPress={show} />}
+        {(show, badge) => <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} value={p.value ?? m.pill} badge={badge ?? p.badge} opensMenu onPress={show} />}
       </MenuRow>
     );
   }
-  return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} value={p.value} badge={p.badge} onPress={onOpen} />;
+  return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} value={p.value} badge={p.badge} onPress={onOpen} />;
 }

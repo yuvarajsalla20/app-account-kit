@@ -58,6 +58,8 @@ export interface AccountStrings {
   done: string;
   /** What VoiceOver adds to an option that needs the paid plan, such as "Go Premium". */
   lockedHint: string;
+  /** 7.34.0: the word on the Premium tag beside a Premium feature's name, also read out after the row's name. */
+  premiumTag: string;
   /** Shown under a picker when a locked option is tapped and the app gave no `onLocked`. */
   lockedNote: (choice: string) => string;
   signOut: string;
@@ -167,6 +169,7 @@ export const DEFAULT_STRINGS: AccountStrings = {
   cancel: 'Cancel',
   done: 'Done',
   lockedHint: 'Available with Premium',
+  premiumTag: 'Premium',
   lockedNote: (choice) => `${choice} is part of the paid plan.`,
   signOut: 'Sign out',
   deleteAccount: 'Delete account',

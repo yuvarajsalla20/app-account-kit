@@ -149,6 +149,14 @@ export interface ExtraPage {
   value?: string;
   /** Drawn in place of `value` on the right of the row, such as a small pill. Screen readers hear `value`. */
   badge?: ReactNode;
+  /** 7.34.0: a Premium feature: the gold Premium tag after the row's name, for every account (see `SettingRow.premium`). */
+  premium?: boolean;
+  /**
+   * 7.34.0: the account cannot use it yet: the gold padlock on the right instead of the value, badge or menu. A tap calls
+   * `onLocked` (open the plans), or opens the page when there is no `onLocked`.
+   */
+  locked?: boolean;
+  onLocked?: () => void;
   /** Build the rows with SettingsGroup and SettingRow. */
   content: ReactNode;
   /**

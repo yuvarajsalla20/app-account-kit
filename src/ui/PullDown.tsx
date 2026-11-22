@@ -7,6 +7,7 @@ import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
 import { useAfterClose } from './afterClose';
 import { ROW_CENTER } from './layout';
+import { withAlpha } from './color';
 
 /** One line of a pull-down menu (7.26.0). */
 export interface PullDownItem {
@@ -53,9 +54,6 @@ const SCREEN_MARGIN = 120;
 const PAD = 8;
 const GROUP_GAP = 9;
 
-/** `#rrggbb` at `alpha`, as `#rrggbbaa`. Any other color comes back unchanged (null), so the caller can fall back. */
-const withAlpha = (color: string, alpha: number): string | null =>
-  /^#[0-9a-f]{6}$/i.test(color) ? `${color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}` : null;
 
 /**
  * The iOS-style pull-down menu (7.26.0; glass look 7.32.0): a well-rounded card with a thin outline that opens over the row that
