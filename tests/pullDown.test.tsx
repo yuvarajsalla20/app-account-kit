@@ -162,3 +162,48 @@ describe('Profile is the word (7.28.0)', () => {
     expect(shows(h, 'Account')).toBe(false);
   });
 });
+
+describe('frosted, easy-to-read menus (8.0.0)', () => {
+  it('menuFill: the card color, at 92% over a blur and solid without one', async () => {
+    const { menuFill, MENU_GLASS } = await import('../src/ui/color');
+    expect(MENU_GLASS).toBe(0.92);
+    expect(menuFill('#ffffff', '#f0f0f0', true)).toBe('#ffffffeb');
+    expect(menuFill('#0f1d1b', '#0f1d1b', false)).toBe('#0f1d1b');
+    // A see-through card color falls back to the panel color, so the menu never shows the rows beneath.
+    expect(menuFill('rgba(255,255,255,0.4)', '#fafafa', false)).toBe('#fafafa');
+    expect(menuFill('rgba(255,255,255,0.4)', '#fafafa', true)).toBe('#fafafaeb');
+  });
+
+  const layers = async (os: string, menu?: string) => {
+    const RN = await import('react-native');
+    const before = RN.Platform.OS;
+    (RN.Platform as { OS: string }).OS = os;
+    try {
+      const { PullDownMenu } = await import('../src/ui/PullDown');
+      const { AccountProvider } = await import('../src/context');
+      const Backdrop = vi.fn((_: { style: object; intensity?: number }) => null);
+      const h = mount(
+        <AccountProvider theme={{ ...THEME, surface: '#ffffff', ...(menu ? { menu } : {}) }} components={{ MenuBackdrop: Backdrop }}>
+          <PullDownMenu anchor={null} items={[{ id: 'a', label: 'At Time' }]} onPick={() => {}} onClose={() => {}} />
+        </AccountProvider>,
+      );
+      const fills = h.root.root.findAll((n) => typeof n.type === 'string' && [n.props.style].flat(3).some((s) => s && typeof s === 'object' && 'backgroundColor' in s && /^#ffffff/.test(String(s.backgroundColor))));
+      return { Backdrop, fills: fills.map((n) => [n.props.style].flat(3).find((s) => s && 'backgroundColor' in s)!.backgroundColor) };
+    } finally {
+      (RN.Platform as { OS: string }).OS = before;
+    }
+  };
+
+  it('iPhone: a strong blur under the card color at 92%, whatever theme.menu says', async () => {
+    const { Backdrop, fills } = await layers('ios', 'rgba(246,251,250,0.2)');
+    expect(Backdrop).toHaveBeenCalled();
+    expect(Backdrop.mock.calls[0]![0].intensity).toBe(90);
+    expect(fills).toContain('#ffffffeb');
+  });
+
+  it('Android: no blur, a solid card color', async () => {
+    const { Backdrop, fills } = await layers('android');
+    expect(Backdrop).not.toHaveBeenCalled();
+    expect(fills).toContain('#ffffff');
+  });
+});

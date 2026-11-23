@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.38.0** (tag `v7.38.0`)
+**Current version: 8.0.0** (tag `v8.0.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,10 +28,10 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.38.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v8.0.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v7.36.0"
+  "app-account-kit": "v8.0.0"
 }
 ```
 
@@ -193,7 +193,7 @@ Use these on the app's own pages (inside `app.content` or an added page) so they
 | `PremiumTag`, `PremiumLock`, `premiumGold` | 7.34.0: the gold Premium tag and padlock for an app's own rows, in `theme.premium` (default `tints.rate`, the comparison table's gold) |
 | `PickerRow` | A row showing the current choice; a tap opens a `ChoiceSheet`, or the pull-down menu with `pickers: 'pullDown'`. `options`, `value`, `onChange`, `title?`, `detail?`. 7.33.0: `onPick` (every pick, e.g., to play a sound), `locked` and `onLocked` for paid options (a padlock in the menu), `note` (a line at the top of the menu), and `lead` on an option (an icon before its label) |
 | `ExpandRow` | A row that opens its content right below it |
-| `MenuRow`, `PullDownMenu`, `PullDownPill`, `useAnchor` | The iOS-style pull-down menu. It opens over the row that opened it, with a tick on the chosen line. 7.32.0: each `PullDownItem` can take `lead` (an icon before the label), `dot` (a color dot), `locked` (a padlock) and `group` (a thin line above) |
+| `MenuRow`, `PullDownMenu`, `PullDownPill`, `useAnchor` | The iOS-style pull-down menu. It opens over the row that opened it, with a tick on the chosen line. 8.0.0: frosted and close to solid, as Apple's menus are, so the rows beneath never show through the words. 7.32.0: each `PullDownItem` can take `lead` (an icon before the label), `dot` (a color dot), `locked` (a padlock) and `group` (a thin line above) |
 | `ChoiceSheet` | A bottom sheet of options. Add `onConfirm` to ask before keeping (✕ and ✓), `locked(value)` and `onLocked` for paid options, `onPick` (for example to play a sound), `note` |
 | `Avatar`, `Button`, `Field` | The kit's picture (7.23.0: `style` and `initialStyle` let an app use it outside Settings in its own look, inside `AccountProvider`), button (`solid`, `quiet`, `danger`, `outline`, `line`) and text box |
 | `AccountProvider` | Gives these pieces the theme when they are used outside `SettingsScreen` |
@@ -222,7 +222,7 @@ export const THEME: AccountTheme = {
   },
   backSize: 17,                                         // optional, size of the word Back (default 14)
   lock: { icon: '#8a6d1f', circle: '#fbf1d6' },        // optional, the padlock on paid options
-  menu: 'rgba(246,251,250,0.78)',                       // optional, a pull-down menu's fill (default `surface`)
+  menu: 'rgba(246,251,250,0.78)',                       // optional, glass surfaces such as app-settings-kit's headers (not the pull-down menu since 8.0.0)
   menuEdge: 'rgba(14,43,40,0.55)',                      // optional, its thin outline (default `text` at 55%)
 };
 ```
@@ -236,7 +236,7 @@ export const THEME: AccountTheme = {
 | `BackButton` | The kit's arrow and word | One Back button across the whole app. Receives `onPress`, `label` |
 | `EdgeSwipe` | none | Swipe back from the left edge. Receives `onBack`, `children` |
 | `Sheet` | The kit's sheet | The app's own bottom sheet around an ask-before-keeping picker |
-| `MenuBackdrop` | none | 7.32.0: drawn behind every pull-down menu, such as expo-blur's `BlurView`, so the menu reads as frosted glass. Receives `style` |
+| `MenuBackdrop` | none | 7.32.0: drawn behind every pull-down menu on iPhone, such as expo-blur's `BlurView`, so the menu reads as frosted glass. Receives `style` and, since 8.0.0, `intensity` (pass it on to `BlurView`). The kit lays the card color over it at 92%; on Android the menu is solid and no backdrop is drawn |
 
 **Check your colors** in a test or at start-up in development:
 

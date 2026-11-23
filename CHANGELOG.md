@@ -2,6 +2,11 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 8.0.0 (2026-11-23)
+
+- **Pull-down menus are easy to read.** Every pull-down menu (pickers, `MenuRow`, the Home menus and the ⋯ list) was a see-through card over a light blur, so the rows beneath showed through its words, e.g., "Default Remind Before" ran into "At Time". The kit now sets the menu's fill itself: on iPhone, a strong frosted blur (`components.MenuBackdrop`, asked for at `intensity` 90) under the card color at 92%, as Apple's own menus are; on Android, and in an app without a backdrop, the card color is solid. The shadow is a little deeper, so the menu stands clear of the page. Words keep the full `text` color in Light and Dark.
+- **Breaking: `theme.menu` no longer reaches the menu.** An app can no longer make a menu see-through. `theme.menu` stays for other glass surfaces, such as app-settings-kit's page headers. See "Upgrading from 7.x to 8.0".
+
 ## 7.38.0 (2026-11-23)
 
 - **Open Settings on a page.** `SettingsScreen` takes `startPage` (e.g., `'app'` for Preferences), so a link elsewhere in the app, such as "Change" beside the currency, opens the page where that setting lives (the Page rule) instead of the list. Back returns to the list as usual. A page the app does not have opens the list.
@@ -253,6 +258,12 @@ The kit draws the page header (centred 20 px titles); Delete account is an outli
 
 
 # Upgrade guides
+
+## Upgrading from 7.x to 8.0
+
+- Nothing breaks at build time. Every pull-down menu becomes frosted and close to solid.
+- Pass `intensity` on from `components.MenuBackdrop` to your blur, so the kit sets the blur strength: `({ style, intensity }) => <BlurView intensity={intensity} tint={tint} style={style} />`.
+- `theme.menu` now only colors other glass surfaces (e.g., app-settings-kit's page headers). Remove any comment that says it is the menu's fill.
 
 ## Upgrading from 6.x to 7.0
 
