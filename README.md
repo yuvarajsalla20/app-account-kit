@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 9.0.0** (tag `v9.0.0`)
+**Current version: 9.1.0** (tag `v9.1.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,10 +28,10 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v9.0.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v9.1.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v9.0.0"
+  "app-account-kit": "v9.1.0"
 }
 ```
 
@@ -192,7 +192,7 @@ Use these on the app's own pages (inside `app.content` or an added page) so they
 | `SettingsGroup` | A card that holds rows |
 | `SettingRow` | `icon`, `tint`, `label`, plus `detail`, `value`, `badge`, `onPress`, `toggle: { value, onChange }`, `external` (slanted arrow), `expanded`, `locked` (padlock), `premium` (7.34.0: the gold Premium tag after the label, and a gold padlock when locked), `trailing` (icon in place of the arrow), `disabled`, `last`, `children` |
 | `PremiumTag`, `PremiumLock`, `premiumGold` | 7.34.0: the gold Premium tag and padlock for an app's own rows, in `theme.premium` (default `tints.rate`, the comparison table's gold). 9.0.0: drawn only while the plan mode is `'subscription'` |
-| `usePlanMode()`, `getPlanMode()`, `setPlanMode()` | 9.0.0: the plan mode shared by every kit. `'free'` (the default) sells nothing and shows no Premium marks; `'subscription'` shows them. app-subscriptions-kit sets it from `planMode` in the Firestore document `config/app` |
+| `usePlanMode()`, `getPlanMode()`, `setPlanMode()`, `planModeFrom()` | 9.0.0: the plan mode shared by every kit. 9.1.0: `planModeFrom(data, userId)` reads it from the `config/app` data, with `subscriptionTesters`. `'free'` (the default) sells nothing and shows no Premium marks; `'subscription'` shows them. app-subscriptions-kit sets it from `planMode` in the Firestore document `config/app` |
 | `PickerRow` | A row showing the current choice; a tap opens a `ChoiceSheet`, or the pull-down menu with `pickers: 'pullDown'`. `options`, `value`, `onChange`, `title?`, `detail?`. 7.33.0: `onPick` (every pick, e.g., to play a sound), `locked` and `onLocked` for paid options (a padlock in the menu), `note` (a line at the top of the menu), and `lead` on an option (an icon before its label) |
 | `ExpandRow` | A row that opens its content right below it |
 | `MenuRow`, `PullDownMenu`, `PullDownPill`, `useAnchor` | The iOS-style pull-down menu. It opens over the row that opened it, with a tick on the chosen line. 8.0.0: frosted and close to solid, as Apple's menus are, so the rows beneath never show through the words. 7.32.0: each `PullDownItem` can take `lead` (an icon before the label), `dot` (a color dot), `locked` (a padlock) and `group` (a thin line above) |

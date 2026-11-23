@@ -34,3 +34,14 @@ describe('plan mode (9.0.0)', () => {
     expect(label).toBe('Data Export');
   });
 });
+
+describe('planModeFrom (9.1.0)', () => {
+  it('reads config/app: only "subscription" sells, and a tester list limits it to those accounts', async () => {
+    const { planModeFrom } = await import('../src/planMode');
+    expect(planModeFrom(undefined, 'u1')).toBe('free');
+    expect(planModeFrom({ planMode: 'free' }, 'u1')).toBe('free');
+    expect(planModeFrom({ planMode: 'subscription' }, 'u1')).toBe('subscription');
+    expect(planModeFrom({ planMode: 'subscription', subscriptionTesters: ['u1'] }, 'u1')).toBe('subscription');
+    expect(planModeFrom({ planMode: 'subscription', subscriptionTesters: ['u2'] }, 'u1')).toBe('free');
+  });
+});
