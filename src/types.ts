@@ -159,6 +159,12 @@ export interface ExtraPage {
   onLocked?: () => void;
   /** 7.35.0: while `locked` and with no `onLocked`, a tap opens this Settings page instead, such as the plan page's id. */
   lockedOpens?: string;
+  /**
+   * 7.36.0: the row is an on/off switch, the same size as every other row, instead of opening a page (`content` is then not
+   * shown; pass `null`). A tap anywhere on the row flips it. Used for a Premium setting in Preferences, such as Background
+   * Effects. While `locked`, the padlock shows instead and a tap opens the plans as usual.
+   */
+  toggle?: { value: boolean; onChange: (value: boolean) => void };
   /** Build the rows with SettingsGroup and SettingRow. */
   content: ReactNode;
   /**

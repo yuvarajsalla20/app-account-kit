@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.36.0 (2026-11-23)
+
+- **A switch row in Preferences.** `ExtraPage` takes `toggle` (`{ value, onChange }`): the row is an on/off switch, the same size as every other row, and opens no page. A tap anywhere on the row flips it, and screen readers hear a switch with its state. It works with `premium`, `group` and `locked` like any other extra page. app-subscriptions-kit 5.0.0 moves each Premium setting off the plan page, so Premium switches such as Background Effects live here.
+
 ## 7.35.0 (2026-11-22)
 
 - **A locked row can open another Settings page.** `ExtraPage` takes `lockedOpens`, a Settings page id. While the row is `locked` and has no `onLocked`, a tap opens that page, such as the plan page, so an app needs no plans screen of its own. app-settings-kit 12.0.0 uses it to open the plan page from a locked Data Export row.
