@@ -42,7 +42,8 @@ interface Props {
   opensMenu?: boolean;
   /**
    * 7.34.0: a Premium feature. The gold Premium tag sits right after the label, for every account, and a `locked` row shows the
-   * padlock in the same gold. Screen readers hear "Premium" after the label.
+   * padlock in the same gold. Screen readers hear "Premium" after the label. 10.0.0: while the plan mode is `'free'`, the row is
+   * not drawn at all.
    */
   premium?: boolean;
 }
@@ -51,9 +52,11 @@ interface Props {
 export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu, premium: premiumIn }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
-  // 9.0.0: with nothing on sale (plan mode 'free'), a Premium feature is an ordinary row: no tag, and no Premium in its label.
-  const premium = usePlanMode() === 'subscription' && premiumIn;
+  // 10.0.0: with nothing on sale (plan mode 'free'), a Premium feature is not shown at all.
+  const offered = usePlanMode() === 'subscription';
+  const premium = offered && premiumIn;
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
+  if (premiumIn && !offered) return null;
   return (
     <View style={!last && styles.line}>
       <Pressable

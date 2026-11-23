@@ -5,6 +5,7 @@ import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
 import { ROW_CENTER } from './layout';
+import { offeredOptions, usePremiumOffered } from '../planMode';
 
 /** `V` is the kind of value an option stands for: text (the default) or a number. */
 export interface Choice<V extends string | number = string> {
@@ -36,7 +37,10 @@ interface Props<V extends string | number> {
   onConfirm?: (value: V) => void;
   /** Called on every tap, before anything else, such as to play the sound just tapped. Locked options call it too. */
   onPick?: (value: V) => void;
-  /** True for an option that needs the paid plan: it shows a padlock and cannot be chosen. */
+  /**
+   * True for an option that needs the paid plan: it shows a padlock and cannot be chosen. 10.0.0: while the plan mode is
+   * `'free'`, such an option is left out, unless it is the chosen one, which then shows without a padlock.
+   */
   locked?: (value: V) => boolean;
   /** A tap on a locked option, such as opening the plans. Without it the sheet says, under the options, that the option is part of the paid plan. */
   onLocked?: () => void;
@@ -50,7 +54,10 @@ interface Props<V extends string | number> {
  * A sheet that slides up from the bottom of the screen with a list to choose from. Tapping the dimmed area, or Back on Android, closes it.
  * With `onConfirm` it asks before keeping (✕ and ✓), and inside the app's own `components.Sheet` when the app has one.
  */
-export function ChoiceSheet<V extends string | number = string>(props: Props<V>) {
+export function ChoiceSheet<V extends string | number = string>(given: Props<V>) {
+  const offered = usePremiumOffered();
+  const { locked } = given;
+  const props = offered || !locked ? given : { ...given, options: offeredOptions(given.options, false, (o) => locked(o.value), (o) => o.value === given.value), locked: undefined };
   return props.onConfirm ? <ConfirmSheet {...props} onConfirm={props.onConfirm} /> : <ListSheet {...props} />;
 }
 

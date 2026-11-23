@@ -8,6 +8,7 @@ import type { IconName } from '../types';
 import { useAfterClose } from './afterClose';
 import { ROW_CENTER } from './layout';
 import { MENU_BLUR, menuFill, withAlpha } from './color';
+import { offeredOptions, usePremiumOffered } from '../planMode';
 
 /** One line of a pull-down menu (7.26.0). */
 export interface PullDownItem {
@@ -25,7 +26,11 @@ export interface PullDownItem {
   lead?: IconName;
   /** 7.32.0: a small color dot before the label, such as a workspace or type color. Takes the place of `lead`. */
   dot?: string;
-  /** 7.32.0: needs the paid plan: a padlock on the right in the theme's lock colors. The line can still be picked; the app decides what a pick does. */
+  /**
+   * 7.32.0: needs the paid plan: a padlock on the right in the theme's lock colors. The line can still be picked; the app decides
+   * what a pick does. 10.0.0: while the plan mode is `'free'`, the line is left out, unless it is the `checked` one, which then
+   * shows without a padlock.
+   */
   locked?: boolean;
   /** 7.32.0: starts a new group: a thin line and a little space above it. */
   group?: boolean;
@@ -62,8 +67,10 @@ const GROUP_GAP = 9;
  * the rows beneath never show through the words; on Android, and without a backdrop, the card color is solid. A tap on a line
  * closes the menu and then picks it; a tap anywhere else only closes.
  */
-export function PullDownMenu({ anchor, head, items, onPick, onClose, visible = true }: MenuProps) {
+export function PullDownMenu({ anchor, head, items: given, onPick, onClose, visible = true }: MenuProps) {
   const { theme, strings, components } = useLook();
+  const offered = usePremiumOffered();
+  const items = offered ? given : offeredOptions(given, false, (it) => !!it.locked, (it) => !!it.checked).map((it) => (it.locked ? { ...it, locked: false, group: false } : it));
   const styles = useStyles(makeStyles);
   const screen = useWindowDimensions();
   const maxHeight = Math.max(ITEM_HEIGHT * 3, screen.height - SCREEN_MARGIN);

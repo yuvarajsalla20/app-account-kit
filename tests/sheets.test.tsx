@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { setPlanMode } from '../src/planMode';
 import { ChoiceSheet } from '../src/ui/ChoiceSheet';
 import { ExpandRow } from '../src/ui/ExpandRow';
 import { PickerRow } from '../src/ui/PickerRow';
@@ -8,6 +9,10 @@ import { DEFAULT_STRINGS as S } from '../src/strings';
 import { act, mount, press } from './helpers/render';
 import { THEME } from './helpers/theme';
 import { AccountProvider } from '../src/context';
+
+// These cover the plan on sale (plan mode 'subscription'); free mode is covered in planMode.test.tsx.
+beforeAll(() => setPlanMode('subscription'));
+afterAll(() => setPlanMode('free'));
 
 const options = [
   { value: 'USD', label: 'USD', detail: 'US dollar' },

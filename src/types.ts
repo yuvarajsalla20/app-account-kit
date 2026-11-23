@@ -154,7 +154,10 @@ export interface ExtraPage {
   value?: string;
   /** Drawn in place of `value` on the right of the row, such as a small pill. Screen readers hear `value`. */
   badge?: ReactNode;
-  /** 7.34.0: a Premium feature: the gold Premium tag after the row's name, for every account (see `SettingRow.premium`). */
+  /**
+   * 7.34.0: a Premium feature: the gold Premium tag after the row's name, for every account (see `SettingRow.premium`).
+   * 10.0.0: while the plan mode is `'free'`, the page is left out entirely: no row, and it cannot be opened.
+   */
   premium?: boolean;
   /**
    * 9.0.0: on the main list, the row only states its `value` (e.g., Plan, Free): no arrow, no page, and a tap does nothing.

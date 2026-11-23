@@ -2,6 +2,16 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 10.0.0 (2026-11-23)
+
+**In free mode, Premium is hidden.** While the plan mode is `'free'` (the default), nothing hints that a Premium plan exists, and the app reads as complete with its free features. Until now, free mode showed every Premium feature unlocked.
+
+- **A Premium row or page is left out.** A `SettingRow` with `premium` draws nothing, and an `ExtraPage` with `premium` has no row and cannot be opened.
+- **Locked options are left out.** A `PullDownMenu` line with `locked`, and a `ChoiceSheet` or `PickerRow` option its `locked` test marks, are not offered. The option already chosen stays, without a padlock, so existing data still reads correctly.
+- **New `usePremiumOffered()` and `offeredOptions()`.** For an app's own lists of Premium choices: true only in subscription mode, and the same filtering rule as the kit's menus.
+
+Upgrading: nothing to change in apps that mark their Premium rows and options. An app that gates a feature in its own code should hide it while `usePremiumOffered()` is false. Subscription mode is unchanged.
+
 ## 9.1.0 (2026-11-23)
 
 - **New `planModeFrom(data, userId)` and `PlanModeSource`.** The one rule for the plan mode, shared by app-settings-kit 18.1.0 and app-subscriptions-kit: only `planMode: "subscription"` in `config/app` turns selling on, and a non-empty `subscriptionTesters` list limits it to those accounts. Anything else is `'free'`.

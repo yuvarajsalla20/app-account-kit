@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { setPlanMode } from '../src/planMode';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { placeMenu } from '../src/logic/menuPlace';
 import { DEFAULT_STRINGS as S } from '../src/strings';
@@ -6,6 +7,10 @@ import type { SettingsScreenProps } from '../src/types';
 import { PickerRow } from '../src/ui/PickerRow';
 import { THEME } from './helpers/theme';
 import { mount, press } from './helpers/render';
+
+// These cover the plan on sale (plan mode 'subscription'); free mode is covered in planMode.test.tsx.
+beforeAll(() => setPlanMode('subscription'));
+afterAll(() => setPlanMode('free'));
 
 const shows = (h: ReturnType<typeof mount>, text: string) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === text).length > 0;
 
