@@ -30,7 +30,7 @@ type Props = SettingsScreenProps & {
 
 const BUILTIN = new Set<string>(RESERVED_PAGE_IDS);
 
-function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages: givenPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
+function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, footerOnEveryPage, top, topOnEveryPage, exitMenu, profile, nickname, photo, password, data, app, hubOrder, extraPages: givenPages, about, actions, actionTimeoutMs, onError, describeError }: SettingsScreenProps) {
   const { strings, components } = useLook();
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 }, top: { alignItems: 'center' } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
@@ -44,7 +44,7 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
     if (typeof __DEV__ !== 'undefined' && __DEV__) console.warn(`[app-account-kit] ${error.message}`);
   }, [clashKey]);
   const scroll = useRef<ElementRef<typeof ScrollView>>(null);
-  const [asked, setPage] = useState<Page>('hub');
+  const [asked, setPage] = useState<Page>(startPage ?? 'hub');
   // Set when an app's page opened another one through useSettingsNav: Back returns there instead of the usual parent.
   const [returnTo, setReturnTo] = useState<Page | null>(null);
   const accountPages = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'account').map((p) => p.id), [extraPages]);
