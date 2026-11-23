@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SettingsNavContext } from '../src/nav';
 import { PageRow } from '../src/sections/AccountPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
@@ -6,8 +6,13 @@ import { PremiumTag, premiumGold } from '../src/ui/PremiumTag';
 import { SettingRow } from '../src/ui/Row';
 import { THEME } from './helpers/theme';
 import { mount, press } from './helpers/render';
+import { setPlanMode } from '../src/planMode';
 
 const texts = (h: ReturnType<typeof mount>) => h.root.root.findAll((n) => typeof n.type === 'string' && typeof n.props.children === 'string').map((n) => n.props.children as string);
+
+// 9.0.0: Premium marks show only while a plan is on sale.
+beforeAll(() => setPlanMode('subscription'));
+afterAll(() => setPlanMode('free'));
 
 describe('Premium tag (7.34.0)', () => {
   it('reads PREMIUM, in the comparison gold (tints.rate) unless theme.premium is set', () => {
