@@ -50,6 +50,9 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const accountPages = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'account').map((p) => p.id), [extraPages]);
   const appRows = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'app'), [extraPages]);
   const appPages = useMemo(() => appRows.map((p) => p.id), [appRows]);
+  // 7.37.0: help pages live in About's Help card.
+  const aboutRows = useMemo(() => (extraPages ?? []).filter((p) => p.under === 'about'), [extraPages]);
+  const aboutPages = useMemo(() => aboutRows.map((p) => p.id), [aboutRows]);
   // The App page shows when the app has settings of its own or a page that lives there.
   const hasApp = !!app || appRows.length > 0;
   // If what a page shows goes away while it is open (the app stopped passing it), fall back to the list instead of a blank page.
@@ -76,7 +79,7 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
     Keyboard.dismiss(); // leaving a text box saves what was typed in it
-    const up = returnTo ?? (page === 'signOut' && exitOnPage ? signOutHome : parentOf(page, accountPages, appPages, hasAccess));
+    const up = returnTo ?? (page === 'signOut' && exitOnPage ? signOutHome : parentOf(page, accountPages, appPages, hasAccess, aboutPages));
     if (!up) return false;
     go(up);
     return true;
@@ -144,7 +147,7 @@ function Body({ onBack, backLabel, brand, plainHeaders, footer, footerOnEveryPag
         {page === 'data' && data ? <SettingsGroup><DataRow {...data} action={action} /></SettingsGroup> : null}
         {extra ? <View style={STACK}>{extra.content}</View> : null}
         {page === 'app' && hasApp ? <AppPage content={app?.content} pages={appRows} onOpen={go} /> : null}
-        {page === 'about' ? <AboutSection {...about} action={action} onOpenSupport={() => go('support')} /> : null}
+        {page === 'about' ? <AboutSection {...about} action={action} onOpenSupport={() => go('support')} helpPages={aboutRows} onOpenPage={go} /> : null}
         {page === 'support' ? <SupportPage appName={about.appName} version={about.version} supportEmail={about.supportEmail} kits={about.kits} action={action} /> : null}
         {page !== 'hub' && footerOnEveryPage && footer ? <View style={styles.footer}>{footer}</View> : null}
       </ScrollView>

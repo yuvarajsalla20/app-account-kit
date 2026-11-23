@@ -21,14 +21,15 @@ export type Page = BuiltinPage | (string & {});
 /**
  * Where Back goes from a page: the page above it, or null from the hub (the app handles that one).
  * With `exitOnPage` (7.24.0, `exitMenu.place: 'page'`), Sign out and Delete account go back to the Access page instead of Account.
- * `accountPages` are the ids of the app's pages that live inside Account (`under: 'account'`), `appPages` those inside App (`under: 'app'`).
+ * `accountPages` are the ids of the app's pages that live inside Account (`under: 'account'`), `appPages` those inside App (`under: 'app'`),
+ * and `aboutPages` (7.37.0) the help pages inside About (`under: 'about'`).
  */
-export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = [], exitOnPage = false): Page | null {
+export function parentOf(page: Page, accountPages: readonly string[] = [], appPages: readonly string[] = [], exitOnPage = false, aboutPages: readonly string[] = []): Page | null {
   if (page === 'hub') return null;
   if (exitOnPage && (page === 'signOut' || page === 'deleteAccount')) return 'access';
   if (page === 'access') return 'account';
   if (page === 'password' || page === 'signOut' || page === 'deleteAccount' || accountPages.includes(page)) return 'account';
-  if (page === 'support') return 'about';
+  if (page === 'support' || aboutPages.includes(page)) return 'about';
   return appPages.includes(page) ? 'app' : 'hub';
 }
 

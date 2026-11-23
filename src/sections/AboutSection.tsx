@@ -7,7 +7,8 @@ import { isHttps } from '../logic/links';
 import { canRate, canRatePlay, playReviewUrl, playReviewWebUrl, reviewUrl, reviewWebUrl } from '../logic/rate';
 import { buildShareMessage, canShare } from '../logic/share';
 import type { AccountTheme } from '../theme';
-import type { AboutProps } from '../types';
+import type { AboutProps, ExtraPage } from '../types';
+import { PageRow } from './AccountPage';
 import { ExpandRow } from '../ui/ExpandRow';
 import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
@@ -16,13 +17,17 @@ interface Props extends AboutProps {
   action: ActionRunner;
   /** Opens Contact Support, a page of its own under About. */
   onOpenSupport: () => void;
+  /** 7.37.0: the app's help pages (`under: 'about'`), as rows in the Help card after Contact Support. */
+  helpPages?: readonly ExtraPage[];
+  /** Opens one of those pages by its id. */
+  onOpenPage?: (page: string) => void;
 }
 
 /**
  * The app's picture and name (in the app's own color), then three cards:
  * Features, Rate and Share; Contact Support (its own page) and Privacy Policy; Kits and Version (both open in place).
  */
-export function AboutSection({ appName, logo, showHeader = true, version, privacyUrl, featuresUrl, share, rate, kits, action, onOpenSupport }: Props) {
+export function AboutSection({ appName, logo, showHeader = true, version, privacyUrl, featuresUrl, share, rate, kits, action, onOpenSupport, helpPages = [], onOpenPage }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
   const shareUrl = share?.url;
@@ -88,6 +93,9 @@ export function AboutSection({ appName, logo, showHeader = true, version, privac
       ) : null}
       <SettingsGroup title={strings.aboutHelpGroup || undefined}>
         <SettingRow icon="mail" tint={theme.tints.support} label={strings.contactSupport} onPress={onOpenSupport} />
+        {helpPages.map((p) => (
+          <PageRow key={p.id} page={p} last={false} tint={p.tint ?? theme.tints.support} onOpen={() => onOpenPage?.(p.id)} />
+        ))}
         <SettingRow last external icon="shield" tint={theme.tints.privacy} label={strings.privacy} onPress={() => openPage('privacy', privacyUrl)} />
       </SettingsGroup>
       {strings.aboutInfoGroup ? (
