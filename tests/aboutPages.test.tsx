@@ -40,4 +40,15 @@ describe("pages under 'about' (Help)", () => {
     expect(h.has(S.contactSupport)).toBe(true);
     expect(p.onBack).not.toHaveBeenCalled();
   });
+
+  it('7.38.0: startPage opens Settings on that page, and Back returns to the list', async () => {
+    const p = props({ app: { content: <Text>Currency</Text> }, startPage: 'app' });
+    const h = screen(p);
+    expect(shown(h, 'Currency')).toBe(true);
+    await press(h.byLabel(S.back));
+    expect(h.has(S.about)).toBe(true);
+    expect(p.onBack).not.toHaveBeenCalled();
+    const none = screen(props({ startPage: 'nowhere' }));
+    expect(none.has(S.about)).toBe(true);
+  });
 });

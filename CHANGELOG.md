@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.38.0 (2026-11-23)
+
+- **Open Settings on a page.** `SettingsScreen` takes `startPage` (e.g., `'app'` for Preferences), so a link elsewhere in the app, such as "Change" beside the currency, opens the page where that setting lives (the Page rule) instead of the list. Back returns to the list as usual. A page the app does not have opens the list.
+
 ## 7.37.0 (2026-11-23)
 
 - **Help pages live in About.** `ExtraPage` takes `under: 'about'`: the row sits in About's Help card, after Contact Support, and Back returns to About. Under the Page rule a page with nothing to set (e.g., how to add a widget) is help, not a preference, so it no longer belongs in Preferences. No change for existing pages.
