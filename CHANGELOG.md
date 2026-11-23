@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 7.37.0 (2026-11-23)
+
+- **Help pages live in About.** `ExtraPage` takes `under: 'about'`: the row sits in About's Help card, after Contact Support, and Back returns to About. Under the Page rule a page with nothing to set (e.g., how to add a widget) is help, not a preference, so it no longer belongs in Preferences. No change for existing pages.
+
 ## 7.36.0 (2026-11-23)
 
 - **A switch row in Preferences.** `ExtraPage` takes `toggle` (`{ value, onChange }`): the row is an on/off switch, the same size as every other row, and opens no page. A tap anywhere on the row flips it, and screen readers hear a switch with its state. It works with `premium`, `group` and `locked` like any other extra page. app-subscriptions-kit 5.0.0 moves each Premium setting off the plan page, so Premium switches such as Background Effects live here.

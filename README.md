@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.36.0** (tag `v7.36.0`)
+**Current version: 7.37.0** (tag `v7.37.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,7 +28,7 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.36.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.37.0>"
 },
 "kitVersions": {
   "app-account-kit": "v7.36.0"
@@ -58,7 +58,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 | **Account** | Picture, name and Change photo; one card with the nickname, the email (read only) and Change password (its own page); then a card with each added page that has `under: 'account'` | `profile`, `nickname`, `photo`, `password`, `extraPages` |
 | **My data** | The download row (one format downloads on tap, two or more open a chooser) | `data` |
 | **App** (rename it "Preferences" with `strings.app`) | The app's own settings; then a card with each added page that has `under: 'app'`, and a titled card for each `group` | `app.content`, `extraPages` |
-| **About** | The app's picture and name in `theme.brand`, then three cards: **Features**, Rate, Share; **Contact Support**, Privacy policy; **Kits** and **Version** | `about` |
+| **About** | The app's picture and name in `theme.brand`, then three cards: **Features**, Rate, Share; **Contact Support**, each added page that has `under: 'about'` (a help page), Privacy policy; **Kits** and **Version** | `about`, `extraPages` |
 | **Contact Support** (from About) | A short welcome and one **Write to Us** button that writes the email with the app, version, device and kits already filled in. When no mail app is set up, it shows the address | `about.supportEmail` |
 | **Change password** (from Account) | Current, new and confirm boxes | `password` |
 
@@ -169,7 +169,7 @@ Each entry is `{ id, label, icon, content, tint?, value?, badge?, under?, group?
 extraPages={[
   { id: 'premium', label: 'Premium', icon: 'award', content: <PremiumRows />, badge: <PlanPill /> },
   { id: 'export', label: 'Data Export', icon: 'download', content: <ExportRows />, under: 'app' },
-  { id: 'widgets', label: 'Home Screen Widgets', icon: 'grid', content: <WidgetHelp />, under: 'app', group: 'On Your iPhone' },
+  { id: 'widgets', label: 'Home Screen Widgets', icon: 'grid', content: <WidgetHelp />, under: 'about' }, // a help page: About, not Preferences
   { id: 'effects', label: 'Background Effects', icon: 'wind', content: null, under: 'app', group: 'Personalize', premium: true, toggle: { value: on, onChange: setOn } },
 ]}
 ```
@@ -313,6 +313,10 @@ To release: bump `version` in `package.json` and `KIT_VERSION` in `src/kit.ts` (
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for every release and the upgrade guides between major versions.
+
+## Page rule
+
+Every page has one job, as set out in the shared [Page rule](https://github.com/yuvarajsalla20/app-settings-kit#page-rule-every-page-has-one-job). Account holds who you are and your account; the App page (Preferences) holds choices that change how the app behaves; About holds the app, help and legal. A page with nothing to set, such as how to add a widget, goes under About with `under: 'about'`, never under Preferences.
 
 ## Writing rule
 

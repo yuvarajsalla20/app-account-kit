@@ -172,8 +172,10 @@ export interface ExtraPage {
    * `'account'`: a feature about the person's data (Data Export) shows on the Account page under Your data, and Back returns to Account.
    * `'app'` (since 7.10.0): a row on the App page (Preferences), in its own card under the app's settings, and Back returns to App.
    * With no `app` prop, the App row still shows when a page lives there, holding only those rows.
+   * `'about'` (since 7.37.0): a help page (e.g., how to add a widget) as a row in About's Help card, after Contact Support, and Back returns to About.
+   * A page with nothing to set belongs here, not in Preferences (the Page rule).
    */
-  under?: 'account' | 'app';
+  under?: 'account' | 'app' | 'about';
   /**
    * With `under: 'app'` (since 7.11.0): the heading of the card the row sits in, such as "On Your iPhone". Rows with the same
    * group share one titled card, in the order they first appear; rows with none share the untitled card, which comes first.
