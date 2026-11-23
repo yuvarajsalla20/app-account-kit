@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 9.1.0 (2026-11-23)
+
+- **New `planModeFrom(data, userId)` and `PlanModeSource`.** The one rule for the plan mode, shared by app-settings-kit 18.1.0 and app-subscriptions-kit: only `planMode: "subscription"` in `config/app` turns selling on, and a non-empty `subscriptionTesters` list limits it to those accounts. Anything else is `'free'`.
+
 ## 9.0.0 (2026-11-23)
 
 **Plan mode: free or subscription.** Every app now runs in one of two plan modes, chosen by the owner with `planMode` in the Firestore document `config/app` (app-subscriptions-kit 9.0.0 reads it). `'free'`, the default, sells nothing; `'subscription'` is the setup used until now.

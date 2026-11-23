@@ -49,3 +49,19 @@ const subscribe = (l: () => void) => {
 export function usePlanMode(): PlanMode {
   return useSyncExternalStore(subscribe, getPlanMode, getPlanMode);
 }
+
+/**
+ * 9.1.0: works out the plan mode from the `config/app` document for the signed-in account. Only `planMode: "subscription"` turns
+ * selling on. While `subscriptionTesters` lists account ids, only those accounts see it, so a test never reaches customers;
+ * an empty or missing list means every account. Anything else, or no document, is `'free'`.
+ */
+export function planModeFrom(data: unknown, userId: string | null | undefined): PlanMode {
+  const d = data && typeof data === 'object' ? (data as { planMode?: unknown; subscriptionTesters?: unknown }) : {};
+  if (d.planMode !== 'subscription') return 'free';
+  const testers = Array.isArray(d.subscriptionTesters) ? d.subscriptionTesters.filter((t): t is string => typeof t === 'string' && t.length > 0) : [];
+  if (testers.length === 0) return 'subscription';
+  return userId && testers.includes(userId) ? 'subscription' : 'free';
+}
+
+/** 9.1.0: where the plan mode comes from: a fixed mode, or a lookup per account (e.g., `firestorePlanMode`). */
+export type PlanModeSource = PlanMode | ((userId: string | null) => Promise<PlanMode>);

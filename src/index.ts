@@ -13,7 +13,7 @@ export type { AccountTheme, TintKey } from './theme';
 export { SettingsGroup } from './ui/Group';
 export { SettingRow } from './ui/Row';
 export { PremiumLock, PremiumTag, premiumGold } from './ui/PremiumTag';
-export { DEFAULT_PLAN_MODE, getPlanMode, setPlanMode, usePlanMode, type PlanMode } from './planMode';
+export { DEFAULT_PLAN_MODE, getPlanMode, planModeFrom, setPlanMode, usePlanMode, type PlanMode, type PlanModeSource } from './planMode';
 export { ExpandRow } from './ui/ExpandRow';
 export { PickerRow } from './ui/PickerRow';
 export { ChoiceSheet } from './ui/ChoiceSheet';
