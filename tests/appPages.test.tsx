@@ -50,6 +50,19 @@ describe("pages under 'app' (Preferences)", () => {
     expect(p.onBack).not.toHaveBeenCalled();
   });
 
+  it('7.36.0: a page with toggle is a switch row on Preferences that flips on a tap and opens nothing', async () => {
+    const onChange = vi.fn();
+    const effects = { id: 'effects', label: 'Background Effects', icon: 'wind', content: null, under: 'app', group: 'Personalize', premium: true, toggle: { value: true, onChange } } as const;
+    const h = screen(props({ extraPages: [effects, family] }));
+    await press(h.byLabel(S.app));
+    const row = h.byLabel(`Background Effects, ${S.premiumTag}`);
+    expect(row?.props.accessibilityRole).toBe('switch');
+    expect(row?.props.accessibilityState).toMatchObject({ checked: true });
+    await press(row);
+    expect(onChange).toHaveBeenCalledWith(false);
+    expect(h.has('Connect as Family')).toBe(true);
+  });
+
   it('shows the App row when only pages live there (no app settings)', async () => {
     const h = screen(props({ extraPages: [family] }));
     await press(h.byLabel(S.app));

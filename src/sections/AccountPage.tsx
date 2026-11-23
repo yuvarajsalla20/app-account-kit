@@ -78,6 +78,7 @@ export function PageRow({ page: p, last, tint, onOpen }: { page: ExtraPage; last
   const lockedOpens = p.lockedOpens;
   const onLockedTap = p.onLocked ?? (lockedOpens && nav ? () => nav.open(lockedOpens) : onOpen);
   if (p.locked) return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} locked onPress={onLockedTap} />;
+  if (p.toggle) return <SettingRow last={last} icon={p.icon} tint={tint} label={p.label} premium={p.premium} toggle={p.toggle} />;
   if (p.menu) {
     const m = p.menu;
     return (

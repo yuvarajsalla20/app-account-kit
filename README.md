@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 7.35.0** (tag `v7.35.0`)
+**Current version: 7.36.0** (tag `v7.36.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,14 +28,14 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.35.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v7.36.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v7.35.0"
+  "app-account-kit": "v7.36.0"
 }
 ```
 
-Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.35.0`.
+Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v7.36.0`.
 
 **Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported). Optional, only for `app-account-kit/photo`: `expo-image-picker` and `expo-image-manipulator`.
 
@@ -157,7 +157,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 
 ### Added pages (`extraPages`)
 
-Each entry is `{ id, label, icon, content, tint?, value?, badge?, under?, group? }`. The kit knows nothing about what a page holds.
+Each entry is `{ id, label, icon, content, tint?, value?, badge?, under?, group?, toggle? }`. The kit knows nothing about what a page holds.
 
 | `under` | Row shows on | Back returns to |
 |---|---|---|
@@ -170,8 +170,11 @@ extraPages={[
   { id: 'premium', label: 'Premium', icon: 'award', content: <PremiumRows />, badge: <PlanPill /> },
   { id: 'export', label: 'Data Export', icon: 'download', content: <ExportRows />, under: 'app' },
   { id: 'widgets', label: 'Home Screen Widgets', icon: 'grid', content: <WidgetHelp />, under: 'app', group: 'On Your iPhone' },
+  { id: 'effects', label: 'Background Effects', icon: 'wind', content: null, under: 'app', group: 'Personalize', premium: true, toggle: { value: on, onChange: setOn } },
 ]}
 ```
+
+`toggle` (7.36.0) makes the row an on/off switch at the same size as every other row, and it opens no page. A tap anywhere on the row flips it.
 
 `id` must be unique and not one of the kit's own pages (`RESERVED_PAGE_IDS`: `hub`, `account`, `data`, `app`, `about`, `password`, `support`, `signOut`, `deleteAccount`, `access`). Since 7.29.0 a page with one of those ids is left out and reported through `onError('extraPages', …)` (and a console warning in development). Rows keep the order of `extraPages`.
 
