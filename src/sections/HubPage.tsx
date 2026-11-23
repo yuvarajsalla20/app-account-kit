@@ -24,19 +24,19 @@ export function HubPage({ data, app, hasApp = !!app, hubOrder, extraPages = [], 
   const { theme, strings } = useLook();
   // A page with `under` lives inside that parent, not on the main list.
   const parents = extraPages.filter((p) => !p.under);
-  const rows: Record<string, { icon: IconName; label: string; tint?: string; value?: string; badge?: ReactNode }> = {
+  const rows: Record<string, { icon: IconName; label: string; tint?: string; value?: string; badge?: ReactNode; info?: boolean }> = {
     account: { icon: 'user', label: strings.account },
     data: { icon: 'download', label: strings.myData },
     app: { icon: 'sliders', label: strings.app },
     about: { icon: 'info', label: strings.about },
-    ...Object.fromEntries(parents.map((p) => [p.id, { icon: p.icon, label: p.label, tint: p.tint, value: p.value, badge: p.badge }])),
+    ...Object.fromEntries(parents.map((p) => [p.id, { icon: p.icon, label: p.label, tint: p.tint, value: p.value, badge: p.badge, info: p.info }])),
   };
   const pages = hubPages({ data: !!data, app: hasApp }, hubOrder, parents.map((p) => p.id));
   return (
     <View style={STACK}>
       <SettingsGroup>
         {pages.map((page, i) => (
-          <SettingRow key={page} last={i === pages.length - 1} icon={rows[page]!.icon} tint={rows[page]!.tint ?? theme.tints[page as keyof typeof theme.tints] ?? theme.tints.app} label={rows[page]!.label} value={rows[page]!.value} badge={rows[page]!.badge} onPress={() => onOpen(page)} />
+          <SettingRow key={page} last={i === pages.length - 1} icon={rows[page]!.icon} tint={rows[page]!.tint ?? theme.tints[page as keyof typeof theme.tints] ?? theme.tints.app} label={rows[page]!.label} value={rows[page]!.value} badge={rows[page]!.badge} onPress={rows[page]!.info ? undefined : () => onOpen(page)} />
         ))}
       </SettingsGroup>
       {/* Sign out and Delete account share one row. */}

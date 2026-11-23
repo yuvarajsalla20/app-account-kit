@@ -157,6 +157,11 @@ export interface ExtraPage {
   /** 7.34.0: a Premium feature: the gold Premium tag after the row's name, for every account (see `SettingRow.premium`). */
   premium?: boolean;
   /**
+   * 9.0.0: on the main list, the row only states its `value` (e.g., Plan, Free): no arrow, no page, and a tap does nothing.
+   * Pass `content: null`.
+   */
+  info?: boolean;
+  /**
    * 7.34.0: the account cannot use it yet: the gold padlock on the right instead of the value, badge or menu. A tap calls
    * `onLocked` (open the plans), or opens `lockedOpens`, or opens the page when there is neither.
    */

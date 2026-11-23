@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SettingsScreen } from '../src/SettingsScreen';
 import { parentOf } from '../src/logic/pages';
 import { appGroups } from '../src/sections/AppPage';
@@ -7,6 +7,7 @@ import type { SettingsScreenProps } from '../src/types';
 import { Text } from './stubs/react-native';
 import { THEME } from './helpers/theme';
 import { mount, press } from './helpers/render';
+import { setPlanMode } from '../src/planMode';
 
 // 7.10.0: pages that live inside the App page (Preferences) with `under: 'app'`.
 const props = (over: Partial<SettingsScreenProps> = {}): SettingsScreenProps => ({
@@ -21,6 +22,10 @@ const screen = (p: SettingsScreenProps) => mount(<SettingsScreen theme={THEME} {
 const family = { id: 'family', label: 'Connect as Family', icon: 'users', content: <Text>Family page</Text>, under: 'app' } as const;
 const exportPage = { id: 'export', label: 'Data Export', icon: 'download', content: <Text>Export page</Text>, value: 'VIP', under: 'app' } as const;
 const shown = (h: ReturnType<typeof screen>, t: string) => h.root.root.findAll((n) => typeof n.type === 'string' && n.props.children === t).length > 0;
+
+// 9.0.0: Premium marks show only while a plan is on sale.
+beforeAll(() => setPlanMode('subscription'));
+afterAll(() => setPlanMode('free'));
 
 describe("pages under 'app' (Preferences)", () => {
   it('Back from a page under App returns to App, then to the list', () => {

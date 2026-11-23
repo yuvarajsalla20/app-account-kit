@@ -7,6 +7,7 @@ import type { IconName } from '../types';
 import { CENTER, ROW_CENTER } from './layout';
 import { PremiumLock, PremiumTag } from './PremiumTag';
 import { UpDown } from './PullDown';
+import { usePlanMode } from '../planMode';
 
 interface Props {
   icon: IconName;
@@ -47,9 +48,11 @@ interface Props {
 }
 
 /** One setting row: a colored icon tile, a label, an optional value, and an arrow or a switch. Apps use it too. */
-export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu, premium }: Props) {
+export function SettingRow({ icon, tint, label, detail, value, badge, onPress, toggle, external, expanded, children, last, disabled, locked, trailing, danger, opensMenu, premium: premiumIn }: Props) {
   const { theme, strings, components } = useLook();
   const styles = useStyles(makeStyles);
+  // 9.0.0: with nothing on sale (plan mode 'free'), a Premium feature is an ordinary row: no tag, and no Premium in its label.
+  const premium = usePlanMode() === 'subscription' && premiumIn;
   const press = toggle ? () => toggle.onChange(!toggle.value) : onPress;
   return (
     <View style={!last && styles.line}>

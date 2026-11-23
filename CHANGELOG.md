@@ -2,6 +2,16 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 9.0.0 (2026-11-23)
+
+**Plan mode: free or subscription.** Every app now runs in one of two plan modes, chosen by the owner with `planMode` in the Firestore document `config/app` (app-subscriptions-kit 9.0.0 reads it). `'free'`, the default, sells nothing; `'subscription'` is the setup used until now.
+
+- **New `usePlanMode()`, `getPlanMode()`, `setPlanMode()` and `PlanMode`.** One value shared by every kit; app-subscriptions-kit sets it.
+- **In free mode, no Premium marks.** `PremiumTag` and `PremiumLock` draw nothing, and a `SettingRow` with `premium` is an ordinary row: no tag, and screen readers no longer hear "Premium" in its label.
+- **New `ExtraPage.info`.** A row on the main list that only states its value, with no arrow and no page (app-settings-kit's Plan · Free row).
+
+Upgrading: nothing to change in apps. The Premium tag and padlock disappear while the plan mode is free, so this is a major version.
+
 ## 8.1.0 (2026-11-23)
 
 - **Contact Support can be a page of the app's kit.** `about.supportPage` takes the page About › Contact Support shows, in place of the kit's own page that writes an email. app-settings-kit 15.0.0 passes its in-app Contact Support form, so a person sends a message without leaving the app. Without it, the email page is unchanged.
