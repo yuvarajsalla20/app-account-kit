@@ -1,13 +1,13 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useRef, useState, type ElementRef, type ReactNode } from 'react';
-import { Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Modal, Platform, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { placeMenu, type Box } from '../logic/menuPlace';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';
 import { useAfterClose } from './afterClose';
 import { ROW_CENTER } from './layout';
-import { withAlpha } from './color';
+import { MENU_BLUR, menuFill, withAlpha } from './color';
 
 /** One line of a pull-down menu (7.26.0). */
 export interface PullDownItem {
@@ -56,10 +56,11 @@ const GROUP_GAP = 9;
 
 
 /**
- * The iOS-style pull-down menu (7.26.0; glass look 7.32.0): a well-rounded card with a thin outline that opens over the row that
- * opened it, with a tick on the chosen line and, optionally, an icon or color dot before each label. With
- * `components.MenuBackdrop` and a see-through `theme.menu` it reads as frosted glass. A tap on a line closes the menu and then
- * picks it; a tap anywhere else only closes.
+ * The iOS-style pull-down menu (7.26.0; glass look 7.32.0; frosted 8.0.0): a well-rounded card with a thin outline that opens
+ * over the row that opened it, with a tick on the chosen line and, optionally, an icon or color dot before each label. The kit
+ * sets its fill: on iPhone, `components.MenuBackdrop` draws a strong frosted blur and the card color lies over it at 92%, so
+ * the rows beneath never show through the words; on Android, and without a backdrop, the card color is solid. A tap on a line
+ * closes the menu and then picks it; a tap anywhere else only closes.
  */
 export function PullDownMenu({ anchor, head, items, onPick, onClose, visible = true }: MenuProps) {
   const { theme, strings, components } = useLook();
@@ -70,14 +71,16 @@ export function PullDownMenu({ anchor, head, items, onPick, onClose, visible = t
   const height = Math.min(maxHeight, items.length * ITEM_HEIGHT + groups * GROUP_GAP + (head ? 52 : 0) + PAD * 2);
   const spot = placeMenu(anchor, { width: MENU_WIDTH, height }, screen);
   const after = useAfterClose();
-  const Backdrop = components.MenuBackdrop;
+  // Android draws no true blur behind a view, so the menu there is solid and the backdrop is left out.
+  const Backdrop = Platform.OS === 'ios' ? components.MenuBackdrop : undefined;
   const lock = theme.lock ?? { icon: theme.muted, circle: theme.field };
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} onDismiss={after.onDismiss} statusBarTranslucent>
       <Pressable style={styles.scrim} onPress={onClose} accessibilityRole="button" accessibilityLabel={strings.close} />
       <View style={[styles.shadow, { top: spot.top, left: spot.left, width: MENU_WIDTH, maxHeight }]}>
         <View style={[styles.menu, { maxHeight }]} accessibilityViewIsModal accessibilityRole="menu">
-          {Backdrop ? <Backdrop style={styles.fill} /> : null}
+          {Backdrop ? <Backdrop style={styles.fill} intensity={MENU_BLUR} /> : null}
+          <View style={[styles.fill, { backgroundColor: menuFill(theme.surface, theme.panel, !!Backdrop) }]} />
           {head ? <components.Text style={styles.head}>{head}</components.Text> : null}
           <ScrollView bounces={false} contentContainerStyle={styles.list}>
             {items.map((item, i) => (
@@ -188,13 +191,13 @@ const makeStyles = (t: AccountTheme) => ({
     position: 'absolute' as const,
     borderRadius: MENU_RADIUS,
     shadowColor: t.scrim,
-    shadowOpacity: 0.22,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 12,
+    shadowOpacity: 0.26,
+    shadowRadius: 30,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 16,
   },
+  // 8.0.0: the fill is its own layer over the backdrop (see `menuFill`), so `theme.menu` no longer reaches the menu.
   menu: {
-    backgroundColor: t.menu ?? t.surface,
     borderRadius: MENU_RADIUS,
     borderWidth: 0.75,
     borderColor: t.menuEdge ?? withAlpha(t.text, 0.55) ?? t.border,

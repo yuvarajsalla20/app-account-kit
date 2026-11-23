@@ -39,7 +39,10 @@ export interface AccountTheme {
   backSize?: number;
   /** The padlock on a picker option that needs the paid plan: its color and the soft circle behind it. Defaults to `muted` on `field`. */
   lock?: { icon: string; circle: string };
-  /** 7.26.0: the fill of a pull-down menu, such as a slightly see-through card color. Defaults to `surface`. */
+  /**
+   * 7.26.0: a see-through card color for glass surfaces, such as app-settings-kit's page headers. 8.0.0: the pull-down menu no
+   * longer reads it; the kit sets the menu's fill itself so every menu stays easy to read.
+   */
   menu?: string;
   /**
    * 7.34.0: the gold of the Premium tag beside a Premium feature's name, and of the padlock on a locked Premium row. Defaults to
