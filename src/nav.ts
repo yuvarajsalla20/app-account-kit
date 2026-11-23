@@ -8,6 +8,8 @@ export interface SettingsNav {
    * Back then returns to the page that opened it, not to the page's usual parent.
    */
   open: (page: Page) => void;
+  /** 8.1.0: the same step as the page's Back button, such as Done on a page that has finished its job. */
+  back: () => void;
 }
 
 export const SettingsNavContext = createContext<SettingsNav | null>(null);

@@ -3,7 +3,8 @@ import { SettingsScreen } from '../src/SettingsScreen';
 import { parentOf } from '../src/logic/pages';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
-import { Text } from './stubs/react-native';
+import { Pressable, Text } from './stubs/react-native';
+import { useSettingsNav } from '../src/nav';
 import { THEME } from './helpers/theme';
 import { mount, press } from './helpers/render';
 
@@ -50,5 +51,34 @@ describe("pages under 'about' (Help)", () => {
     expect(p.onBack).not.toHaveBeenCalled();
     const none = screen(props({ startPage: 'nowhere' }));
     expect(none.has(S.about)).toBe(true);
+  });
+
+  it('8.1.0: about.supportPage replaces the email page under Contact Support, and Back returns to About', async () => {
+    const base = props();
+    const h = screen({ ...base, about: { ...base.about, supportPage: <Text>Support Form</Text> } });
+    await press(h.byLabel(S.about));
+    await press(h.byLabel(S.contactSupport));
+    expect(shown(h, 'Support Form')).toBe(true);
+    expect(h.has(S.writeToUs)).toBe(false);
+    await press(h.byLabel(S.back));
+    expect(h.has(S.contactSupport)).toBe(true);
+    const plain = screen(props());
+    await press(plain.byLabel(S.about));
+    await press(plain.byLabel(S.contactSupport));
+    expect(plain.has(S.writeToUs)).toBe(true);
+  });
+
+  it('8.1.0: useSettingsNav().back() takes the same step as the Back button', async () => {
+    const Done = () => {
+      const nav = useSettingsNav();
+      return <Pressable accessibilityLabel="Done" onPress={() => nav?.back()} />;
+    };
+    const base = props();
+    const h = screen({ ...base, about: { ...base.about, supportPage: <Done /> } });
+    await press(h.byLabel(S.about));
+    await press(h.byLabel(S.contactSupport));
+    await press(h.byLabel('Done'));
+    expect(h.has(S.contactSupport)).toBe(true);
+    expect(base.onBack).not.toHaveBeenCalled();
   });
 });

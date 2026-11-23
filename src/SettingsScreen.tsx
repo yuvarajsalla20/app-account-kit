@@ -74,7 +74,7 @@ function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, foote
     setReturnTo(null);
     setPage(next);
   };
-  const latest = useRef({ go, page: 'hub' as Page });
+  const latest = useRef({ go, page: 'hub' as Page, back: () => {} });
   /** Returns true when it handled Back inside the screen; false from the list, where the app takes over. */
   const stepBack = (): boolean => {
     if (action.busy) return true; // a save or delete is running: stay, so its result lands on the page that started it
@@ -98,7 +98,7 @@ function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, foote
     scroll.current?.scrollTo({ y: 0, animated: true });
     if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(action.note);
   }, [action.noteKey]);
-  latest.current = { go, page };
+  latest.current = { go, page, back };
   const nav = useMemo<SettingsNav>(
     () => ({
       open: (next) => {
@@ -106,6 +106,7 @@ function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, foote
         latest.current.go(next);
         if (next !== from) setReturnTo(from);
       },
+      back: () => latest.current.back(),
     }),
     [],
   );
@@ -148,7 +149,8 @@ function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, foote
         {extra ? <View style={STACK}>{extra.content}</View> : null}
         {page === 'app' && hasApp ? <AppPage content={app?.content} pages={appRows} onOpen={go} /> : null}
         {page === 'about' ? <AboutSection {...about} action={action} onOpenSupport={() => go('support')} helpPages={aboutRows} onOpenPage={go} /> : null}
-        {page === 'support' ? <SupportPage appName={about.appName} version={about.version} supportEmail={about.supportEmail} kits={about.kits} action={action} /> : null}
+        {page === 'support' && about.supportPage ? <View style={STACK}>{about.supportPage}</View> : null}
+        {page === 'support' && !about.supportPage ? <SupportPage appName={about.appName} version={about.version} supportEmail={about.supportEmail} kits={about.kits} action={action} /> : null}
         {page !== 'hub' && footerOnEveryPage && footer ? <View style={styles.footer}>{footer}</View> : null}
       </ScrollView>
     </>
