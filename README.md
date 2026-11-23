@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 8.0.0** (tag `v8.0.0`)
+**Current version: 8.1.0** (tag `v8.1.0`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,10 +28,10 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v8.0.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v8.1.0>"
 },
 "kitVersions": {
-  "app-account-kit": "v8.0.0"
+  "app-account-kit": "v8.1.0"
 }
 ```
 
@@ -59,7 +59,7 @@ A **Settings** screen: a main list, and a page behind each row. Back from a page
 | **My data** | The download row (one format downloads on tap, two or more open a chooser) | `data` |
 | **App** (rename it "Preferences" with `strings.app`) | The app's own settings; then a card with each added page that has `under: 'app'`, and a titled card for each `group` | `app.content`, `extraPages` |
 | **About** | The app's picture and name in `theme.brand`, then three cards: **Features**, Rate, Share; **Contact Support**, each added page that has `under: 'about'` (a help page), Privacy policy; **Kits** and **Version** | `about`, `extraPages` |
-| **Contact Support** (from About) | A short welcome and one **Write to Us** button that writes the email with the app, version, device and kits already filled in. When no mail app is set up, it shows the address | `about.supportEmail` |
+| **Contact Support** (from About) | A short welcome and one **Write to Us** button that writes the email with the app, version, device and kits already filled in. When no mail app is set up, it shows the address. 8.1.0: `about.supportPage` replaces this page, e.g., app-settings-kit's in-app form | `about.supportEmail`, `about.supportPage` |
 | **Change password** (from Account) | Current, new and confirm boxes | `password` |
 
 ## Quick start
@@ -151,6 +151,7 @@ The app draws its own page background around `SettingsScreen`; the kit draws the
 | `privacyUrl` | https only |
 | `featuresUrl` | Adds a Features row that opens this https page |
 | `supportEmail` | Used by Contact Support. It cannot add a second recipient |
+| `supportPage` | 8.1.0, optional: the page Contact Support shows in place of the email page. app-settings-kit passes its in-app form |
 | `share` | `{ url?, message? }`. 7.29.0: the Share row shows only when `url` is an https link; an empty object or an empty or http `url` shows nothing |
 | `rate` | `{ appStoreId?, playPackage? }`. 7.29.0: the Rate row shows on iPhone only when `appStoreId` is the App Store number (digits), and opens the App Store's own review screen; on Android only with `playPackage` |
 | `kits` | A list of `{ name, version, build? }`, shown as "Account Kit \| v7.30.0 \| Build da25d6e", or the older one-line text from `kitsLine`. Also added to support emails |
@@ -180,7 +181,7 @@ extraPages={[
 
 `plainHeader: true` (7.19.0) gives that one page a plain header: no `brand`, and the page title in the top row on the left, beside Back. Other pages keep the brand. `plainHeaders` on `SettingsScreen` (7.20.0) does the same on every page, the main list included.
 
-From inside an added page, `useSettingsNav()?.open('export')` opens any other Settings page; Back then returns to the page that opened it.
+From inside an added page, `useSettingsNav()?.open('export')` opens any other Settings page; Back then returns to the page that opened it. 8.1.0: `useSettingsNav()?.back()` takes the same step as the page's Back button, e.g., Done on a finished page.
 
 ## Building blocks
 

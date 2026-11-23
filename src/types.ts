@@ -95,6 +95,11 @@ export interface AboutProps {
   featuresUrl?: string;
   supportEmail: string;
   /**
+   * 8.1.0: the page About › Contact Support shows, in place of the kit's own page that writes an email. app-settings-kit passes
+   * its in-app Contact Support form here, so a person writes to support without leaving the app. Leave it out for the email page.
+   */
+  supportPage?: ReactNode;
+  /**
    * The Share row appears only when `url` is a secure (https) address, such as the App Store page (7.29.0: an empty object, an
    * empty or http `url` shows no row). Pass the app's store constant always; the row comes when it is filled. `message` replaces the default wording.
    */

@@ -2,6 +2,11 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 8.1.0 (2026-11-23)
+
+- **Contact Support can be a page of the app's kit.** `about.supportPage` takes the page About › Contact Support shows, in place of the kit's own page that writes an email. app-settings-kit 15.0.0 passes its in-app Contact Support form, so a person sends a message without leaving the app. Without it, the email page is unchanged.
+- **`useSettingsNav().back()`.** An app's or kit's own page takes the same step as its Back button, e.g., Done once a message is sent.
+
 ## 8.0.0 (2026-11-23)
 
 - **Pull-down menus are easy to read.** Every pull-down menu (pickers, `MenuRow`, the Home menus and the ⋯ list) was a see-through card over a light blur, so the rows beneath showed through its words, e.g., "Default Remind Before" ran into "At Time". The kit now sets the menu's fill itself: on iPhone, a strong frosted blur (`components.MenuBackdrop`, asked for at `intensity` 90) under the card color at 92%, as Apple's own menus are; on Android, and in an app without a backdrop, the card color is solid. The shadow is a little deeper, so the menu stands clear of the page. Words keep the full `text` color in Light and Dark.
