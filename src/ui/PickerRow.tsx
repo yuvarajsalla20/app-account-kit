@@ -5,6 +5,7 @@ import { useAfterClose } from './afterClose';
 import { ChoiceSheet, type Choice } from './ChoiceSheet';
 import { MenuRow } from './PullDown';
 import { SettingRow } from './Row';
+import { offeredOptions, usePremiumOffered } from '../planMode';
 
 interface Props<V extends string | number> {
   icon: IconName;
@@ -23,7 +24,10 @@ interface Props<V extends string | number> {
   style?: 'sheet' | 'pullDown';
   /** 7.33.0: called on every pick, before anything else, such as to play the sound just picked. Locked options call it too. */
   onPick?: (value: V) => void;
-  /** 7.33.0: true for an option that needs the paid plan: it shows a padlock and is not kept. */
+  /**
+   * 7.33.0: true for an option that needs the paid plan: it shows a padlock and is not kept. 10.0.0: while the plan mode is
+   * `'free'`, such an option is not offered, unless it is the chosen one.
+   */
   locked?: (value: V) => boolean;
   /** 7.33.0: a pick of a locked option, such as opening the plans. */
   onLocked?: (value: V) => void;
@@ -35,8 +39,12 @@ interface Props<V extends string | number> {
  * A row showing the current choice on the right. Tapping it slides a sheet up from the bottom to pick another, or, with
  * `pickers: 'pullDown'` (7.26.0), floats a menu right under the row with the value in a grey pill. Apps use it for their own settings.
  */
-export function PickerRow<V extends string | number = string>({ options, value, onChange, title, style, onPick, locked, onLocked, note, ...row }: Props<V>) {
+export function PickerRow<V extends string | number = string>({ options: given, value, onChange, title, style, onPick, locked: lockedIn, onLocked, note, ...row }: Props<V>) {
   const { pickers } = useLook();
+  // 10.0.0: while Premium is not offered, the locked options are left out and nothing shows a padlock.
+  const offered = usePremiumOffered();
+  const locked = offered ? lockedIn : undefined;
+  const options = offered || !lockedIn ? given : offeredOptions(given, false, (o) => lockedIn(o.value), (o) => o.value === value);
   const [open, setOpen] = useState(false);
   const after = useAfterClose();
   // The sheet tells only that a locked option was tapped; the pick just before says which one.

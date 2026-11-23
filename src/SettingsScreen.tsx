@@ -5,6 +5,7 @@ import { useLook, useStyles, type PickerStyle } from './look';
 import { useAction } from './hooks/useAction';
 import { RESERVED_PAGE_IDS, parentOf, usableExtraPages, type Page } from './logic/pages';
 import { SettingsNavContext, type SettingsNav } from './nav';
+import { usePremiumOffered } from './planMode';
 import { AboutSection } from './sections/AboutSection';
 import { AccountPage } from './sections/AccountPage';
 import { AppPage } from './sections/AppPage';
@@ -35,7 +36,9 @@ function Body({ onBack, startPage, backLabel, brand, plainHeaders, footer, foote
   const styles = useStyles((t) => ({ body: { ...STACK, paddingBottom: 40 }, note: { color: t.danger, fontSize: 13, lineHeight: 18 }, good: { color: t.accent }, footer: { alignItems: 'center', marginTop: 16 }, top: { alignItems: 'center' } }));
   const action = useAction(onError, describeError, actionTimeoutMs, strings.tookTooLong);
   // 7.29.0: an app page named like one of the kit's own pages would draw both at once, so it is left out and reported.
-  const { pages: extraPages, clashes } = useMemo(() => usableExtraPages(givenPages), [givenPages]);
+  // 10.0.0: while Premium is not offered (plan mode 'free'), a Premium page is left out, so no row or link leads to it.
+  const offered = usePremiumOffered();
+  const { pages: extraPages, clashes } = useMemo(() => usableExtraPages(offered ? givenPages : givenPages?.filter((p) => !p.premium)), [givenPages, offered]);
   const clashKey = clashes.join(',');
   useEffect(() => {
     if (!clashKey) return;
