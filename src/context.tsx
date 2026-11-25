@@ -1,5 +1,5 @@
 import { useShallowStable } from 'app-core-kit/shared';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Text as RNText, TextInput as RNTextInput } from 'react-native';
 import { LookContext, type AccountComponents, type Look, type PickerStyle } from './look';
 import { PlainCard } from './ui/Card';
