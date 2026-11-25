@@ -1,3 +1,4 @@
+import { useShallowStable } from 'app-core-kit/shared';
 import { useMemo, useState, type ReactNode } from 'react';
 import { Text as RNText, TextInput as RNTextInput } from 'react-native';
 import { LookContext, type AccountComponents, type Look, type PickerStyle } from './look';
@@ -33,16 +34,5 @@ export function AccountProvider({ theme: themeProp, strings: stringsProp, compon
   return <LookContext.Provider value={look}>{children}</LookContext.Provider>;
 }
 
-/** Keeps the same object while its own values are the same. */
-export function useShallowStable<T extends object | undefined>(value: T): T {
-  const [kept, setKept] = useState(value);
-  const same = kept === value || (!!kept && !!value && shallowEqual(kept, value));
-  if (!same) setKept(value);
-  return same ? kept : value;
-}
-
-const shallowEqual = (a: object, b: object): boolean => {
-  const ka = Object.keys(a);
-  const kb = Object.keys(b);
-  return ka.length === kb.length && ka.every((k) => Object.is((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
-};
+/** 10.1.0: app-core-kit's single copy, still exported here for kits that read it from app-account-kit. */
+export { useShallowStable };

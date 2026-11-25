@@ -2,6 +2,13 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 10.1.0 (2026-11-25)
+
+Nothing breaks. The small shared helpers now come from app-core-kit's single copy (`app-core-kit/shared`, 1.11.0 or later), so the kits no longer carry copies that drift apart.
+
+- **New peer dependency: app-core-kit 1.11.0 or later.** Every app on the kits already installs it.
+- `toCsv`, `CSV_BOM`, `withAlpha` and `useShallowStable` are still exported here, unchanged in use. `withAlpha` now also accepts a short `#rgb` color.
+
 ## 10.0.0 (2026-11-23)
 
 **In free mode, Premium is hidden.** While the plan mode is `'free'` (the default), nothing hints that a Premium plan exists, and the app reads as complete with its free features. Until now, free mode showed every Premium feature unlocked.

@@ -1,6 +1,7 @@
-/** `#rrggbb` at `alpha`, as `#rrggbbaa`. Any other color comes back unchanged (null), so the caller can fall back. */
-export const withAlpha = (color: string, alpha: number): string | null =>
-  /^#[0-9a-f]{6}$/i.test(color) ? `${color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}` : null;
+/** 10.1.0: app-core-kit's single copy. `#rrggbb` (or `#rgb`) at `alpha`, as `#rrggbbaa`; any other color gives null, so the caller can fall back. */
+import { withAlpha } from 'app-core-kit/shared';
+
+export { withAlpha };
 
 /** 8.0.0: how solid a pull-down menu is over its frosted blur on iPhone. Apple's own menus sit close to this, so the rows under them never show through the words. */
 export const MENU_GLASS = 0.92;
