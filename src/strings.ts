@@ -1,4 +1,4 @@
-import type { PasswordProblem } from './logic/password';
+import type { PasswordProblem } from './profile/password';
 
 /** Every word on the screen, so an app can translate or reword it. */
 export interface AccountStrings {

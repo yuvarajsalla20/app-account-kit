@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { themeContrast } from '../src/logic/contrast';
+import { themeContrast } from '../src/shared/contrast';
 import { THEME } from './helpers/theme';
 
 const dark = { ...THEME, text: '#ffffff', muted: '#d6cdf0', faint: '#b9aedd', accent: '#ffffff', ink: '#2a1062', surface: 'rgba(255,255,255,0.15)', field: 'rgba(255,255,255,0.12)', panel: '#2a1062', danger: '#ffc2c2', on: '#7dffb0', brand: '#ffd479', scrim: 'rgba(0,0,0,0.6)' };

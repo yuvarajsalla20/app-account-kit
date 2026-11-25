@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AboutSection } from '../src/sections/AboutSection';
-import { SupportPage } from '../src/sections/SupportPage';
-import { AccountPage } from '../src/sections/AccountPage';
-import { HubPage } from '../src/sections/HubPage';
-import { DataRow } from '../src/sections/profile/DataRow';
-import { ProfileHeader } from '../src/sections/profile/ProfileHeader';
+import { AboutSection } from '../src/about/AboutSection';
+import { SupportPage } from '../src/support/SupportPage';
+import { AccountPage } from '../src/profile/AccountPage';
+import { HubPage } from '../src/hub/HubPage';
+import { DataRow } from '../src/data/DataRow';
+import { ProfileHeader } from '../src/profile/ProfileHeader';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { AboutProps, PhotoProps, ProfileInfo } from '../src/types';
 import { Linking, Platform, Share, Text } from './stubs/react-native';

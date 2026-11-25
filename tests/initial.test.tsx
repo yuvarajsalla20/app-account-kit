@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as kit from '../src';
-import { ProfileHeader } from '../src/sections/profile/ProfileHeader';
-import { initialOf } from '../src/logic/nickname';
+import { ProfileHeader } from '../src/profile/ProfileHeader';
+import { initialOf } from '../src/profile/nickname';
 import { withAction } from './helpers/render';
 
 // 7.29.0: Home avatars in both apps built their initial from the email only. initialOf is the one the Settings avatar uses.

@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { CSV_BOM, csvFileName, toCsv } from '../src/logic/csv';
-import { createActionGuard } from '../src/logic/actionGuard';
-import { isEmail, isHttps } from '../src/logic/links';
-import { supportMailUrl } from '../src/logic/mail';
-import { initialOf } from '../src/logic/nickname';
-import { isPermissionError, safePhoto } from '../src/logic/photo';
-import { createSaveTracker } from '../src/logic/saveTracker';
+import { CSV_BOM, csvFileName, toCsv } from '../src/shared/csv';
+import { createActionGuard } from '../src/shared/actionGuard';
+import { isEmail, isHttps } from '../src/shared/links';
+import { supportMailUrl } from '../src/support/mail';
+import { initialOf } from '../src/profile/nickname';
+import { isPermissionError, safePhoto } from '../src/profile/photo';
+import { createSaveTracker } from '../src/profile/saveTracker';
 
 describe('csv', () => {
   it('keeps plain numbers as numbers, including negatives', () => {

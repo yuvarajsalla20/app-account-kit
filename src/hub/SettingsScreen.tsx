@@ -1,24 +1,24 @@
 import { useEffect, useMemo, useRef, useState, type ElementRef } from 'react';
 import { AccessibilityInfo, BackHandler, Keyboard, Platform, ScrollView, View } from 'react-native';
-import { AccountProvider, type AccountComponents } from './context';
-import { useLook, useStyles, type PickerStyle } from './look';
-import { useAction } from './hooks/useAction';
-import { RESERVED_PAGE_IDS, parentOf, usableExtraPages, type Page } from './logic/pages';
+import { AccountProvider, type AccountComponents } from '../context';
+import { useLook, useStyles, type PickerStyle } from '../look';
+import { useAction } from '../shared/useAction';
+import { RESERVED_PAGE_IDS, parentOf, usableExtraPages, type Page } from './pages';
 import { SettingsNavContext, type SettingsNav } from './nav';
-import { usePremiumOffered } from './planMode';
-import { AboutSection } from './sections/AboutSection';
-import { AccountPage } from './sections/AccountPage';
-import { AppPage } from './sections/AppPage';
-import { HubPage } from './sections/HubPage';
-import { AccessPage, DeleteAccountPage, ExitMenuButton, SignOutPage } from './sections/ExitPages';
-import { DataRow } from './sections/profile/DataRow';
-import { PasswordPage } from './sections/profile/PasswordPage';
-import { SupportPage } from './sections/SupportPage';
-import type { AccountStrings } from './strings';
-import type { AccountTheme } from './theme';
-import type { SettingsScreenProps } from './types';
-import { SettingsGroup, STACK } from './ui/Group';
-import { PageHeader } from './ui/Header';
+import { usePremiumOffered } from '../planMode';
+import { AboutSection } from '../about/AboutSection';
+import { AccountPage } from '../profile/AccountPage';
+import { AppPage } from '../preferences/AppPage';
+import { HubPage } from './HubPage';
+import { AccessPage, DeleteAccountPage, ExitMenuButton, SignOutPage } from '../exit/ExitPages';
+import { DataRow } from '../data/DataRow';
+import { PasswordPage } from '../profile/PasswordPage';
+import { SupportPage } from '../support/SupportPage';
+import type { AccountStrings } from '../strings';
+import type { AccountTheme } from '../theme';
+import type { SettingsScreenProps } from '../types';
+import { SettingsGroup, STACK } from '../ui/Group';
+import { PageHeader } from './Header';
 
 type Props = SettingsScreenProps & {
   /** Every color and size, from the app. The kit has no look of its own. */

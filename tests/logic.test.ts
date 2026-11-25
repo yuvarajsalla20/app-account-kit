@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { KIT_NAME, KIT_VERSION } from '../src/kit';
-import { hubPages, parentOf } from '../src/logic/pages';
-import { kitLines, kitsLine } from '../src/logic/kits';
-import { csvFileName, toCsv } from '../src/logic/csv';
-import { canConfirmDelete } from '../src/logic/deleteRules';
-import { supportMailUrl } from '../src/logic/mail';
-import { cleanNickname, initialOf } from '../src/logic/nickname';
-import { MIN_PASSWORD, passwordProblem } from '../src/logic/password';
-import { canRate, canRatePlay, playReviewUrl, playReviewWebUrl, reviewUrl, reviewWebUrl } from '../src/logic/rate';
-import { buildShareMessage, canShare } from '../src/logic/share';
+import { hubPages, parentOf } from '../src/hub/pages';
+import { kitLines, kitsLine } from '../src/shared/kits';
+import { csvFileName, toCsv } from '../src/shared/csv';
+import { canConfirmDelete } from '../src/exit/deleteRules';
+import { supportMailUrl } from '../src/support/mail';
+import { cleanNickname, initialOf } from '../src/profile/nickname';
+import { MIN_PASSWORD, passwordProblem } from '../src/profile/password';
+import { canRate, canRatePlay, playReviewUrl, playReviewWebUrl, reviewUrl, reviewWebUrl } from '../src/about/rate';
+import { buildShareMessage, canShare } from '../src/about/share';
 import { DEFAULT_STRINGS } from '../src/strings';
 
 describe('nickname', () => {

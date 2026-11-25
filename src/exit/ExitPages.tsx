@@ -1,9 +1,9 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
-import type { ActionRunner } from '../hooks/useAction';
+import type { ActionRunner } from '../shared/useAction';
 import { useLook, useStyles, type MenuItem } from '../look';
-import { canConfirmDelete, typedWordMatches } from '../logic/deleteRules';
+import { canConfirmDelete, typedWordMatches } from './deleteRules';
 import type { AccountTheme } from '../theme';
 import type { ActionsProps, ExitMenuProps, IconName } from '../types';
 import { Button } from '../ui/Button';

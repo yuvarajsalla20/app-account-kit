@@ -2,7 +2,7 @@
 
 A complete, themeable **Settings screen** for React Native and Expo apps (iOS and Android): profile, nickname, photo, change password, data download, About (features, rate, share, contact support, privacy, kits, version), sign out and delete account. It has no colors and no native dependencies of its own. The app supplies the theme, the photo picker, the file download and the sign-in calls.
 
-**Current version: 10.2.0** (tag `v10.2.0`)
+**Current version: 10.2.1** (tag `v10.2.1`)
 
 Part of the shared kits:
 [app-core-kit](https://github.com/yuvarajsalla20/app-core-kit) ·
@@ -28,14 +28,14 @@ Pin the full commit SHA of a release tag, so every build gets exactly the code y
 ```jsonc
 // package.json
 "dependencies": {
-  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v10.2.0>"
+  "app-account-kit": "git+https://github.com/yuvarajsalla20/app-account-kit.git#<full SHA of v10.2.1>"
 },
 "kitVersions": {
-  "app-account-kit": "v10.2.0"
+  "app-account-kit": "v10.2.1"
 }
 ```
 
-Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v10.2.0`.
+Find the SHA with `git ls-remote https://github.com/yuvarajsalla20/app-account-kit refs/tags/v10.2.1`.
 
 **Peer dependencies:** `react` ≥ 18, `react-native` ≥ 0.74, `@expo/vector-icons` ≥ 14 (only the Feather set is imported), and `app-core-kit` ≥ 1.12.0 (10.1.0: the shared helpers; 10.2.0: the plan mode). Optional, only for `app-account-kit/photo`: `expo-image-picker` and `expo-image-manipulator`.
 
@@ -286,19 +286,26 @@ Exported from both `app-account-kit` and `app-account-kit/logic`:
 
 ## Folder layout
 
+The code is grouped by feature. Each folder is one page or one job, with everything only it uses; a file that two or more features use lives in `ui/` (building blocks) or `shared/` (basics).
+
 ```
 src/
-  SettingsScreen.tsx   the screen: page switch and header
+  index.ts logic.ts    the public entries (`app-account-kit` and `app-account-kit/logic`)
   context.tsx          AccountProvider
   look.ts              theme, wording and components every piece reads (useLook, useStyles)
-  nav.ts               useSettingsNav
   theme.ts strings.ts  the theme type and the English wording
   types.ts             every prop type
+  planMode.ts          the plan mode, from app-core-kit
   kit.ts               KIT_NAME and KIT_VERSION (a test keeps it equal to package.json)
-  hooks/useAction.ts
-  logic/               pure functions, tested without a phone
-  ui/                  Group, Row, ExpandRow, PickerRow, ChoiceSheet, Card, Header, Avatar, Button, Field
-  sections/            HubPage, AccountPage, AppPage, AboutSection, SupportPage, DeleteAccount, profile/
+  hub/                 SettingsScreen (page switch), Header, HubPage, useSettingsNav, the page list
+  profile/             AccountPage, ProfileHeader, Avatar, NicknameRow, EmailRow, PasswordPage, the photo picker (`app-account-kit/photo`)
+  preferences/         AppPage
+  about/               AboutSection, Rate and Share
+  support/             SupportPage and its email
+  data/                DataRow (Data Export)
+  exit/                Log Out and Delete Account pages and their rules
+  ui/                  Group, Row, ExpandRow, PickerRow, ChoiceSheet, PullDown, PremiumTag, Card, Button, Field
+  shared/              useAction and its guard, links, kit lines, CSV, theme contrast
 tests/                 logic, contrast, "no colors of its own", and the real screens rendered with a small React Native stand-in
 ```
 

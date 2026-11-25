@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import TestRenderer, { act, type ReactTestInstance, type ReactTestRenderer } from 'react-test-renderer';
 import { AccountProvider } from '../../src/context';
-import { useAction, type ActionRunner } from '../../src/hooks/useAction';
+import { useAction, type ActionRunner } from '../../src/shared/useAction';
 import { THEME } from './theme';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;

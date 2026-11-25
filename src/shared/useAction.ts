@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { createActionGuard } from '../logic/actionGuard';
+import { createActionGuard } from './actionGuard';
 
 export interface ActionRunner {
   busy: boolean;

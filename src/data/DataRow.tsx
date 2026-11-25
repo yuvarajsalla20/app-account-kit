@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import type { ActionRunner } from '../../hooks/useAction';
-import { useLook } from '../../look';
-import type { DataFormat, DataProps } from '../../types';
-import { useAfterClose } from '../../ui/afterClose';
-import { ChoiceSheet } from '../../ui/ChoiceSheet';
-import { SettingRow } from '../../ui/Row';
+import type { ActionRunner } from '../shared/useAction';
+import { useLook } from '../look';
+import type { DataFormat, DataProps } from '../types';
+import { useAfterClose } from '../ui/afterClose';
+import { ChoiceSheet } from '../ui/ChoiceSheet';
+import { SettingRow } from '../ui/Row';
 
 interface Props extends DataProps {
   action: ActionRunner;

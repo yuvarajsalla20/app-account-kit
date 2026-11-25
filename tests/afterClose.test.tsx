@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DataRow } from '../src/sections/profile/DataRow';
+import { DataRow } from '../src/data/DataRow';
 import { MenuRow, PullDownMenu } from '../src/ui/PullDown';
 import { PickerRow } from '../src/ui/PickerRow';
 import { SettingRow } from '../src/ui/Row';

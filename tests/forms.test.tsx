@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { DeleteAccount } from '../src/sections/DeleteAccount';
-import { NicknameRow } from '../src/sections/profile/NicknameRow';
-import { PasswordPage } from '../src/sections/profile/PasswordPage';
+import { DeleteAccount } from '../src/exit/DeleteAccount';
+import { NicknameRow } from '../src/profile/NicknameRow';
+import { PasswordPage } from '../src/profile/PasswordPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import { calls } from './stubs/react-native';
 import { act, blur, focused, press, submit, type, withAction } from './helpers/render';

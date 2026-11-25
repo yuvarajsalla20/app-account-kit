@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { act } from 'react-test-renderer';
 import { Pressable, View } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { THEME } from './helpers/theme';

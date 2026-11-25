@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { parentOf } from '../src/logic/pages';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { parentOf } from '../src/hub/pages';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { Pressable, Text } from './stubs/react-native';
-import { useSettingsNav } from '../src/nav';
+import { useSettingsNav } from '../src/hub/nav';
 import { THEME } from './helpers/theme';
 import { mount, press } from './helpers/render';
 

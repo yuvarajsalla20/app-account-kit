@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useRef, useState, type ElementRef, type ReactNode } from 'react';
 import { Modal, Platform, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
-import { placeMenu, type Box } from '../logic/menuPlace';
+import { placeMenu, type Box } from './menuPlace';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
 import type { IconName } from '../types';

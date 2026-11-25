@@ -9,7 +9,7 @@ interface SupportMail {
   kits?: string;
 }
 
-import { isEmail } from './links';
+import { isEmail } from '../shared/links';
 
 /** A mailto: address with the app, version and device filled in, so support can see what the person is using. */
 export const supportMailUrl = ({ email, appName, versionNumber, device, kits }: SupportMail): string => {

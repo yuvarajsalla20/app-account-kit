@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DEFAULT_PHOTO_MAX_CHARS, isPermissionError, safePhoto } from '../src/logic/photo';
-import { PROFILE_PHOTO_SIZE, cameraSupported, pickProfilePhoto } from '../src/photo';
+import { DEFAULT_PHOTO_MAX_CHARS, isPermissionError, safePhoto } from '../src/profile/photo';
+import { PROFILE_PHOTO_SIZE, cameraSupported, pickProfilePhoto } from '../src/profile/pickPhoto';
 import { manipulator } from './stubs/expo-image-manipulator';
 import { picker } from './stubs/expo-image-picker';
 

@@ -1,9 +1,9 @@
 import { Linking, Platform, View } from 'react-native';
 import { useLook, useStyles } from '../look';
-import type { ActionRunner } from '../hooks/useAction';
+import type { ActionRunner } from '../shared/useAction';
 import { KIT_VERSION } from '../kit';
-import { kitsMailLine } from '../logic/kits';
-import { supportMailUrl } from '../logic/mail';
+import { kitsMailLine } from '../shared/kits';
+import { supportMailUrl } from './mail';
 import type { AccountTheme } from '../theme';
 import type { AboutProps } from '../types';
 import { SettingRow } from '../ui/Row';

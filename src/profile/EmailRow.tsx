@@ -1,6 +1,6 @@
 import { View } from 'react-native';
-import { useLook, useStyles } from '../../look';
-import type { AccountTheme } from '../../theme';
+import { useLook, useStyles } from '../look';
+import type { AccountTheme } from '../theme';
 
 interface Props {
   email: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { parentOf } from '../src/logic/pages';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { parentOf } from '../src/hub/pages';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { THEME } from './helpers/theme';

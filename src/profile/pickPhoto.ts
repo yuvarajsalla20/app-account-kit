@@ -1,7 +1,7 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native';
-import { DEFAULT_PHOTO_MAX_CHARS } from '../logic/photo';
+import { DEFAULT_PHOTO_MAX_CHARS } from './photo';
 import type { PhotoSource } from '../types';
 
 /**
