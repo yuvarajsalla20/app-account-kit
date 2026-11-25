@@ -1,15 +1,15 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
-import { useLook, useStyles } from '../../look';
-import type { ActionRunner } from '../../hooks/useAction';
-import { initialOf } from '../../logic/nickname';
-import { isPermissionError, safePhoto } from '../../logic/photo';
-import type { AccountTheme } from '../../theme';
-import type { PhotoProps, PhotoSource, ProfileInfo } from '../../types';
-import { Avatar } from '../../ui/Avatar';
-import { Button } from '../../ui/Button';
-import { CENTER, ROW_CENTER } from '../../ui/layout';
+import { useLook, useStyles } from '../look';
+import type { ActionRunner } from '../shared/useAction';
+import { initialOf } from './nickname';
+import { isPermissionError, safePhoto } from './photo';
+import type { AccountTheme } from '../theme';
+import type { PhotoProps, PhotoSource, ProfileInfo } from '../types';
+import { Avatar } from './Avatar';
+import { Button } from '../ui/Button';
+import { CENTER, ROW_CENTER } from '../ui/layout';
 
 /** The centred photo's size, and the pencil on its corner. */
 const BIG = 96;

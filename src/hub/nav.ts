@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Page } from './logic/pages';
+import type { Page } from './pages';
 
 /** Moves between Settings pages from inside an app's own page. */
 export interface SettingsNav {

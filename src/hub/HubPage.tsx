@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import type { ActionRunner } from '../hooks/useAction';
+import type { ActionRunner } from '../shared/useAction';
 import { useLook } from '../look';
-import { hubPages, type Page } from '../logic/pages';
+import { hubPages, type Page } from './pages';
 import type { ActionsProps, IconName, SettingsScreenProps } from '../types';
 import { Button } from '../ui/Button';
 import { SettingsGroup, STACK } from '../ui/Group';
 import { SettingRow } from '../ui/Row';
-import { DeleteAccount } from './DeleteAccount';
+import { DeleteAccount } from '../exit/DeleteAccount';
 
 type Props = Pick<SettingsScreenProps, 'data' | 'app' | 'hubOrder' | 'extraPages'> & Pick<ActionsProps, 'onSignOut' | 'onDeleteAccount' | 'confirmsWithPassword'> & {
   /** True when the App row shows: the app has settings of its own or a page with `under: 'app'`. Default: `!!app`. */

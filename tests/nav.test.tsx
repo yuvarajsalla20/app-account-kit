@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 import { describe, expect, it } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { useSettingsNav } from '../src/nav';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { useSettingsNav } from '../src/hub/nav';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { Text } from './stubs/react-native';

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ElementRef, type ReactNode } from 'react';
 import { AccessibilityInfo, findNodeHandle, View } from 'react-native';
 import { useLook, useStyles } from '../look';
-import type { ActionRunner } from '../hooks/useAction';
-import { canConfirmDelete } from '../logic/deleteRules';
+import type { ActionRunner } from '../shared/useAction';
+import { canConfirmDelete } from './deleteRules';
 import type { AccountTheme } from '../theme';
 import type { ActionsProps } from '../types';
 import { Button } from '../ui/Button';

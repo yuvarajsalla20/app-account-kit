@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { parentOf } from '../src/logic/pages';
-import { appGroups } from '../src/sections/AppPage';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { parentOf } from '../src/hub/pages';
+import { appGroups } from '../src/preferences/AppPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { Text } from './stubs/react-native';
@@ -109,12 +109,12 @@ describe("pages under 'app' (Preferences)", () => {
 describe('reserved page ids (7.29.0)', () => {
   it('the ExtraPage.id doc names every reserved id, and the screen uses the same list', async () => {
     const { readFileSync } = await import('node:fs');
-    const { RESERVED_PAGE_IDS } = await import('../src/logic/pages');
+    const { RESERVED_PAGE_IDS } = await import('../src/hub/pages');
     const types = readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
     const doc = types.slice(types.indexOf('export interface ExtraPage'), types.indexOf('  id: string;', types.indexOf('export interface ExtraPage')));
     const named = [...doc.matchAll(/`(\w+)`/g)].map((m) => m[1]).filter((w) => w !== 'onError' && w !== 'extraPages' && w !== 'RESERVED_PAGE_IDS');
     expect(new Set(named)).toEqual(new Set(RESERVED_PAGE_IDS));
-    const screenSrc = readFileSync(new URL('../src/SettingsScreen.tsx', import.meta.url), 'utf8');
+    const screenSrc = readFileSync(new URL('../src/hub/SettingsScreen.tsx', import.meta.url), 'utf8');
     expect(screenSrc).toContain('new Set<string>(RESERVED_PAGE_IDS)');
   });
 

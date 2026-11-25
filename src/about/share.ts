@@ -1,4 +1,4 @@
-import { isHttps } from './links';
+import { isHttps } from '../shared/links';
 
 /** The text handed to the share sheet. An app can pass its own `message`; otherwise the wording template is used. */
 export const buildShareMessage = (template: (appName: string, url: string) => string, appName: string, url: string, message?: string): string =>

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useLook, useStyles } from '../../look';
-import type { ActionRunner } from '../../hooks/useAction';
-import { cleanNickname } from '../../logic/nickname';
-import { createSaveTracker } from '../../logic/saveTracker';
-import type { NicknameProps } from '../../types';
-import type { AccountTheme } from '../../theme';
-import { Field } from '../../ui/Field';
+import { useLook, useStyles } from '../look';
+import type { ActionRunner } from '../shared/useAction';
+import { cleanNickname } from './nickname';
+import { createSaveTracker } from './saveTracker';
+import type { NicknameProps } from '../types';
+import type { AccountTheme } from '../theme';
+import { Field } from '../ui/Field';
 
 interface Props extends NicknameProps {
   saved: string;

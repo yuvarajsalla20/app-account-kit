@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { useLook, useStyles } from '../look';
 import type { AccountTheme } from '../theme';
-import { CENTER } from './layout';
+import { CENTER } from '../ui/layout';
 
 interface Props {
   /** Missing on About (the app's name is shown there instead), where the arrow floats beside the content. */

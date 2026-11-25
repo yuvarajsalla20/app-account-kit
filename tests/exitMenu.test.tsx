@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { typedWordMatches } from '../src/logic/deleteRules';
-import { parentOf } from '../src/logic/pages';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { typedWordMatches } from '../src/exit/deleteRules';
+import { parentOf } from '../src/hub/pages';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { THEME } from './helpers/theme';

@@ -1,14 +1,14 @@
 import { View } from 'react-native';
 import { useLook } from '../look';
-import { useSettingsNav } from '../nav';
-import type { ActionRunner } from '../hooks/useAction';
+import { useSettingsNav } from '../hub/nav';
+import type { ActionRunner } from '../shared/useAction';
 import type { ExtraPage, NicknameProps, PasswordProps, PhotoProps, ProfileInfo } from '../types';
 import { SettingsGroup, STACK } from '../ui/Group';
 import { MenuRow } from '../ui/PullDown';
 import { SettingRow } from '../ui/Row';
-import { EmailRow } from './profile/EmailRow';
-import { NicknameRow } from './profile/NicknameRow';
-import { ProfileHeader } from './profile/ProfileHeader';
+import { EmailRow } from './EmailRow';
+import { NicknameRow } from './NicknameRow';
+import { ProfileHeader } from './ProfileHeader';
 
 interface Props {
   profile: ProfileInfo;

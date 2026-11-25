@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Image, View, type ImageStyle, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { useLook, useStyles } from '../look';
-import { safePhoto } from '../logic/photo';
+import { safePhoto } from './photo';
 import type { AccountTheme } from '../theme';
-import { CENTER } from './layout';
+import { CENTER } from '../ui/layout';
 
 interface Props {
   /** A picture address (https) or small data address. When empty, unsafe or broken, the initial is shown. */

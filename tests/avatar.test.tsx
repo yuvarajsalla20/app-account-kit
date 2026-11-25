@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AccountProvider } from '../src/context';
-import { Avatar } from '../src/ui/Avatar';
+import { Avatar } from '../src/profile/Avatar';
 import { THEME } from './helpers/theme';
 import { mount } from './helpers/render';
 

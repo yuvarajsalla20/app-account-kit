@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useLook } from '../../look';
-import type { ActionRunner } from '../../hooks/useAction';
-import { MIN_PASSWORD, passwordProblem } from '../../logic/password';
-import type { PasswordProps } from '../../types';
-import { Button } from '../../ui/Button';
-import { Field, type InputRef } from '../../ui/Field';
+import { useLook } from '../look';
+import type { ActionRunner } from '../shared/useAction';
+import { MIN_PASSWORD, passwordProblem } from './password';
+import type { PasswordProps } from '../types';
+import { Button } from '../ui/Button';
+import { Field, type InputRef } from '../ui/Field';
 
 interface Props extends PasswordProps {
   action: ActionRunner;

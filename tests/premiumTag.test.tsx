@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SettingsNavContext } from '../src/nav';
-import { PageRow } from '../src/sections/AccountPage';
+import { SettingsNavContext } from '../src/hub/nav';
+import { PageRow } from '../src/profile/AccountPage';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import { PremiumTag, premiumGold } from '../src/ui/PremiumTag';
 import { SettingRow } from '../src/ui/Row';

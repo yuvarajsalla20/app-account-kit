@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { setPlanMode } from '../src/planMode';
-import { SettingsScreen } from '../src/SettingsScreen';
-import { placeMenu } from '../src/logic/menuPlace';
+import { SettingsScreen } from '../src/hub/SettingsScreen';
+import { placeMenu } from '../src/ui/menuPlace';
 import { DEFAULT_STRINGS as S } from '../src/strings';
 import type { SettingsScreenProps } from '../src/types';
 import { PickerRow } from '../src/ui/PickerRow';
