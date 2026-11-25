@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 10.1.1 (2026-11-25)
+
+Nothing breaks. Removes an import that 10.1.0 left unused, which failed the type check of an app that reports unused names.
+
 ## 10.1.0 (2026-11-25)
 
 Nothing breaks. The small shared helpers now come from app-core-kit's single copy (`app-core-kit/shared`, 1.11.0 or later), so the kits no longer carry copies that drift apart.
