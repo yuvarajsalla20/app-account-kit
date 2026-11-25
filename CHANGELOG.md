@@ -2,6 +2,10 @@
 
 Release notes for app-account-kit, newest first. Each version is tagged in git (`v7.12.0`). Upgrade guides for the major versions follow the release notes.
 
+## 10.2.0 (2026-11-25)
+
+Nothing breaks. The plan mode (`usePlanMode`, `setPlanMode`, `planModeFrom`, `usePremiumOffered`, `offeredOptions` and the types) is now app-core-kit's single copy, still exported here. It keeps the same global key, so every kit reads one value. The peer dependency is now app-core-kit 1.12.0 or later.
+
 ## 10.1.1 (2026-11-25)
 
 Nothing breaks. Removes an import that 10.1.0 left unused, which failed the type check of an app that reports unused names.

@@ -1,6 +1,6 @@
 {
   "name": "app-account-kit",
-  "version": "10.1.1",
+  "version": "10.2.0",
   "description": "Reusable Account screen for React Native / Expo apps: profile, nickname, photo, change password page, data download, about (share, rate, privacy, support, version), sign out and delete account. Takes its whole theme from the app (no colors of its own), with slots for each app's own settings.",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -22,7 +22,7 @@
   "author": "Yuvaraj Salla",
   "peerDependencies": {
     "@expo/vector-icons": ">=14",
-    "app-core-kit": ">=1.11.0",
+    "app-core-kit": ">=1.12.0",
     "expo-image-manipulator": ">=13",
     "expo-image-picker": ">=16",
     "react": ">=18",
@@ -40,7 +40,7 @@
     "@expo/vector-icons": "^15.0.2",
     "@types/react": "~19.3.0",
     "@types/react-test-renderer": "^19.3.1",
-    "app-core-kit": "git+https://github.com/yuvarajsalla20/app-core-kit.git#c9457e9c7908078a368af3c6f03e5d022baf26f8",
+    "app-core-kit": "git+https://github.com/yuvarajsalla20/app-core-kit.git#7d930db5a0c61c88fc5157465e524c535a091e0e",
     "expo-image-manipulator": "~58.0.16",
     "expo-image-picker": "~58.0.10",
     "react": "19.3.0",
